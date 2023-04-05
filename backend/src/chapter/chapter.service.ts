@@ -2,34 +2,40 @@ import { Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
 import { CreateChapterDto } from './dto/create.dto';
-import { Chapter } from './model/chapter';
-import { Arc } from './model/arc';
-import { Scene } from './model/scene';
+import { InjectModel } from '@nestjs/mongoose';
+import { Chapter } from '../schemas/chapter';
+import { Model } from 'mongoose';
+import { Arc } from '../schemas/arc';
+import { Scene } from '../schemas/scene';
 
 @Injectable()
 export class ChapterService {
-  private readonly FOLDER_PATH = path.join(__dirname, '..', 'files-uploaded');
-
-  constructor() {
+  constructor(
+    @InjectModel(Chapter.name) private chapterModel: Model<Chapter>,
+    @InjectModel(Arc.name) private arcModel: Model<Arc>,
+    @InjectModel(Scene.name) private sceneModel: Model<Scene>,
+  ) {
     if (!fs.existsSync(this.FOLDER_PATH)) {
       fs.mkdirSync(this.FOLDER_PATH);
     }
   }
 
-  async createChapterModel(name: string, content?: string) {
-    const chapter = new Chapter(name);
-    chapter.content = content;
+  private readonly FOLDER_PATH = path.join(__dirname, '..', 'files-uploaded');
+
+  async createChapterModel(name: string, content?: string): Promise<Chapter> {
+    const chapter = (
+      await this.chapterModel.create({ name, content })
+    ).toObject();
+
     return chapter;
   }
 
   async createArcModel(name: string, content?: string) {
-    const arc = new Arc(name);
-    arc.content = content;
+    const arc = (await this.arcModel.create({ name, content })).toObject();
     return arc;
   }
   async createSceneModel(name?: string, content?: string) {
-    const scene = new Scene(name);
-    scene.content = content;
+    const scene = (await this.sceneModel.create({ name, content })).toObject();
     return scene;
   }
 

@@ -1,4 +1,4 @@
-export class Scene {
+export class SceneModel {
   constructor(name?: string) {
     this.name = name;
   }
