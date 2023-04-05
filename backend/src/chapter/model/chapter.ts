@@ -1,10 +1,10 @@
-import { Arc } from './arc';
+import { ArcModel } from './arc';
 
-export class Chapter {
+export class ChapterModel {
   constructor(name: string) {
     this.name = name;
   }
   name: string;
   content: string;
-  arcs: Arc[] = [];
+  arcs: ArcModel[] = [];
 }

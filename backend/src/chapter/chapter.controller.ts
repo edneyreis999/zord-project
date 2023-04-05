@@ -67,10 +67,7 @@ export class ChapterController {
         `arc-${contArcs}`,
         arcText,
       );
-      const scenesText = await this.textFileService.extractScenes(
-        arc.name,
-        arc.content,
-      );
+      const scenesText = await this.textFileService.extractScenes(arc.content);
 
       for (const sceneText of scenesText) {
         const scene = await this.chapterService.createSceneModel('', sceneText);
