@@ -1,0 +1,6 @@
+{
+  "src/**/*.{ts,tsx,js,jsx}": [
+    "yarn run full-lint -- --fix",
+    "yarn run test -- --watch=false --passWithNoTests"
+  ]
+}

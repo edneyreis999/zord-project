@@ -11,8 +11,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ChapterService } from './chapter.service';
 import { CreateChapterDto } from './dto/create.dto';
 import { ResponseChapterDto } from './dto/response.dto';
-import { CrudPost } from 'src/request/crud.decorator';
 import { TextFileService } from './text-file.service';
+import { CrudPost } from '../request/crud.decorator';
 
 @Controller('book')
 @ApiTags('book')
