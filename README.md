@@ -1,2 +1,2 @@
 # zord-project
-Meu assistente inteligente
+Zord will be my IA assistent
