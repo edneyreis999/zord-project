@@ -8,3 +8,4 @@ yarn run lint-staged
 cd ../backend
 yarn run type-check
 yarn run lint-staged
+yarn run test
