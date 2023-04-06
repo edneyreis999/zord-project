@@ -37,7 +37,7 @@ $ yarn run test:cov
 ## Lista de Tarefas
 
 - [x] Arrumar o Git
-- [ ] Adicionar o husky no backend
-- [ ] Colocar banco de dados na feature de cadastro de chapter
-- [ ] Coverage 100%
+- [x] Adicionar o husky no backend
+- [x] Colocar banco de dados na feature de cadastro de chapter
+- [x] Coverage 100%
 - [ ] Remover bug onde as tags estão aparecendo nos arcos e cenas
