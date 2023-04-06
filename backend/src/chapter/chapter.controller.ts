@@ -22,7 +22,7 @@ export class ChapterController {
     private readonly textFileService: TextFileService,
   ) {}
 
-  @CrudPost('chapter', {
+  @CrudPost('chapter/file', {
     input: CreateChapterDto,
     output: ResponseChapterDto,
   })
@@ -37,41 +37,31 @@ export class ChapterController {
     @Body() createChapterDto: CreateChapterDto,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<ResponseChapterDto> {
-    // Validate the DTO
-    // const errors = await createChapterDto.validate();
-    // if (errors.length > 0) {
-    //   throw new HttpException(errors, HttpStatus.BAD_REQUEST);
-    // }
+    this.validateCreateChapterDto(createChapterDto);
+    this.validateFile(file);
 
-    // Validate the file
-    if (file.originalname.split('.').pop() !== 'txt') {
-      throw new HttpException(
-        'Tipo de arquivo inválido. Use arquivos .txt',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
     const { name } = createChapterDto;
 
     const chapterText = await this.textFileService.readFile(file);
 
-    const chapter = await this.chapterService.createChapterModel(
-      name,
-      chapterText,
-    );
+    const chapter = await this.chapterService.createChapter(name, chapterText);
 
     // Extract the arcs and scenes from the text file
     const arcsText = await this.textFileService.extractArcs(chapterText);
     let contArcs = 1;
     for (const arcText of arcsText) {
-      const arc = await this.chapterService.createArcModel(
-        `arc-${contArcs}`,
-        arcText,
-      );
+      const arcName = `arc-${contArcs}`;
+      const arc = await this.chapterService.createArc(arcName, arcText);
       const scenesText = await this.textFileService.extractScenes(arc.content);
 
+      let contScenes = 1;
       for (const sceneText of scenesText) {
-        const scene = await this.chapterService.createSceneModel('', sceneText);
+        const scene = await this.chapterService.createScene(
+          `${arcName}-scene-${contScenes}`,
+          sceneText,
+        );
         arc.scenes.push(scene);
+        contScenes++;
       }
 
       chapter.arcs.push(arc);
@@ -82,5 +72,20 @@ export class ChapterController {
       name: chapter.name,
       arcs: chapter.arcs.map((arc) => arc.name),
     };
+  }
+
+  private validateCreateChapterDto(createChapterDto: CreateChapterDto): void {
+    // validate that required fields are present and have valid data types
+    // throw an HttpException if validation fails
+    console.log(createChapterDto);
+  }
+
+  private validateFile(file: Express.Multer.File): void {
+    if (file.originalname.split('.').pop() !== 'txt') {
+      throw new HttpException(
+        'Invalid file type. Use .txt files',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }
