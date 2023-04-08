@@ -8,6 +8,8 @@ import { Arc, ArcSchema } from '../schemas/arc';
 import { Scene, SceneSchema } from '../schemas/scene';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import mongoose from 'mongoose';
+import { BookService } from '../book/book.service';
+import { Book, BookSchema } from '../schemas/book';
 
 describe('ChapterController', () => {
   let controller: ChapterController;
@@ -27,13 +29,14 @@ describe('ChapterController', () => {
       imports: [
         MongooseModule.forRoot('mongodb://127.0.0.1:27017/zord'),
         MongooseModule.forFeature([
+          { name: Book.name, schema: BookSchema },
           { name: Chapter.name, schema: ChapterSchema },
           { name: Arc.name, schema: ArcSchema },
           { name: Scene.name, schema: SceneSchema },
         ]),
       ],
       controllers: [ChapterController],
-      providers: [ChapterService, TextFileService],
+      providers: [ChapterService, TextFileService, BookService],
     }).compile();
 
     controller = module.get<ChapterController>(ChapterController);
@@ -66,6 +69,7 @@ describe('ChapterController', () => {
       {
         name: chapterName,
       } as any,
+      '6431cd462b8cb351fd8ef6be',
       defaultReqFile as any,
     );
 
@@ -77,6 +81,7 @@ describe('ChapterController', () => {
     expect(readFileSpy).toHaveBeenCalledWith(defaultReqFile);
     expect(createChapterModelSpy).toHaveBeenCalledWith(
       chapterName,
+      '6431cd462b8cb351fd8ef6be',
       defaultStringFileContent,
     );
     expect(extractArcsSpy).toHaveBeenCalledWith(defaultStringFileContent);
@@ -95,7 +100,7 @@ describe('ChapterController', () => {
     };
 
     await expect(
-      controller.createChapter({} as any, invalidFile as any),
+      controller.createChapter({} as any, '', invalidFile as any),
     ).rejects.toThrowError(
       new HttpException(
         'Invalid file type. Use .txt files',
@@ -124,6 +129,7 @@ describe('ChapterController', () => {
       {
         name: chapterName,
       } as any,
+      '6431cd462b8cb351fd8ef6be',
       defaultReqFile as any,
     );
 
@@ -133,7 +139,11 @@ describe('ChapterController', () => {
       arcs: ['arc-1', 'arc-2'],
     });
     expect(readFileSpy).toHaveBeenCalledWith(expect.any(Object));
-    expect(createChapterSpy).toHaveBeenCalledWith(chapterName, chapterContent);
+    expect(createChapterSpy).toHaveBeenCalledWith(
+      chapterName,
+      '6431cd462b8cb351fd8ef6be',
+      chapterContent,
+    );
     expect(extractArcsSpy).toHaveBeenCalledWith(chapterContent);
     expect(createArcSpy).toHaveBeenCalledWith(
       'arc-1',
@@ -168,6 +178,7 @@ describe('ChapterController', () => {
         {
           name: chapterName,
         } as any,
+        '',
         defaultReqFile as any,
       ),
     ).rejects.toThrowError(

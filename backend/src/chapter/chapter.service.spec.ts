@@ -6,6 +6,8 @@ import { Arc, ArcSchema } from '../schemas/arc';
 import { Scene, SceneSchema } from '../schemas/scene';
 import mongoose, { Model } from 'mongoose';
 import { TextFileService } from './text-file.service';
+import { BookService } from '../book/book.service';
+import { Book, BookSchema } from '../schemas/book';
 
 describe('ChapterService', () => {
   let chapterService: ChapterService;
@@ -15,12 +17,13 @@ describe('ChapterService', () => {
       imports: [
         MongooseModule.forRoot('mongodb://127.0.0.1:27017/zord'),
         MongooseModule.forFeature([
+          { name: Book.name, schema: BookSchema },
           { name: Chapter.name, schema: ChapterSchema },
           { name: Arc.name, schema: ArcSchema },
           { name: Scene.name, schema: SceneSchema },
         ]),
       ],
-      providers: [ChapterService, TextFileService],
+      providers: [ChapterService, TextFileService, BookService],
     }).compile();
 
     chapterService = module.get<ChapterService>(ChapterService);
@@ -44,10 +47,14 @@ describe('ChapterService', () => {
       const chapterName = 'test chapter';
       const chapterModelSpy = jest.spyOn(model, 'create');
 
-      const result = await chapterService.createChapter(chapterName);
+      const result = await chapterService.createChapter(
+        chapterName,
+        '6431cd462b8cb351fd8ef6be',
+      );
 
       expect(model.create).toHaveBeenCalledWith({
         name: chapterName,
+        book: '6431cd462b8cb351fd8ef6be',
       });
       expect(chapterModelSpy).toHaveBeenCalled();
 
@@ -65,6 +72,7 @@ describe('ChapterService', () => {
 
       const result = await chapterService.createChapter(
         chapterName,
+        '6431cd462b8cb351fd8ef6be',
         chapterContent,
       );
 
@@ -81,7 +89,7 @@ describe('ChapterService', () => {
       const chapterName = { fail: 'test chapter' } as unknown as string;
 
       await expect(
-        chapterService.createChapter(chapterName),
+        chapterService.createChapter(chapterName, '6431cd462b8cb351fd8ef6be'),
       ).rejects.toThrowError();
     });
   });

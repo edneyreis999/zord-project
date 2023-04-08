@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import { Arc } from '../schemas/arc';
 import { Scene } from '../schemas/scene';
 import { TextFileService } from './text-file.service';
+import { BookService } from '../book/book.service';
 
 @Injectable()
 export class ChapterService {
@@ -13,6 +14,7 @@ export class ChapterService {
     @InjectModel(Arc.name) private arcModel: Model<Arc>,
     @InjectModel(Scene.name) private sceneModel: Model<Scene>,
     private readonly textFileService: TextFileService,
+    private readonly bookService: BookService,
   ) {}
 
   /**
@@ -22,8 +24,31 @@ export class ChapterService {
    * @param content - The optional content of the chapter.
    * @returns - A Promise that resolves to the created Chapter object.
    */
-  async createChapter(name: string, content?: string): Promise<Chapter> {
-    const chapter = await this.chapterModel.create({ name, content });
+  async createChapter(
+    name: string,
+    bookId: string,
+    content?: string,
+  ): Promise<Chapter> {
+    if (!bookId) {
+      throw new Error('A bookId must be provided to create a chapter.');
+    }
+
+    const book = await this.bookService.findOne(bookId);
+
+    if (!book) {
+      throw new Error(`Book with id '${bookId}' not found.`);
+    }
+
+    const chapter = await this.chapterModel.create({
+      name,
+      content,
+      book: bookId,
+    });
+
+    // Add the chapter to the book
+    book.chapters.push(chapter);
+    await this.bookService.update(bookId, book);
+
     return chapter.toObject();
   }
 
@@ -60,10 +85,11 @@ export class ChapterService {
    */
   async createChapterFromTextFile(
     name: string,
+    bookId: string,
     file: Express.Multer.File,
   ): Promise<Chapter> {
     const chapterText = await this.textFileService.readFile(file);
-    const chapter = await this.createChapter(name, chapterText);
+    const chapter = await this.createChapter(name, bookId, chapterText);
 
     // Extract arcs and scenes from the text file
     await this.processArcsAndScenes(chapter, chapterText);
