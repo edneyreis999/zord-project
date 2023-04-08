@@ -5,6 +5,7 @@ import { Chapter, ChapterSchema } from '../schemas/chapter';
 import { Arc, ArcSchema } from '../schemas/arc';
 import { Scene, SceneSchema } from '../schemas/scene';
 import mongoose, { Model } from 'mongoose';
+import { TextFileService } from './text-file.service';
 
 describe('ChapterService', () => {
   let chapterService: ChapterService;
@@ -19,7 +20,7 @@ describe('ChapterService', () => {
           { name: Scene.name, schema: SceneSchema },
         ]),
       ],
-      providers: [ChapterService],
+      providers: [ChapterService, TextFileService],
     }).compile();
 
     chapterService = module.get<ChapterService>(ChapterService);
@@ -27,6 +28,10 @@ describe('ChapterService', () => {
 
   beforeEach(async () => {
     jest.resetAllMocks();
+  });
+
+  afterAll(async () => {
+    await mongoose.disconnect();
   });
 
   describe('ChapterModel', () => {
