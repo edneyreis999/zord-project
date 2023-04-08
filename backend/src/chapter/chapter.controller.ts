@@ -42,31 +42,10 @@ export class ChapterController {
 
     const { name } = createChapterDto;
 
-    const chapterText = await this.textFileService.readFile(file);
-
-    const chapter = await this.chapterService.createChapter(name, chapterText);
-
-    // Extract the arcs and scenes from the text file
-    const arcsText = await this.textFileService.extractArcs(chapterText);
-    let contArcs = 1;
-    for (const arcText of arcsText) {
-      const arcName = `arc-${contArcs}`;
-      const arc = await this.chapterService.createArc(arcName, arcText);
-      const scenesText = await this.textFileService.extractScenes(arc.content);
-
-      let contScenes = 1;
-      for (const sceneText of scenesText) {
-        const scene = await this.chapterService.createScene(
-          `${arcName}-scene-${contScenes}`,
-          sceneText,
-        );
-        arc.scenes.push(scene);
-        contScenes++;
-      }
-
-      chapter.arcs.push(arc);
-      contArcs++;
-    }
+    const chapter = await this.chapterService.createChapterFromTextFile(
+      name,
+      file,
+    );
 
     return {
       name: chapter.name,

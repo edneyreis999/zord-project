@@ -1,20 +1,28 @@
 import { Injectable } from '@nestjs/common';
-import * as path from 'path';
 
 @Injectable()
 export class TextFileService {
-  private readonly FOLDER_PATH = path.join(__dirname, '..', 'files-uploaded');
-
-  async readFile(file: Express.Multer.File) {
+  /**
+   * Reads the content of a text file uploaded using Express Multer.
+   *
+   * @param file - The text file uploaded as an Express.Multer.File object.
+   * @returns - A Promise that resolves to the content of the file as a string.
+   */
+  async readFile(file: Express.Multer.File): Promise<string> {
     return file.buffer.toString();
   }
 
-  async extractArcs(chapterText: string) {
+  /**
+   * Extracts arcs from the given chapter text.
+   *
+   * @param chapterText - The text content of the chapter.
+   * @returns - A Promise that resolves to an array of extracted arc texts.
+   */
+  async extractArcs(chapterText: string): Promise<string[]> {
     const regexArc = /<arc>([\s\S]*?)<\/arc>/g;
-
-    let match;
     const arcs: string[] = [];
 
+    let match: RegExpExecArray;
     while ((match = regexArc.exec(chapterText))) {
       arcs.push(match[1]);
     }
@@ -22,12 +30,17 @@ export class TextFileService {
     return arcs;
   }
 
-  async extractScenes(arcText: string) {
+  /**
+   * Extracts scenes from the given arc text.
+   *
+   * @param arcText - The text content of the arc.
+   * @returns - A Promise that resolves to an array of extracted scene texts.
+   */
+  async extractScenes(arcText: string): Promise<string[]> {
     const regexScene = /<scene>([\s\S]*?)<\/scene>/g;
-
-    let match;
     const scenes: string[] = [];
 
+    let match: RegExpExecArray;
     while ((match = regexScene.exec(arcText))) {
       scenes.push(match[1]);
     }

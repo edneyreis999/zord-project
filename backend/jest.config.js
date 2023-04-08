@@ -17,4 +17,5 @@ module.exports = {
     '/src/.*decorator\\.ts$',
     '/src/main.ts',
   ],
+  testTimeout: 20000,
 };

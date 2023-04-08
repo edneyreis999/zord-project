@@ -40,4 +40,6 @@ $ yarn run test:cov
 - [x] Adicionar o husky no backend
 - [x] Colocar banco de dados na feature de cadastro de chapter
 - [x] Coverage 100%
+- [ ] Mover textService do chapterController para chapterService
+- [ ] Criar services/modules e controller para arc e scene.
 - [ ] Remover bug onde as tags estão aparecendo nos arcos e cenas

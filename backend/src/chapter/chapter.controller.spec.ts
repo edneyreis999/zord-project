@@ -7,6 +7,7 @@ import { Chapter, ChapterSchema } from '../schemas/chapter';
 import { Arc, ArcSchema } from '../schemas/arc';
 import { Scene, SceneSchema } from '../schemas/scene';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import mongoose from 'mongoose';
 
 describe('ChapterController', () => {
   let controller: ChapterController;
@@ -40,6 +41,10 @@ describe('ChapterController', () => {
 
   beforeEach(async () => {
     jest.resetAllMocks();
+  });
+
+  afterAll(async () => {
+    await mongoose.disconnect();
   });
 
   it('should be defined', () => {
