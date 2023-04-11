@@ -8,18 +8,23 @@ import { TextFileService } from './chapter/text-file.service';
 import { Chapter, ChapterSchema } from './schemas/chapter';
 import { Arc, ArcSchema } from './schemas/arc';
 import { Scene, SceneSchema } from './schemas/scene';
+import { BookModule } from './book/book.module';
+import { BookService } from './book/book.service';
+import { Book, BookSchema } from './schemas/book';
 
 @Module({
   imports: [
     ChapterModule,
     MongooseModule.forRoot('mongodb://127.0.0.1:27017/zord'),
     MongooseModule.forFeature([
+      { name: Book.name, schema: BookSchema },
       { name: Chapter.name, schema: ChapterSchema },
       { name: Arc.name, schema: ArcSchema },
       { name: Scene.name, schema: SceneSchema },
     ]),
+    BookModule,
   ],
   controllers: [AppController],
-  providers: [AppService, ChapterService, TextFileService],
+  providers: [AppService, ChapterService, TextFileService, BookService],
 })
 export class AppModule {}

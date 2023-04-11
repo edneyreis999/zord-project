@@ -7,10 +7,17 @@ import { Chapter, ChapterSchema } from '../schemas/chapter';
 import { Arc, ArcSchema } from '../schemas/arc';
 import { Scene, SceneSchema } from '../schemas/scene';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import mongoose from 'mongoose';
+import { BookService } from '../book/book.service';
+import { Book, BookSchema } from '../schemas/book';
+import { setupMongoMemoryServer } from '../../test/mongoMemoryServerSetup';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 
 describe('ChapterController', () => {
+  let defaultBook: Book;
   let controller: ChapterController;
+  let bookService: BookService;
+  let mongod: MongoMemoryServer;
+
   const defaultStringFileContent = `conteúdo do capítulo`;
   const defaultBufferFileContent = Buffer.from(defaultStringFileContent);
   const defaultReqFile = {
@@ -23,28 +30,41 @@ describe('ChapterController', () => {
   };
 
   beforeAll(async () => {
+    mongod = await setupMongoMemoryServer();
+    const uri = mongod.getUri();
     const module: TestingModule = await Test.createTestingModule({
       imports: [
-        MongooseModule.forRoot('mongodb://127.0.0.1:27017/zord'),
+        MongooseModule.forRoot(uri),
         MongooseModule.forFeature([
+          { name: Book.name, schema: BookSchema },
           { name: Chapter.name, schema: ChapterSchema },
           { name: Arc.name, schema: ArcSchema },
           { name: Scene.name, schema: SceneSchema },
         ]),
       ],
       controllers: [ChapterController],
-      providers: [ChapterService, TextFileService],
+      providers: [ChapterService, TextFileService, BookService],
     }).compile();
 
     controller = module.get<ChapterController>(ChapterController);
+    bookService = module.get<BookService>(BookService);
+
+    // Popule o banco de dados com os dados iniciais
+    await seedBd();
   });
+
+  const seedBd = async () => {
+    defaultBook = await bookService.create({
+      name: 'bookdefault',
+    });
+  };
 
   beforeEach(async () => {
     jest.resetAllMocks();
   });
 
   afterAll(async () => {
-    await mongoose.disconnect();
+    await mongod.stop();
   });
 
   it('should be defined', () => {
@@ -66,6 +86,7 @@ describe('ChapterController', () => {
       {
         name: chapterName,
       } as any,
+      defaultBook._id.toString(),
       defaultReqFile as any,
     );
 
@@ -77,6 +98,7 @@ describe('ChapterController', () => {
     expect(readFileSpy).toHaveBeenCalledWith(defaultReqFile);
     expect(createChapterModelSpy).toHaveBeenCalledWith(
       chapterName,
+      defaultBook._id.toString(),
       defaultStringFileContent,
     );
     expect(extractArcsSpy).toHaveBeenCalledWith(defaultStringFileContent);
@@ -95,7 +117,7 @@ describe('ChapterController', () => {
     };
 
     await expect(
-      controller.createChapter({} as any, invalidFile as any),
+      controller.createChapter({} as any, '', invalidFile as any),
     ).rejects.toThrowError(
       new HttpException(
         'Invalid file type. Use .txt files',
@@ -124,6 +146,7 @@ describe('ChapterController', () => {
       {
         name: chapterName,
       } as any,
+      defaultBook._id.toString(),
       defaultReqFile as any,
     );
 
@@ -133,7 +156,11 @@ describe('ChapterController', () => {
       arcs: ['arc-1', 'arc-2'],
     });
     expect(readFileSpy).toHaveBeenCalledWith(expect.any(Object));
-    expect(createChapterSpy).toHaveBeenCalledWith(chapterName, chapterContent);
+    expect(createChapterSpy).toHaveBeenCalledWith(
+      chapterName,
+      defaultBook._id.toString(),
+      chapterContent,
+    );
     expect(extractArcsSpy).toHaveBeenCalledWith(chapterContent);
     expect(createArcSpy).toHaveBeenCalledWith(
       'arc-1',
@@ -168,6 +195,7 @@ describe('ChapterController', () => {
         {
           name: chapterName,
         } as any,
+        '',
         defaultReqFile as any,
       ),
     ).rejects.toThrowError(
