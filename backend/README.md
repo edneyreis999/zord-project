@@ -42,8 +42,9 @@ $ yarn run test:cov
 - [x] Coverage 100%
 - [x] Mover textService do chapterController para chapterService
 - [x] Adicionar no lint para remover unused variables
-- [ ] resolver bug de chapter nunca ser criado sem a referencia de um book
-- [ ] Criar CRUD para book service.
+- [x] resolver bug de chapter nunca ser criado sem a referencia de um book
+- [x] Adicionar mongo em memoria para fazer os testes
+- [x] Criar CRUD para book service.
 - [ ] Adicionar plugn para query paginada nos models book, chapter, arc e scene.
 - [ ] Criar um snipped de book service para gerar o service de chapter.
 - [ ] Criar services/modules e controller para arc e scene.

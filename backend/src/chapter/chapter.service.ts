@@ -49,7 +49,7 @@ export class ChapterService {
     book.chapters.push(chapter);
     await this.bookService.update(bookId, book);
 
-    return chapter.toObject();
+    return chapter?.toObject();
   }
 
   /**
@@ -61,7 +61,7 @@ export class ChapterService {
    */
   async createArc(name: string, content?: string): Promise<Arc> {
     const arc = await this.arcModel.create({ name, content });
-    return arc.toObject();
+    return arc?.toObject();
   }
 
   /**
@@ -73,7 +73,7 @@ export class ChapterService {
    */
   async createScene(name?: string, content?: string): Promise<Scene> {
     const scene = await this.sceneModel.create({ name, content });
-    return scene.toObject();
+    return scene?.toObject();
   }
 
   /**

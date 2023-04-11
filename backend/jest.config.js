@@ -18,4 +18,7 @@ module.exports = {
     '/src/main.ts',
   ],
   testTimeout: 20000,
+  clearMocks: true,
+  testEnvironment: 'node',
+  preset: 'ts-jest',
 };

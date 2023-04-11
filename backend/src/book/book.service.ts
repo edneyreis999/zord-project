@@ -4,22 +4,21 @@ import { FilterQuery, Model, Types } from 'mongoose';
 import { Book } from '../schemas/book';
 import { QueryManyBookDto, QueryOneBookDto } from './dto/query.dto';
 import { PatchBookDto } from './dto/patch.dto';
+import { CreateBookDto } from './dto/create.dto';
 
 @Injectable()
 export class BookService {
   private availableFieldsToInclude = ['chapters', 'chapters.arc'];
 
   constructor(@InjectModel(Book.name) private bookModel: Model<Book>) {}
-  /**
-   * Creates a new book with the given name and optional content.
-   *
-   * @param name - The name of the book.
-   * @returns - A Promise that resolves to the created Book object.
-   */
-  async createBook(name: string): Promise<Book> {
-    const slug = this.generateSlug(name);
-    const book = await this.bookModel.create({ name, slug });
-    return book.toObject();
+
+  async create(defaultData: Partial<Book> & CreateBookDto): Promise<Book> {
+    const slug = this.generateSlug(defaultData.name);
+    const book = new this.bookModel({
+      slug,
+      ...defaultData,
+    });
+    return book.save();
   }
 
   async findAll(query: QueryManyBookDto): Promise<Book[]> {
@@ -55,7 +54,10 @@ export class BookService {
     return books;
   }
 
-  async findOne(filter: string, queryDto?: QueryOneBookDto): Promise<Book> {
+  async findOne(
+    filter: string,
+    queryDto?: QueryOneBookDto,
+  ): Promise<Book | undefined> {
     const query = { $or: [] };
     const { include } = queryDto ?? {};
 
@@ -71,7 +73,7 @@ export class BookService {
 
     const book = await bookQuery.exec();
 
-    return book.toObject();
+    return book?.toObject();
   }
 
   async delete(id: string): Promise<Book> {
@@ -99,7 +101,7 @@ export class BookService {
       throw new NotFoundException('Book not found');
     }
 
-    return updatedBook.toObject();
+    return updatedBook?.toObject();
   }
 
   private generateSlug(text: string): string {

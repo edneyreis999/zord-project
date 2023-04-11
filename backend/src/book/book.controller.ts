@@ -30,9 +30,7 @@ export class BookController {
     output: ResponseBookDto,
   })
   async create(@Body() createBookDto: CreateBookDto): Promise<ResponseBookDto> {
-    const { name } = createBookDto;
-
-    const book = await this.bookService.createBook(name);
+    const book = await this.bookService.create(createBookDto);
 
     return ResponseBookDto.fromBook(book);
   }

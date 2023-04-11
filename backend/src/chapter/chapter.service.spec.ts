@@ -4,18 +4,25 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Chapter, ChapterSchema } from '../schemas/chapter';
 import { Arc, ArcSchema } from '../schemas/arc';
 import { Scene, SceneSchema } from '../schemas/scene';
-import mongoose, { Model } from 'mongoose';
 import { TextFileService } from './text-file.service';
 import { BookService } from '../book/book.service';
 import { Book, BookSchema } from '../schemas/book';
+import { setupMongoMemoryServer } from '../../test/mongoMemoryServerSetup';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import { Model, Types } from 'mongoose';
 
 describe('ChapterService', () => {
+  let defaultBook: Book;
   let chapterService: ChapterService;
+  let bookService: BookService;
+  let mongod: MongoMemoryServer;
 
   beforeAll(async () => {
+    mongod = await setupMongoMemoryServer();
+    const uri = mongod.getUri();
     const module: TestingModule = await Test.createTestingModule({
       imports: [
-        MongooseModule.forRoot('mongodb://127.0.0.1:27017/zord'),
+        MongooseModule.forRoot(uri),
         MongooseModule.forFeature([
           { name: Book.name, schema: BookSchema },
           { name: Chapter.name, schema: ChapterSchema },
@@ -27,14 +34,24 @@ describe('ChapterService', () => {
     }).compile();
 
     chapterService = module.get<ChapterService>(ChapterService);
+    bookService = module.get<BookService>(BookService);
+
+    // Popule o banco de dados com os dados iniciais
+    await seedBd();
   });
+
+  const seedBd = async () => {
+    defaultBook = await bookService.create({
+      name: 'bookdefault',
+    });
+  };
 
   beforeEach(async () => {
     jest.resetAllMocks();
   });
 
   afterAll(async () => {
-    await mongoose.disconnect();
+    await mongod.stop();
   });
 
   describe('ChapterModel', () => {
@@ -49,18 +66,18 @@ describe('ChapterService', () => {
 
       const result = await chapterService.createChapter(
         chapterName,
-        '6431cd462b8cb351fd8ef6be',
+        defaultBook._id.toString(),
       );
 
       expect(model.create).toHaveBeenCalledWith({
         name: chapterName,
-        book: '6431cd462b8cb351fd8ef6be',
+        book: defaultBook._id.toString(),
       });
       expect(chapterModelSpy).toHaveBeenCalled();
 
       expect(result).toMatchObject({
         __v: 0,
-        _id: expect.any(mongoose.Types.ObjectId),
+        _id: expect.any(Types.ObjectId),
         arcs: expect.any(Array),
         name: chapterName,
       });
@@ -72,13 +89,13 @@ describe('ChapterService', () => {
 
       const result = await chapterService.createChapter(
         chapterName,
-        '6431cd462b8cb351fd8ef6be',
+        defaultBook._id.toString(),
         chapterContent,
       );
 
       expect(result).toMatchObject({
         __v: 0,
-        _id: expect.any(mongoose.Types.ObjectId),
+        _id: expect.any(Types.ObjectId),
         arcs: expect.any(Array),
         name: chapterName,
         content: chapterContent,
@@ -89,7 +106,7 @@ describe('ChapterService', () => {
       const chapterName = { fail: 'test chapter' } as unknown as string;
 
       await expect(
-        chapterService.createChapter(chapterName, '6431cd462b8cb351fd8ef6be'),
+        chapterService.createChapter(chapterName, defaultBook._id.toString()),
       ).rejects.toThrowError();
     });
   });
