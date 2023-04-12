@@ -19,7 +19,7 @@ class FilterBookDto {
   @IsString()
   @IsOptional()
   @Expose()
-  id?: string;
+  readonly id?: string;
 
   @ApiPropertyOptional({
     name: 'filter[name]',
@@ -29,7 +29,7 @@ class FilterBookDto {
   @IsString()
   @IsOptional()
   @Expose()
-  name?: string;
+  readonly name?: string;
 
   @ApiPropertyOptional({
     name: 'filter[slug]',
@@ -39,32 +39,24 @@ class FilterBookDto {
   @IsString()
   @IsOptional()
   @Expose()
-  slug?: string;
+  readonly slug?: string;
 }
 
 export class QueryOneBookDto implements QueryDto {
-  constructor(data: Partial<QueryOneBookDto> = {}) {
-    Object.assign(this, data);
-  }
-
   @Include(['chapters', 'chapters.arc'])
-  include?: string[];
+  readonly include?: string[];
 }
 
 export class QueryManyBookDto implements QueryDto {
-  constructor(data: Partial<QueryManyBookDto> = {}) {
-    Object.assign(this, data);
-  }
-
   @Filter(() => FilterBookDto)
-  filter?: FilterBookDto;
+  readonly filter?: FilterBookDto;
 
   @Sort(['name', '-name', 'createdAt', '-createdAt'])
-  sort?: string[];
+  readonly sort?: string[];
 
   @Page()
-  page?: PaginateQueryPage;
+  readonly page?: PaginateQueryPage;
 
   @Include(['chapters', 'chapters.arc'])
-  include: string[];
+  readonly include?: string[];
 }

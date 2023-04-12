@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
-import { Chapter } from './chapter';
+import { HydratedDocument, Types } from 'mongoose';
+import { Chapter } from '../../chapter/schemas/chapter.schema';
 
-export type BookDocument = Book & Document;
+export type BookDocument = HydratedDocument<Book>;
 
 @Schema()
 export class Book {
@@ -12,6 +12,7 @@ export class Book {
     required: true,
     unique: true,
     index: true,
+    maxlength: 50,
   })
   name: string;
 
@@ -23,7 +24,7 @@ export class Book {
   @Prop({
     type: [{ type: Types.ObjectId, ref: Chapter.name }],
   })
-  chapters: Chapter[] = [];
+  chapters: Chapter[];
 
   createdAt: Date;
   updatedAt: Date;

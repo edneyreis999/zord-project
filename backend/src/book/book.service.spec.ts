@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BookService } from './book.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Book, BookSchema } from '../schemas/book';
+import { Book, BookSchema } from './schemas/book.schema';
 import { setupMongoMemoryServer } from '../../test/mongoMemoryServerSetup';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 

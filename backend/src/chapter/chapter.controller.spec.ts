@@ -3,12 +3,12 @@ import { ChapterController } from './chapter.controller';
 import { ChapterService } from './chapter.service';
 import { TextFileService } from './text-file.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Chapter, ChapterSchema } from '../schemas/chapter';
+import { Chapter, ChapterSchema } from './schemas/chapter.schema';
 import { Arc, ArcSchema } from '../schemas/arc';
 import { Scene, SceneSchema } from '../schemas/scene';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { BookService } from '../book/book.service';
-import { Book, BookSchema } from '../schemas/book';
+import { Book, BookSchema } from '../book/schemas/book.schema';
 import { setupMongoMemoryServer } from '../../test/mongoMemoryServerSetup';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 
@@ -77,7 +77,7 @@ describe('ChapterController', () => {
     const extractArcsSpy = jest.spyOn(TextFileService.prototype, 'extractArcs');
     const createChapterModelSpy = jest.spyOn(
       ChapterService.prototype,
-      'createChapter',
+      'create',
     );
     const createArcSpy = jest.spyOn(ChapterService.prototype, 'createArc');
     const createSceneSpy = jest.spyOn(ChapterService.prototype, 'createScene');
@@ -135,10 +135,7 @@ describe('ChapterController', () => {
       .spyOn(TextFileService.prototype, 'readFile')
       .mockResolvedValueOnce(chapterContent);
     const extractArcsSpy = jest.spyOn(TextFileService.prototype, 'extractArcs');
-    const createChapterSpy = jest.spyOn(
-      ChapterService.prototype,
-      'createChapter',
-    );
+    const createChapterSpy = jest.spyOn(ChapterService.prototype, 'create');
     const createArcSpy = jest.spyOn(ChapterService.prototype, 'createArc');
     const createSceneSpy = jest.spyOn(ChapterService.prototype, 'createScene');
 
@@ -187,7 +184,7 @@ describe('ChapterController', () => {
     jest.spyOn(TextFileService.prototype, 'readFile');
     jest.spyOn(TextFileService.prototype, 'extractArcs');
     jest
-      .spyOn(ChapterService.prototype, 'createChapter')
+      .spyOn(ChapterService.prototype, 'create')
       .mockRejectedValueOnce(new Error('Error during chapter creation'));
 
     await expect(

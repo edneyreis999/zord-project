@@ -1,17 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform, TransformFnParams } from 'class-transformer';
 
-import { IsDefined, IsNotEmpty, IsString } from 'class-validator';
+import { IsDefined, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 export class CreateBookDto {
   @ApiProperty({
     type: String,
     description: 'Book name',
     example: 'Book 1',
+    maxLength: 50,
   })
   @IsString()
   @IsDefined()
   @IsNotEmpty()
-  @Transform(({ value }: TransformFnParams) => value?.trim())
-  name: string;
+  @MaxLength(50)
+  readonly name: string;
 }
