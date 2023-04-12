@@ -81,7 +81,7 @@ export class BookController {
 
   @CrudDelete('/:id')
   @ApiParam({ name: 'id', type: String })
-  async delete(@Param('id') id: string): Promise<ResponseBookDto> {
+  async remove(@Param('id') id: string): Promise<ResponseBookDto> {
     const deleted = await this.bookService.delete(id);
 
     if (!deleted) {

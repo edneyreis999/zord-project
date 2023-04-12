@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Chapter } from '../schemas/chapter';
+import { Chapter } from './schemas/chapter.schema';
 import { Model } from 'mongoose';
 import { Arc } from '../schemas/arc';
 import { Scene } from '../schemas/scene';
 import { TextFileService } from './text-file.service';
 import { BookService } from '../book/book.service';
+import { CreateChapterDto } from './dto/create.dto';
 
 @Injectable()
 export class ChapterService {
@@ -24,11 +25,10 @@ export class ChapterService {
    * @param content - The optional content of the chapter.
    * @returns - A Promise that resolves to the created Chapter object.
    */
-  async createChapter(
-    name: string,
-    bookId: string,
-    content?: string,
+  async create(
+    defaultData: Partial<Chapter> & CreateChapterDto,
   ): Promise<Chapter> {
+    const { name, content, bookId } = defaultData;
     if (!bookId) {
       throw new Error('A bookId must be provided to create a chapter.');
     }
@@ -49,7 +49,7 @@ export class ChapterService {
     book.chapters.push(chapter);
     await this.bookService.update(bookId, book);
 
-    return chapter?.toObject();
+    return chapter;
   }
 
   /**
@@ -89,7 +89,11 @@ export class ChapterService {
     file: Express.Multer.File,
   ): Promise<Chapter> {
     const chapterText = await this.textFileService.readFile(file);
-    const chapter = await this.createChapter(name, bookId, chapterText);
+    const chapter = await this.create({
+      name,
+      bookId,
+      content: chapterText,
+    });
 
     // Extract arcs and scenes from the text file
     await this.processArcsAndScenes(chapter, chapterText);

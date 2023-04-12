@@ -3,11 +3,11 @@ import { ChapterController } from './chapter.controller';
 import { ChapterService } from './chapter.service';
 import { TextFileService } from './text-file.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Chapter, ChapterSchema } from '../schemas/chapter';
+import { Chapter, ChapterSchema } from './schemas/chapter.schema';
 import { Arc, ArcSchema } from '../schemas/arc';
 import { Scene, SceneSchema } from '../schemas/scene';
 import { BookService } from '../book/book.service';
-import { Book, BookSchema } from '../schemas/book';
+import { Book, BookSchema } from '../book/schemas/book.schema';
 
 @Module({
   imports: [

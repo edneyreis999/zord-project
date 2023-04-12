@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ChapterService } from './chapter.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Chapter, ChapterSchema } from '../schemas/chapter';
+import { Chapter, ChapterSchema } from './schemas/chapter.schema';
 import { Arc, ArcSchema } from '../schemas/arc';
 import { Scene, SceneSchema } from '../schemas/scene';
 import { TextFileService } from './text-file.service';
 import { BookService } from '../book/book.service';
-import { Book, BookSchema } from '../schemas/book';
+import { Book, BookSchema } from '../book/schemas/book.schema';
 import { setupMongoMemoryServer } from '../../test/mongoMemoryServerSetup';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { Model, Types } from 'mongoose';
@@ -64,10 +64,10 @@ describe('ChapterService', () => {
       const chapterName = 'test chapter';
       const chapterModelSpy = jest.spyOn(model, 'create');
 
-      const result = await chapterService.createChapter(
-        chapterName,
-        defaultBook._id.toString(),
-      );
+      const result = await chapterService.create({
+        name: chapterName,
+        bookId: defaultBook._id.toString(),
+      });
 
       expect(model.create).toHaveBeenCalledWith({
         name: chapterName,
@@ -87,11 +87,11 @@ describe('ChapterService', () => {
       const chapterName = 'test chapter';
       const chapterContent = 'conteúdo do capítulo';
 
-      const result = await chapterService.createChapter(
-        chapterName,
-        defaultBook._id.toString(),
-        chapterContent,
-      );
+      const result = await chapterService.create({
+        name: chapterName,
+        bookId: defaultBook._id.toString(),
+        content: chapterContent,
+      });
 
       expect(result).toMatchObject({
         __v: 0,
@@ -106,7 +106,10 @@ describe('ChapterService', () => {
       const chapterName = { fail: 'test chapter' } as unknown as string;
 
       await expect(
-        chapterService.createChapter(chapterName, defaultBook._id.toString()),
+        chapterService.create({
+          name: chapterName,
+          bookId: defaultBook._id.toString(),
+        }),
       ).rejects.toThrowError();
     });
   });

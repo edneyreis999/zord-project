@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model, Types } from 'mongoose';
-import { Book } from '../schemas/book';
 import { QueryManyBookDto, QueryOneBookDto } from './dto/query.dto';
 import { PatchBookDto } from './dto/patch.dto';
 import { CreateBookDto } from './dto/create.dto';
+import { Book } from './schemas/book.schema';
 
 @Injectable()
 export class BookService {
@@ -21,19 +21,19 @@ export class BookService {
     return book.save();
   }
 
-  async findAll(query: QueryManyBookDto): Promise<Book[]> {
+  async findAll(queryDto: QueryManyBookDto): Promise<Book[]> {
     const filter: FilterQuery<Book> = {};
 
-    if (query.filter?.name) {
-      filter.name = query.filter.name;
+    if (queryDto.filter?.name) {
+      filter.name = new RegExp(queryDto.filter.name, 'i'); // Add this line to enable case-insensitive partial matching
     }
-    if (query.filter?.slug) {
-      filter.slug = query.filter.slug;
+    if (queryDto.filter?.slug) {
+      filter.slug = new RegExp(queryDto.filter.slug, 'i'); // Add this line to enable case-insensitive partial matching
     }
 
     const sort = {};
-    if (query.sort) {
-      query.sort.forEach((sortItem) => {
+    if (queryDto.sort) {
+      queryDto.sort.forEach((sortItem) => {
         const [key, order] =
           sortItem[0] === '-' ? [sortItem.slice(1), -1] : [sortItem, 1];
         sort[key] = order;
@@ -41,17 +41,21 @@ export class BookService {
     }
 
     const pagination = {
-      skip: query?.page?.offset,
-      limit: query?.page?.limit,
+      skip: queryDto.page?.offset,
+      limit: queryDto.page?.limit,
     };
 
-    const books = await this.bookModel
+    const bookQuery = this.bookModel
       .find(filter)
       .sort(sort)
       .skip(pagination.skip)
       .limit(pagination.limit);
 
-    return books;
+    if (queryDto.include) {
+      this.populateWithIncludes(bookQuery, queryDto.include);
+    }
+
+    return bookQuery.exec();
   }
 
   async findOne(
@@ -71,9 +75,7 @@ export class BookService {
 
     this.populateWithIncludes(bookQuery, include);
 
-    const book = await bookQuery.exec();
-
-    return book?.toObject();
+    return bookQuery.exec();
   }
 
   async delete(id: string): Promise<Book> {
@@ -101,7 +103,7 @@ export class BookService {
       throw new NotFoundException('Book not found');
     }
 
-    return updatedBook?.toObject();
+    return updatedBook;
   }
 
   private generateSlug(text: string): string {

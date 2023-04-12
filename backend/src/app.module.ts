@@ -5,12 +5,12 @@ import { AppService } from './app.service';
 import { ChapterModule } from './chapter/chapter.module';
 import { ChapterService } from './chapter/chapter.service';
 import { TextFileService } from './chapter/text-file.service';
-import { Chapter, ChapterSchema } from './schemas/chapter';
+import { Chapter, ChapterSchema } from './chapter/schemas/chapter.schema';
 import { Arc, ArcSchema } from './schemas/arc';
 import { Scene, SceneSchema } from './schemas/scene';
 import { BookModule } from './book/book.module';
 import { BookService } from './book/book.service';
-import { Book, BookSchema } from './schemas/book';
+import { Book, BookSchema } from './book/schemas/book.schema';
 
 @Module({
   imports: [
