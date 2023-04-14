@@ -10,7 +10,7 @@ import {
   Include,
 } from '../../request/query';
 
-class FilterBookDto {
+class FilterChapterDto {
   @ApiPropertyOptional({
     name: 'filter[id]',
     description: 'Search for id',
@@ -23,7 +23,7 @@ class FilterBookDto {
 
   @ApiPropertyOptional({
     name: 'filter[name]',
-    description: 'Search for name',
+    description: 'Search for chapter name',
     example: 'Ghork',
   })
   @IsString()
@@ -33,7 +33,7 @@ class FilterBookDto {
 
   @ApiPropertyOptional({
     name: 'filter[slug]',
-    description: 'Search for slug',
+    description: 'Search for chapter slug',
     example: 'ghork',
   })
   @IsString()
@@ -42,17 +42,17 @@ class FilterBookDto {
   readonly slug?: string;
 }
 
-export class QueryOneBookDto implements QueryDto {
-  @Filter(() => FilterBookDto)
-  readonly filter?: FilterBookDto;
+export class QueryOneChapterDto implements QueryDto {
+  @Filter(() => FilterChapterDto)
+  readonly filter?: FilterChapterDto;
 
-  @Include(['chapters', 'chapters.arc'])
+  @Include(['arc'])
   readonly include?: string[];
 }
 
-export class QueryManyBookDto implements QueryDto {
-  @Filter(() => FilterBookDto)
-  readonly filter?: FilterBookDto;
+export class QueryManyChapterDto implements QueryDto {
+  @Filter(() => FilterChapterDto)
+  readonly filter?: FilterChapterDto;
 
   @Sort(['name', '-name', 'createdAt', '-createdAt'])
   readonly sort?: string[];
@@ -60,6 +60,6 @@ export class QueryManyBookDto implements QueryDto {
   @Page()
   readonly page?: PaginateQueryPage;
 
-  @Include(['chapters', 'chapters.arc'])
+  @Include(['arc'])
   readonly include?: string[];
 }

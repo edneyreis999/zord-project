@@ -44,16 +44,16 @@ export class ChapterController {
   ): Promise<ResponseChapterDto> {
     this.validateFile(file);
 
-    const { name } = createChapterDto;
+    const { title: name } = createChapterDto;
 
-    const chapter = await this.chapterService.createChapterFromTextFile(
-      name,
+    const chapter = await this.chapterService.create({
+      title: name,
       bookId,
       file,
-    );
+    });
 
     return {
-      name: chapter.name,
+      title: chapter.title,
       arcs: chapter.arcs.map((arc) => arc.name),
     };
   }

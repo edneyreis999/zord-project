@@ -55,7 +55,7 @@ describe('ChapterController', () => {
 
   const seedBd = async () => {
     defaultBook = await bookService.create({
-      name: 'bookdefault',
+      title: 'bookdefault',
     });
   };
 
@@ -79,8 +79,6 @@ describe('ChapterController', () => {
       ChapterService.prototype,
       'create',
     );
-    const createArcSpy = jest.spyOn(ChapterService.prototype, 'createArc');
-    const createSceneSpy = jest.spyOn(ChapterService.prototype, 'createScene');
 
     const result = await controller.createChapter(
       {
@@ -102,8 +100,6 @@ describe('ChapterController', () => {
       defaultStringFileContent,
     );
     expect(extractArcsSpy).toHaveBeenCalledWith(defaultStringFileContent);
-    expect(createArcSpy).not.toHaveBeenCalled();
-    expect(createSceneSpy).not.toHaveBeenCalled();
   });
 
   it('should throw an error when an invalid file type is uploaded', async () => {
@@ -136,8 +132,6 @@ describe('ChapterController', () => {
       .mockResolvedValueOnce(chapterContent);
     const extractArcsSpy = jest.spyOn(TextFileService.prototype, 'extractArcs');
     const createChapterSpy = jest.spyOn(ChapterService.prototype, 'create');
-    const createArcSpy = jest.spyOn(ChapterService.prototype, 'createArc');
-    const createSceneSpy = jest.spyOn(ChapterService.prototype, 'createScene');
 
     const result = await controller.createChapter(
       {
@@ -150,32 +144,17 @@ describe('ChapterController', () => {
     expect(result).toBeDefined();
     expect(result).toMatchObject({
       name: chapterName,
-      arcs: ['arc-1', 'arc-2'],
+      arcs: expect.any(Array),
     });
+    expect(result.arcs.length).toBe(2);
+
     expect(readFileSpy).toHaveBeenCalledWith(expect.any(Object));
-    expect(createChapterSpy).toHaveBeenCalledWith(
-      chapterName,
-      defaultBook._id.toString(),
-      chapterContent,
-    );
+    expect(createChapterSpy).toHaveBeenCalledWith({
+      name: chapterName,
+      book: defaultBook._id.toString(),
+      file: defaultReqFile,
+    });
     expect(extractArcsSpy).toHaveBeenCalledWith(chapterContent);
-    expect(createArcSpy).toHaveBeenCalledWith(
-      'arc-1',
-      ' Arc 1 content <scene> Scene 1 content </scene> <scene> Scene 2 content </scene>',
-    );
-    expect(createArcSpy).toHaveBeenCalledWith(
-      'arc-2',
-      ' Arc 2 content <scene> Scene 1 content </scene> <scene> Scene 2 content </scene>',
-    );
-    expect(createSceneSpy).toHaveBeenCalledTimes(4);
-    expect(createSceneSpy).toHaveBeenCalledWith(
-      'arc-1-scene-1',
-      ' Scene 1 content ',
-    );
-    expect(createSceneSpy).toHaveBeenCalledWith(
-      'arc-1-scene-2',
-      ' Scene 2 content ',
-    );
   });
 
   it('should throw an error when an error occurs during chapter creation', async () => {

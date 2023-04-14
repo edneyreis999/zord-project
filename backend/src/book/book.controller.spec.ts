@@ -62,20 +62,20 @@ describe('BookController', () => {
     const promise = [];
     promise.push(
       service.create({
-        name: 'Book 0',
+        title: 'Book 0',
       }),
     );
 
     promise.push(
       service.create({
-        name: 'Book 1',
+        title: 'Book 1',
       }),
     );
 
     const [book0, book1] = await Promise.all(promise);
 
     book0Chapter = await chapterService.create({
-      name: 'Chapter 1',
+      title: 'Chapter 1',
       bookId: book0._id,
       content: 'bla bla bla',
     });
@@ -89,7 +89,7 @@ describe('BookController', () => {
 
   it('should create a book', async () => {
     const book = await controller.create({
-      name: 'title',
+      title: 'title',
     });
     expect(book).toBeDefined();
 
@@ -104,13 +104,13 @@ describe('BookController', () => {
   it('should not create a book with a duplicate name', async () => {
     // Create the first book
     await controller.create({
-      name: 'Title',
+      title: 'Title',
     });
 
     // Try to create the second book with the same name and expect a rejection
     await expect(
       controller.create({
-        name: 'Title',
+        title: 'Title',
       }),
     ).rejects.toThrowError();
   });
@@ -128,17 +128,17 @@ describe('BookController', () => {
 
   it('should update a book', async () => {
     const book = await controller.update(seedBookList[0]._id.toString(), {
-      name: 'New Name',
+      title: 'New Name',
     });
     expect(book).toBeDefined();
     expect(book.id).toEqual(seedBookList[0]._id.toString());
-    expect(book.name).toEqual('New Name');
+    expect(book.title).toEqual('New Name');
     expect(book.slug).toEqual('new-name');
 
     const book2 = await controller.findOne(book.id, {});
     expect(book2).toBeDefined();
     expect(book2.id).toEqual(book.id);
-    expect(book2.name).toEqual('New Name');
+    expect(book2.title).toEqual('New Name');
     expect(book2.slug).toEqual('new-name');
   });
 
@@ -160,7 +160,7 @@ describe('BookController', () => {
   it('should not update a book that does not exist', async () => {
     await expect(
       controller.update('5f5f9b9c6b5b1e1c6c5f1b3c', {
-        name: 'New Name',
+        title: 'New Name',
       }),
     ).rejects.toThrowError();
   });
@@ -174,7 +174,7 @@ describe('BookController', () => {
   it('should not create a book with an empty name', async () => {
     await expect(
       controller.create({
-        name: '',
+        title: '',
       }),
     ).rejects.toThrowError();
   });
@@ -182,7 +182,7 @@ describe('BookController', () => {
   it('should not create a book with a name that is too long', async () => {
     await expect(
       controller.create({
-        name: 'a'.repeat(256),
+        title: 'a'.repeat(256),
       }),
     ).rejects.toThrowError();
   });
@@ -190,7 +190,7 @@ describe('BookController', () => {
   it('should not update a book with an empty name', async () => {
     await expect(
       controller.update(seedBookList[0]._id.toString(), {
-        name: '',
+        title: '',
       }),
     ).rejects.toThrowError();
   });
@@ -198,7 +198,7 @@ describe('BookController', () => {
   it('should not update a book with a name that is too long', async () => {
     await expect(
       controller.update(seedBookList[0]._id.toString(), {
-        name: 'a'.repeat(256),
+        title: 'a'.repeat(256),
       }),
     ).rejects.toThrowError();
   });
@@ -206,35 +206,35 @@ describe('BookController', () => {
   it('should not update a book with a duplicate name', async () => {
     // Create the first book
     await controller.create({
-      name: 'Title',
+      title: 'Title',
     });
 
     // Try to update the second book with the same name and expect a rejection
     await expect(
       controller.update(seedBookList[1]._id.toString(), {
-        name: 'Title',
+        title: 'Title',
       }),
     ).rejects.toThrowError();
   });
 
   it('should patch a book', async () => {
     const book = await controller.patch(seedBookList[0]._id.toString(), {
-      name: 'New Name',
+      title: 'New Name',
     });
     expect(book).toBeDefined();
     expect(book.id).toEqual(seedBookList[0]._id.toString());
-    expect(book.name).toEqual('New Name');
+    expect(book.title).toEqual('New Name');
     expect(book.slug).toEqual('new-name');
 
     const book2 = await controller.findOne(book.id, {});
     expect(book2).toBeDefined();
     expect(book2.id).toEqual(book.id);
-    expect(book2.name).toEqual('New Name');
+    expect(book2.title).toEqual('New Name');
     expect(book2.slug).toEqual('new-name');
   });
 
   it('should filter partial and case sensitive filter to name when findAll', async () => {
-    const books = await controller.findAll({ filter: { name: 'book' } });
+    const books = await controller.findAll({ filter: { title: 'book' } });
     expect(books).toHaveLength(seedBookList.length);
   });
 
@@ -249,8 +249,8 @@ describe('BookController', () => {
       sort: ['-name'],
     });
     expect(books).toHaveLength(seedBookList.length);
-    expect(books[0].name).toEqual('Book 1');
-    expect(books[1].name).toEqual('Book 0');
+    expect(books[0].title).toEqual('Book 1');
+    expect(books[1].title).toEqual('Book 0');
   });
 
   it('should sort asc by name when findAll ', async () => {
@@ -259,8 +259,8 @@ describe('BookController', () => {
       sort: ['name'],
     });
     expect(books).toHaveLength(seedBookList.length);
-    expect(books[0].name).toEqual('Book 0');
-    expect(books[1].name).toEqual('Book 1');
+    expect(books[0].title).toEqual('Book 0');
+    expect(books[1].title).toEqual('Book 1');
   });
 
   it('should include chapter fields when findAll has include param', async () => {
@@ -274,7 +274,7 @@ describe('BookController', () => {
       expect.arrayContaining([
         expect.objectContaining({
           _id: book0Chapter._id,
-          name: book0Chapter.name,
+          title: book0Chapter.title,
           content: book0Chapter.content,
         }),
       ]),
@@ -295,7 +295,7 @@ describe('BookController', () => {
       expect.arrayContaining([
         expect.objectContaining({
           _id: book0Chapter._id,
-          name: book0Chapter.name,
+          title: book0Chapter.title,
           content: book0Chapter.content,
         }),
       ]),

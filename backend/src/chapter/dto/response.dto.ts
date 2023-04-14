@@ -6,7 +6,7 @@ export class ResponseChapterDto {
     description: 'Chapter Name',
     example: 'chapter 1',
   })
-  name: string;
+  title: string;
 
   @ApiProperty({
     type: String,
