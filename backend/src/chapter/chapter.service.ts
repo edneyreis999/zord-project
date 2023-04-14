@@ -7,28 +7,26 @@ import { Scene } from '../schemas/scene';
 import { TextFileService } from './text-file.service';
 import { BookService } from '../book/book.service';
 import { CreateChapterDto } from './dto/create.dto';
+import { StoryElementCrudService } from '../shared/story.element.crud.service';
 
 @Injectable()
-export class ChapterService {
+export class ChapterService extends StoryElementCrudService<Chapter> {
+  protected availableFieldsToInclude = ['arcs'];
+
   constructor(
     @InjectModel(Chapter.name) private chapterModel: Model<Chapter>,
     @InjectModel(Arc.name) private arcModel: Model<Arc>,
     @InjectModel(Scene.name) private sceneModel: Model<Scene>,
     private readonly textFileService: TextFileService,
     private readonly bookService: BookService,
-  ) {}
+  ) {
+    super(chapterModel);
+  }
 
-  /**
-   * Creates a new chapter with the given name and optional content.
-   *
-   * @param name - The name of the chapter.
-   * @param content - The optional content of the chapter.
-   * @returns - A Promise that resolves to the created Chapter object.
-   */
   async create(
     defaultData: Partial<Chapter> & CreateChapterDto,
   ): Promise<Chapter> {
-    const { name, content, bookId } = defaultData;
+    const { bookId, file } = defaultData;
     if (!bookId) {
       throw new Error('A bookId must be provided to create a chapter.');
     }
@@ -39,74 +37,21 @@ export class ChapterService {
       throw new Error(`Book with id '${bookId}' not found.`);
     }
 
-    const chapter = await this.chapterModel.create({
-      name,
-      content,
-      book: bookId,
-    });
+    const chapter = await super.create({ ...defaultData });
 
     // Add the chapter to the book
     book.chapters.push(chapter);
     await this.bookService.update(bookId, book);
 
-    return chapter;
-  }
-
-  /**
-   * Creates a new arc with the given name and optional content.
-   *
-   * @param name - The name of the arc.
-   * @param content - The optional content of the arc.
-   * @returns - A Promise that resolves to the created Arc object.
-   */
-  async createArc(name: string, content?: string): Promise<Arc> {
-    const arc = await this.arcModel.create({ name, content });
-    return arc?.toObject();
-  }
-
-  /**
-   * Creates a new scene with the given name and optional content.
-   *
-   * @param name - The optional name of the scene.
-   * @param content - The optional content of the scene.
-   * @returns - A Promise that resolves to the created Scene object.
-   */
-  async createScene(name?: string, content?: string): Promise<Scene> {
-    const scene = await this.sceneModel.create({ name, content });
-    return scene?.toObject();
-  }
-
-  /**
-   * Creates a new chapter from a given text file, extracting arcs and scenes.
-   *
-   * @param name - The name of the chapter.
-   * @param file - The text file containing the chapter content.
-   * @returns - A Promise that resolves to the created Chapter object.
-   */
-  async createChapterFromTextFile(
-    name: string,
-    bookId: string,
-    file: Express.Multer.File,
-  ): Promise<Chapter> {
-    const chapterText = await this.textFileService.readFile(file);
-    const chapter = await this.create({
-      name,
-      bookId,
-      content: chapterText,
-    });
-
-    // Extract arcs and scenes from the text file
-    await this.processArcsAndScenes(chapter, chapterText);
+    if (file) {
+      const chapterText = await this.textFileService.readFile(file);
+      // Extract arcs and scenes from the text file
+      await this.processArcsAndScenes(chapter, chapterText);
+    }
 
     return chapter;
   }
 
-  /**
-   * Processes arcs and scenes for a given chapter.
-   *
-   * @param chapter - The Chapter object to add arcs and scenes to.
-   * @param chapterText - The text content of the chapter.
-   */
   private async processArcsAndScenes(
     chapter: Chapter,
     chapterText: string,
@@ -128,5 +73,15 @@ export class ChapterService {
 
       chapter.arcs.push(arc);
     }
+  }
+
+  private async createArc(name: string, content?: string): Promise<Arc> {
+    const arc = await this.arcModel.create({ name, content });
+    return arc?.toObject();
+  }
+
+  private async createScene(name?: string, content?: string): Promise<Scene> {
+    const scene = await this.sceneModel.create({ name, content });
+    return scene?.toObject();
   }
 }

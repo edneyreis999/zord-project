@@ -42,7 +42,7 @@ describe('ChapterService', () => {
 
   const seedBd = async () => {
     defaultBook = await bookService.create({
-      name: 'bookdefault',
+      title: 'bookdefault',
     });
   };
 
@@ -65,7 +65,7 @@ describe('ChapterService', () => {
       const chapterModelSpy = jest.spyOn(model, 'create');
 
       const result = await chapterService.create({
-        name: chapterName,
+        title: chapterName,
         bookId: defaultBook._id.toString(),
       });
 
@@ -88,7 +88,7 @@ describe('ChapterService', () => {
       const chapterContent = 'conteúdo do capítulo';
 
       const result = await chapterService.create({
-        name: chapterName,
+        title: chapterName,
         bookId: defaultBook._id.toString(),
         content: chapterContent,
       });
@@ -107,7 +107,7 @@ describe('ChapterService', () => {
 
       await expect(
         chapterService.create({
-          name: chapterName,
+          title: chapterName,
           bookId: defaultBook._id.toString(),
         }),
       ).rejects.toThrowError();

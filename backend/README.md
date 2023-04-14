@@ -47,8 +47,10 @@ $ yarn run test:cov
 - [x] Criar CRUD para book service.
 - [ ] tratar erro Cannot read properties of null (reading '\_id') quando findOne
       não encontra ninguém.
-- [ ] Criar um model abstrato com base no Book e fazer book extender toda essa
+- [x] Criar um model abstrato com base no Book e fazer book extender toda essa
       abstração.
 - [ ] Criar services/modules e controller para arc e scene.
 - [ ] Adicionar plugn para query paginada nos models book, chapter, arc e scene.
 - [ ] Remover bug onde as tags estão aparecendo nos arcos e cenas
+- [ ] instalar cross-env `yarn add -D cross-env` e configurar os scripts
+- [ ] tratar any dentro de StoryElementCrudService

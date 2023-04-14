@@ -13,7 +13,7 @@ export class CreateChapterDto {
   @IsDefined()
   @IsNotEmpty()
   @Transform(({ value }: TransformFnParams) => value?.trim())
-  name: string;
+  title: string;
 
   @ApiProperty({
     type: String,

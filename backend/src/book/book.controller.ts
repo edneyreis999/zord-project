@@ -1,10 +1,4 @@
-import {
-  BadGatewayException,
-  Body,
-  Controller,
-  Param,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Param, Query } from '@nestjs/common';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
 import {
   CrudDelete,
@@ -83,10 +77,6 @@ export class BookController {
   @ApiParam({ name: 'id', type: String })
   async remove(@Param('id') id: string): Promise<ResponseBookDto> {
     const deleted = await this.bookService.delete(id);
-
-    if (!deleted) {
-      throw new BadGatewayException(`Failed to delete book ${id}`);
-    }
 
     return ResponseBookDto.fromBook(deleted);
   }

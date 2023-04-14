@@ -7,7 +7,7 @@ export class ResponseBookDto extends CreateBookDto {
   static fromBook(book: Book): ResponseBookDto {
     return {
       id: book._id.toString(),
-      name: book.name,
+      title: book.title,
       slug: book.slug,
       chapters: book.chapters,
       createdAt: book.createdAt.toISOString(),

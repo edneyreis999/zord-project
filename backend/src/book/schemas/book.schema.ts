@@ -1,11 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 import { Chapter } from '../../chapter/schemas/chapter.schema';
+import { StoryElement } from '../../interfaces/story.element';
 
 export type BookDocument = HydratedDocument<Book>;
 
-@Schema()
-export class Book {
+@Schema({ timestamps: true })
+export class Book implements StoryElement {
   _id: Types.ObjectId;
 
   @Prop({
@@ -14,10 +15,11 @@ export class Book {
     index: true,
     maxlength: 50,
   })
-  name: string;
+  title: string;
 
   @Prop({
     required: true,
+    match: /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
   })
   slug: string;
 
@@ -26,10 +28,28 @@ export class Book {
   })
   chapters: Chapter[];
 
+  @Prop()
+  summary: string;
+
+  @Prop()
+  content: string;
+
+  @Prop({
+    type: Number,
+    min: 0,
+    validate: {
+      validator: Number.isInteger,
+      message: '{VALUE} is not an integer',
+    },
+  })
+  order: number;
+
   createdAt: Date;
+
   updatedAt: Date;
 }
 
-export const BookSchema = SchemaFactory.createForClass(Book)
-  .set('timestamps', true)
-  .set('selectPopulatedPaths', false);
+export const BookSchema = SchemaFactory.createForClass(Book).set(
+  'selectPopulatedPaths',
+  false,
+);

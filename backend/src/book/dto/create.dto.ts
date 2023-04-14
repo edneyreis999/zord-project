@@ -5,7 +5,7 @@ import { IsDefined, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 export class CreateBookDto {
   @ApiProperty({
     type: String,
-    description: 'Book name',
+    description: 'Book title',
     example: 'Book 1',
     maxLength: 50,
   })
@@ -13,5 +13,5 @@ export class CreateBookDto {
   @IsDefined()
   @IsNotEmpty()
   @MaxLength(50)
-  readonly name: string;
+  readonly title: string;
 }
