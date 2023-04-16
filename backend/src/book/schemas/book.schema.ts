@@ -1,13 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
-import { Chapter } from '../../chapter/schemas/chapter.schema';
+import mongoose, { HydratedDocument } from 'mongoose';
 import { StoryElement } from '../../interfaces/story.element';
 
 export type BookDocument = HydratedDocument<Book>;
 
 @Schema({ timestamps: true })
 export class Book implements StoryElement {
-  _id: Types.ObjectId;
+  _id: mongoose.Schema.Types.ObjectId;
 
   @Prop({
     required: true,
@@ -22,11 +21,6 @@ export class Book implements StoryElement {
     match: /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
   })
   slug: string;
-
-  @Prop({
-    type: [{ type: Types.ObjectId, ref: Chapter.name }],
-  })
-  chapters: Chapter[];
 
   @Prop()
   summary: string;

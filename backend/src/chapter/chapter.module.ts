@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ChapterController } from './chapter.controller';
 import { ChapterService } from './chapter.service';
-import { TextFileService } from './text-file.service';
+import { TextFileService } from '../text-file/text-file.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Chapter, ChapterSchema } from './schemas/chapter.schema';
 import { Arc, ArcSchema } from '../schemas/arc';

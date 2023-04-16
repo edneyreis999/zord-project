@@ -1,6 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { FilterQuery, Model, Types } from 'mongoose';
-import { StoryElement } from '../interfaces/story.element';
+import { StoryElement } from '../../interfaces/story.element';
+import {
+  StoryElementQueryManyDto,
+  StoryElementQueryOneDto,
+} from './story.element.query.filter.dto';
 
 /**
  * StoryElementCrudService is an abstract class that provides generic CRUD
@@ -20,57 +28,66 @@ export abstract class StoryElementCrudService<T extends StoryElement> {
       slug,
       ...dto,
     });
-    return model.save();
+    const saved = await model.save();
+    return saved;
   }
 
   // Find all story elements in the database that match the provided filters and query parameters
-  async findAll(queryDto: any): Promise<T[]> {
-    const filter: FilterQuery<T> = {};
+  async findAll(queryDto: StoryElementQueryManyDto): Promise<T[]> {
+    const queryFilter: FilterQuery<T> = {};
+    const { filter, include, page, sort } = queryDto;
+    const { id, slug, title } = filter ?? {};
 
-    if (queryDto.filter?.name) {
-      filter.title = new RegExp(queryDto.filter.title, 'i'); // Add this line to enable case-insensitive partial matching
+    if (id) {
+      if (Types.ObjectId.isValid(id)) {
+        queryFilter._id = id;
+      } else {
+        throw new BadRequestException(`Invalid ID: ${id}`);
+      }
     }
-    if (queryDto.filter?.slug) {
-      filter.slug = new RegExp(queryDto.filter.slug, 'i'); // Add this line to enable case-insensitive partial matching
+    if (title) {
+      queryFilter.title = new RegExp(filter.title, 'i'); // Add this line to enable case-insensitive partial matching
+    }
+    if (slug) {
+      queryFilter.slug = new RegExp(filter.slug, 'i'); // Add this line to enable case-insensitive partial matching
     }
 
-    const sort = {};
-    if (queryDto.sort) {
-      queryDto.sort.forEach((sortItem) => {
+    const sortQuery = {};
+    if (sort) {
+      sort.forEach((sortItem) => {
         const [key, order] =
           sortItem[0] === '-' ? [sortItem.slice(1), -1] : [sortItem, 1];
-        sort[key] = order;
+        sortQuery[key] = order;
       });
     }
 
     const pagination = {
-      skip: queryDto.page?.offset,
-      limit: queryDto.page?.limit,
+      skip: page?.offset,
+      limit: page?.limit,
     };
 
     const chapterQuery = this.model
-      .find(filter)
-      .sort(sort)
+      .find(queryFilter)
+      .sort(sortQuery)
       .skip(pagination.skip)
       .limit(pagination.limit);
 
-    if (queryDto.include) {
-      this.populateWithIncludes(chapterQuery, queryDto.include);
+    if (include) {
+      this.populateWithIncludes(chapterQuery, include);
     }
 
     return chapterQuery.exec();
   }
 
   // Find a single story element in the database based on the provided filter
-  async findOne(filter: string, queryDto?: any): Promise<T | undefined> {
+  async findOne(queryDto?: StoryElementQueryOneDto): Promise<T | undefined> {
     const query = { $or: [] };
-    const { include } = queryDto ?? {};
+    const { include, filter } = queryDto ?? {};
+    const { id } = filter;
 
-    if (Types.ObjectId.isValid(filter)) {
-      query.$or.push({ _id: filter });
+    if (Types.ObjectId.isValid(id)) {
+      query.$or.push({ _id: id });
     }
-    query.$or.push({ name: filter });
-    query.$or.push({ slug: filter });
 
     const bookQuery = this.model.findOne(query);
 
@@ -89,10 +106,10 @@ export abstract class StoryElementCrudService<T extends StoryElement> {
   }
 
   // Update a story element in the database with the provided ID and data
-  async update(id: string, dto: any): Promise<T> {
+  async update(id: string, dto: Partial<T>): Promise<T> {
     const updateData: Partial<T> = { ...dto };
-    if (dto.name) {
-      updateData.slug = this.generateSlug(dto.name);
+    if (dto.title) {
+      updateData.slug = this.generateSlug(dto.title);
     }
 
     const updatedChapter = await this.model.findOneAndUpdate(
@@ -123,8 +140,9 @@ export abstract class StoryElementCrudService<T extends StoryElement> {
 
   // Add fields to populate based on the provided include array
   private populateWithIncludes(query, include?: string[]) {
-    this.availableFieldsToInclude.forEach((field) => {
-      if (include?.includes(field)) {
+    include = include ?? [];
+    include.forEach((field) => {
+      if (this.availableFieldsToInclude.includes(field)) {
         query.populate(field);
       }
     });

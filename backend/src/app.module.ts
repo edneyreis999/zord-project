@@ -4,7 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ChapterModule } from './chapter/chapter.module';
 import { ChapterService } from './chapter/chapter.service';
-import { TextFileService } from './chapter/text-file.service';
+import { TextFileService } from './text-file/text-file.service';
 import { Chapter, ChapterSchema } from './chapter/schemas/chapter.schema';
 import { Arc, ArcSchema } from './schemas/arc';
 import { Scene, SceneSchema } from './schemas/scene';

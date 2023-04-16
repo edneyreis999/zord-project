@@ -9,7 +9,7 @@ export class ResponseBookDto extends CreateBookDto {
       id: book._id.toString(),
       title: book.title,
       slug: book.slug,
-      chapters: book.chapters,
+      chapters: [],
       createdAt: book.createdAt.toISOString(),
       updatedAt: book.updatedAt.toISOString(),
     };
