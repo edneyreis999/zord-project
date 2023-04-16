@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Transform, TransformFnParams } from 'class-transformer';
 
 import { IsDefined, IsNotEmpty, IsString } from 'class-validator';
 
@@ -12,8 +11,7 @@ export class CreateChapterDto {
   @IsString()
   @IsDefined()
   @IsNotEmpty()
-  @Transform(({ value }: TransformFnParams) => value?.trim())
-  title?: string;
+  title: string;
 
   @ApiProperty({
     type: String,
@@ -23,7 +21,6 @@ export class CreateChapterDto {
   @IsString()
   @IsDefined()
   @IsNotEmpty()
-  @Transform(({ value }: TransformFnParams) => value?.trim())
   bookId: string;
 
   @ApiPropertyOptional({

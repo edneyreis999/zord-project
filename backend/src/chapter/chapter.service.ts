@@ -1,7 +1,7 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Chapter } from './schemas/chapter.schema';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { Arc } from '../schemas/arc';
 import { Scene } from '../schemas/scene';
 import { TextFileService } from '../text-file/text-file.service';
@@ -34,19 +34,18 @@ export class ChapterService extends StoryElementCrudService<Chapter> {
 
     const book = await this.bookService.findOne({
       filter: { id: bookId },
+      include: ['chapters'],
     });
 
     if (!book) {
       throw new Error(`Book with id '${bookId}' not found.`);
     }
 
-    const bookChapters = await this.findAllByBookId(bookId);
-
     if (!order) {
-      defaultData.order = bookChapters.length + 1;
+      defaultData.order = book.chapters.length + 1;
     } else {
       // validate if there is already a chapter with the same order
-      const chapterWithSameOrder = bookChapters.find(
+      const chapterWithSameOrder = book.chapters.find(
         (chapter) => chapter.order === order,
       );
       if (chapterWithSameOrder) {
@@ -56,8 +55,10 @@ export class ChapterService extends StoryElementCrudService<Chapter> {
       }
     }
 
-    if (defaultData.title) {
-      const chapterWithSameTitle = bookChapters.find(
+    if (!defaultData.title || defaultData.title === '') {
+      throw new Error('Title cannot be undefined or an empty string.');
+    } else {
+      const chapterWithSameTitle = book.chapters.find(
         (chapter) => chapter.title === defaultData.title,
       );
       if (chapterWithSameTitle) {
@@ -74,20 +75,11 @@ export class ChapterService extends StoryElementCrudService<Chapter> {
     }
     const chapter = await super.create({ ...defaultData, book });
 
+    await this.bookService.update(bookId, {
+      chapters: [...book.chapters, chapter] as Chapter[],
+    });
+
     return chapter;
-  }
-
-  async findAllByBookId(bookId: string): Promise<Chapter[]> {
-    if (!Types.ObjectId.isValid(bookId)) {
-      throw new BadRequestException('Invalid book ID');
-    }
-
-    const chapters = await this.chapterModel
-      .find({ book: bookId })
-      .lean()
-      .exec();
-
-    return chapters;
   }
 
   private async processArcsAndScenes(chapterText: string): Promise<Arc[]> {
@@ -128,13 +120,27 @@ export class ChapterService extends StoryElementCrudService<Chapter> {
     defaultData: CreateChapterDto | PatchChapterDto,
   ): Promise<Chapter> {
     const { bookId, order } = defaultData;
-    const bookChapters = await this.findAllByBookId(bookId);
+    const book = await this.bookService.findOne({
+      filter: { id: bookId },
+      include: ['chapters'],
+    });
+
+    if (!book) {
+      throw new Error(`Book with id '${bookId}' not found.`);
+    }
+
+    const chapterToUpdate = book.chapters.find(
+      (chapter) => chapter._id.toString() === id,
+    );
+    if (!chapterToUpdate) {
+      throw new Error(`Chapter with id '${id}' not found in book '${bookId}'.`);
+    }
 
     if (!order) {
-      defaultData.order = bookChapters.length + 1;
+      defaultData.order = book.chapters.length + 1;
     } else {
       // validate if there is already a chapter with the same order
-      const chapterWithSameOrder = bookChapters.find(
+      const chapterWithSameOrder = book.chapters.find(
         (chapter) => chapter.order === order,
       );
       if (chapterWithSameOrder) {
@@ -145,7 +151,7 @@ export class ChapterService extends StoryElementCrudService<Chapter> {
     }
 
     if (defaultData.title) {
-      const chapterWithSameTitle = bookChapters.find(
+      const chapterWithSameTitle = book.chapters.find(
         (chapter) => chapter.title === defaultData.title,
       );
       if (chapterWithSameTitle) {

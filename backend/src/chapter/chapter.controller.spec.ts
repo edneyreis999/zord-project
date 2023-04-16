@@ -167,6 +167,26 @@ describe('ChapterController', () => {
     );
   });
 
+  it('should not create a chapter without bookId', async () => {
+    const bookId = null;
+    await expect(
+      controller.create({
+        bookId,
+        title: 'chapter 2',
+      }),
+    ).rejects.toThrowError(`A bookId must be provided to create a chapter.`);
+  });
+
+  it('should not create a chapter with a non-existing bookId', async () => {
+    const bookId = '5f9f1b9e9c9c1b1b8c8c8c8c';
+    await expect(
+      controller.create({
+        bookId,
+        title: 'chapter 2',
+      }),
+    ).rejects.toThrowError(`Book with id '${bookId}' not found.`);
+  });
+
   it('should get all chapters from a book', async () => {
     const bookId = seedBookList[0]._id.toString();
     const books = await controller.findAll(bookId);
@@ -211,11 +231,33 @@ describe('ChapterController', () => {
     await expect(
       controller.update(seedDummyChapter._id.toString(), {
         bookId,
+        title: 'new title',
         order,
       }),
     ).rejects.toThrowError(
       `There is already a chapter with order '${order}' in book '${bookId}'.`,
     );
+  });
+
+  it('should throw error when trying to update a chapter that a book does not own', async () => {
+    const bookId = seedBookList[1]._id.toString();
+    await expect(
+      controller.update(seedDummyChapter._id.toString(), {
+        bookId,
+        title: 'new title',
+      }),
+    ).rejects.toThrowError(
+      `Chapter with id '${seedDummyChapter._id.toString()}' not found in book '${bookId}'.`,
+    );
+  });
+  it('should throw error when trying to update a chapter that a book does exists', async () => {
+    const bookId = '5f9f1b9e9c9c1b1b8c8c8c8c';
+    await expect(
+      controller.update(seedDummyChapter._id.toString(), {
+        bookId,
+        title: 'new title',
+      }),
+    ).rejects.toThrowError(`Book with id '${bookId}' not found.`);
   });
 
   it('should delete the chapter', async () => {
@@ -264,7 +306,18 @@ describe('ChapterController', () => {
         bookId,
         title: '',
       }),
-    ).rejects.toThrowError();
+    ).rejects.toThrowError('Title cannot be undefined or an empty string.');
+  });
+  it('should not update an chapter with an empty title', async () => {
+    const bookId = seedBookList[0]._id.toString();
+    await expect(
+      controller.update(seedDummyChapter._id.toString(), {
+        bookId,
+        title: '',
+      }),
+    ).rejects.toThrowError(
+      'Validation failed: title: Path `title` is required.',
+    );
   });
   it('should not create a chapter with a title that is too long', async () => {
     const bookId = seedBookList[0]._id.toString();
@@ -275,17 +328,7 @@ describe('ChapterController', () => {
       }),
     ).rejects.toThrowError();
   });
-  it('should not update an chapter with an empty title', async () => {
-    const bookId = seedBookList[0]._id.toString();
-    await expect(
-      controller.update(seedBookList[0]._id.toString(), {
-        bookId,
-        title: '',
-      }),
-    ).rejects.toThrowError(
-      'Validation failed: title: Path `title` is required.',
-    );
-  });
+
   it('should not update an chapter with a duplicate title', async () => {
     const bookId = seedBookList[0]._id.toString();
     await controller.create({
@@ -293,7 +336,6 @@ describe('ChapterController', () => {
       title: 'Title',
     });
 
-    // Try to update the second book with the same name and expect a rejection
     await expect(
       controller.update(seedDummyChapter._id.toString(), {
         bookId,
@@ -359,6 +401,27 @@ describe('ChapterController', () => {
     expect(chapters).toHaveLength(seedBookList.length);
     expect(chapters[0].title).toEqual('chapter 1');
     expect(chapters[1].title).toEqual('dummy chapter');
+  });
+  it('should filter by chapter id when findAll ', async () => {
+    const bookId = seedBookList[0]._id.toString();
+    const chapters = await controller.findAll(bookId, {
+      filter: {
+        id: seedDummyChapter._id.toString(),
+      },
+    });
+    expect(chapters).toHaveLength(1);
+    expect(chapters[0].title).toEqual('chapter 1');
+  });
+  it('should throw an error when trying to findAll with an invalid chapter id', async () => {
+    const bookId = seedBookList[0]._id.toString();
+    const invalidId = 'invalid id string';
+    await expect(
+      controller.findAll(bookId, {
+        filter: {
+          id: invalidId,
+        },
+      }),
+    ).rejects.toThrowError(`Invalid ID: ${invalidId}`);
   });
   it.todo('should include arcs fields when findAll has include param');
   it.todo('should include arcs fields when findOne has include param');

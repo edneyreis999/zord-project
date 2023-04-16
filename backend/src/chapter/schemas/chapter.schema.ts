@@ -62,6 +62,7 @@ export const ChapterSchema = SchemaFactory.createForClass(Chapter).set(
   false,
 );
 
-ChapterSchema.index({ order: 1, book: 1 }, { unique: true });
-ChapterSchema.index({ title: 1, book: 1 }, { unique: true });
-ChapterSchema.index({ slug: 1, book: 1 }, { unique: true });
+// TODO: for some reason, this doesn't work
+// ChapterSchema.index({ order: 1, book: 1 }, { unique: true });
+// ChapterSchema.index({ title: 1, book: 1 }, { unique: true });
+// ChapterSchema.index({ slug: 1, book: 1 }, { unique: true });

@@ -9,7 +9,7 @@ import { BookService } from '../book/book.service';
 import { Book, BookSchema } from '../book/schemas/book.schema';
 import { setupMongoMemoryServer } from '../../test/mongoMemoryServerSetup';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { Model, Types } from 'mongoose';
+import { Types } from 'mongoose';
 
 describe('ChapterService', () => {
   let defaultBook: Book;
