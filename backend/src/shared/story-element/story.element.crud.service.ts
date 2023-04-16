@@ -81,15 +81,10 @@ export abstract class StoryElementCrudService<T extends StoryElement> {
 
   // Find a single story element in the database based on the provided filter
   async findOne(queryDto?: StoryElementQueryOneDto): Promise<T | undefined> {
-    const query = { $or: [] };
     const { include, filter } = queryDto ?? {};
     const { id } = filter;
 
-    if (Types.ObjectId.isValid(id)) {
-      query.$or.push({ _id: id });
-    }
-
-    const bookQuery = this.model.findOne(query);
+    const bookQuery = this.model.findById(id);
 
     this.populateWithIncludes(bookQuery, include);
 
@@ -112,7 +107,7 @@ export abstract class StoryElementCrudService<T extends StoryElement> {
       updateData.slug = this.generateSlug(dto.title);
     }
 
-    const updatedChapter = await this.model.findOneAndUpdate(
+    const storyElementUpdated = await this.model.findOneAndUpdate(
       { _id: id },
       updateData,
       {
@@ -121,11 +116,13 @@ export abstract class StoryElementCrudService<T extends StoryElement> {
       },
     );
 
-    if (!updatedChapter) {
-      throw new NotFoundException('Chapter not found');
+    if (!storyElementUpdated) {
+      throw new NotFoundException(
+        `Story Element ${this.model.name} not found by id: ${id}`,
+      );
     }
 
-    return updatedChapter;
+    return storyElementUpdated;
   }
 
   // Generate a URL-friendly slug from the provided text

@@ -22,7 +22,6 @@ describe('BookController', () => {
   let chapterModel: Model<Chapter>;
 
   let seedBookList: Book[];
-  let book0Chapter: Chapter;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -74,7 +73,7 @@ describe('BookController', () => {
 
     const [book0, book1] = await Promise.all(promise);
 
-    book0Chapter = await chapterService.create({
+    await chapterService.create({
       title: 'Chapter 1',
       bookId: book0._id,
       content: 'bla bla bla',
@@ -255,22 +254,43 @@ describe('BookController', () => {
     expect(books[1].title).toEqual('Book 1');
   });
 
-  it.todo('should include chapter fields when findAll has include param');
+  it(`should include chapter fields when findAll has include 'chapters' param`, async () => {
+    const books = await controller.findAll({
+      include: ['chapters'],
+    });
+    expect(books).toHaveLength(seedBookList.length);
+    expect(books[0].chapters).toHaveLength(1);
+    expect(books[0].chapters).toEqual(
+      expect.arrayContaining(books[0].chapters),
+    );
+  });
 
-  it.todo('should include chapter fields when findOne has include param');
+  it('should include chapter fields when findOne has include param', async () => {
+    const book = await controller.findOne(seedBookList[0]._id.toString(), {
+      include: ['chapters'],
+    });
+    expect(book).toBeDefined();
+    expect(book.id).toEqual(seedBookList[0]._id.toString());
+    expect(book.chapters).toHaveLength(1);
+    expect(book.chapters).toEqual(expect.arrayContaining(book.chapters));
+  });
 
   it('should return empty chapters array when findOne has no include param', async () => {
     const book = await controller.findOne(seedBookList[0]._id.toString(), {});
     expect(book).toBeDefined();
     expect(book.id).toEqual(seedBookList[0]._id.toString());
-    expect(book.chapters).toHaveLength(0);
-    expect(book.chapters).toEqual(expect.arrayContaining([]));
+    expect(book.chapters).toHaveLength(1);
+    expect(book.chapters).toEqual(
+      expect.arrayContaining(book.chapters.map((c) => c._id)),
+    );
   });
 
   it('should return an empty chapters array when findAll has no include param', async () => {
     const books = await controller.findAll({});
     expect(books).toHaveLength(seedBookList.length);
-    expect(books[0].chapters).toHaveLength(0);
-    expect(books[0].chapters).toEqual(expect.arrayContaining([]));
+    expect(books[0].chapters).toHaveLength(1);
+    expect(books[0].chapters).toEqual(
+      expect.arrayContaining(books[0].chapters.map((c) => c._id)),
+    );
   });
 });

@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Book } from './schemas/book.schema';
 import { StoryElementCrudService } from '../shared/story-element/story.element.crud.service';
-import { Chapter } from '../chapter/schemas/chapter.schema';
 
 /**
  * The BookService class is responsible for managing CRUD operations related to books.
