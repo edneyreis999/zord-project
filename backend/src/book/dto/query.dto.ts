@@ -1,65 +1,23 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
-import { Expose } from 'class-transformer';
-import { IsOptional, IsString } from 'class-validator';
+import { Filter, Include, Sort } from '../../request/query';
 import {
-  QueryDto,
-  Filter,
-  Sort,
-  Page,
-  PaginateQueryPage,
-  Include,
-} from '../../request/query';
+  StoryElementFilterDto,
+  StoryElementQueryManyDto,
+  StoryElementQueryOneDto,
+} from '../../shared/story-element/story.element.query.filter.dto';
 
-class FilterBookDto {
-  @ApiPropertyOptional({
-    name: 'filter[id]',
-    description: 'Search for id',
-    example: '6431a7c0272aea5bdcfa550f',
-  })
-  @IsString()
-  @IsOptional()
-  @Expose()
-  readonly id?: string;
-
-  @ApiPropertyOptional({
-    name: 'filter[name]',
-    description: 'Search for name',
-    example: 'Ghork',
-  })
-  @IsString()
-  @IsOptional()
-  @Expose()
-  readonly title?: string;
-
-  @ApiPropertyOptional({
-    name: 'filter[slug]',
-    description: 'Search for slug',
-    example: 'ghork',
-  })
-  @IsString()
-  @IsOptional()
-  @Expose()
-  readonly slug?: string;
-}
-
-export class QueryOneBookDto implements QueryDto {
-  @Filter(() => FilterBookDto)
-  readonly filter?: FilterBookDto;
-
-  @Include(['chapters', 'chapters.arc'])
+class FilterBookDto extends StoryElementFilterDto {}
+export class QueryOneBookDto extends StoryElementQueryOneDto {
+  @Include(['chapters'])
   readonly include?: string[];
 }
 
-export class QueryManyBookDto implements QueryDto {
+export class QueryManyBookDto extends StoryElementQueryManyDto {
   @Filter(() => FilterBookDto)
   readonly filter?: FilterBookDto;
 
-  @Sort(['name', '-name', 'createdAt', '-createdAt'])
+  @Include(['chapters'])
+  readonly include?: string[];
+
+  @Sort(['title', '-title', 'createdAt', '-createdAt'])
   readonly sort?: string[];
-
-  @Page()
-  readonly page?: PaginateQueryPage;
-
-  @Include(['chapters', 'chapters.arc'])
-  readonly include?: string[];
 }

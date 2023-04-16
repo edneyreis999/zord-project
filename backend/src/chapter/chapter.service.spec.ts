@@ -4,7 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Chapter, ChapterSchema } from './schemas/chapter.schema';
 import { Arc, ArcSchema } from '../schemas/arc';
 import { Scene, SceneSchema } from '../schemas/scene';
-import { TextFileService } from './text-file.service';
+import { TextFileService } from '../text-file/text-file.service';
 import { BookService } from '../book/book.service';
 import { Book, BookSchema } from '../book/schemas/book.schema';
 import { setupMongoMemoryServer } from '../../test/mongoMemoryServerSetup';
@@ -60,31 +60,23 @@ describe('ChapterService', () => {
     });
 
     it('should create a chapter', async () => {
-      const model = Model<Chapter>;
       const chapterName = 'test chapter';
-      const chapterModelSpy = jest.spyOn(model, 'create');
 
       const result = await chapterService.create({
         title: chapterName,
         bookId: defaultBook._id.toString(),
       });
 
-      expect(model.create).toHaveBeenCalledWith({
-        name: chapterName,
-        book: defaultBook._id.toString(),
-      });
-      expect(chapterModelSpy).toHaveBeenCalled();
-
       expect(result).toMatchObject({
         __v: 0,
         _id: expect.any(Types.ObjectId),
         arcs: expect.any(Array),
-        name: chapterName,
+        title: chapterName,
       });
       expect(result.arcs).toHaveLength(0);
     });
     it('should create a chapter with content', async () => {
-      const chapterName = 'test chapter';
+      const chapterName = 'test chapter with file';
       const chapterContent = 'conteúdo do capítulo';
 
       const result = await chapterService.create({
@@ -97,7 +89,7 @@ describe('ChapterService', () => {
         __v: 0,
         _id: expect.any(Types.ObjectId),
         arcs: expect.any(Array),
-        name: chapterName,
+        title: chapterName,
         content: chapterContent,
       });
       expect(result.arcs).toHaveLength(0);

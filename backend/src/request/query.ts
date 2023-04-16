@@ -11,6 +11,7 @@ import {
   IsIn,
   IsInt,
   IsOptional,
+  IsString,
   Max,
   Min,
   ValidateNested,
@@ -165,8 +166,20 @@ export function Filter(typeFunction?: (type?: TypeHelpOptions) => Function) {
  * Interface of query params to GET all resources
  */
 export interface QueryDto {
-  filter?: any;
+  filter?: BasicFilterDto;
   page?: PaginateQueryPage;
   sort?: string[];
   include?: string[];
+}
+
+export class BasicFilterDto {
+  @ApiPropertyOptional({
+    name: 'filter[id]',
+    description: 'Search by id',
+    example: '6431a7c0272aea5bdcfa550f',
+  })
+  @IsString()
+  @IsOptional()
+  @Expose()
+  id?: string;
 }
