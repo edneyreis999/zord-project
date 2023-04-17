@@ -45,12 +45,12 @@ $ yarn run test:cov
 - [x] resolver bug de chapter nunca ser criado sem a referencia de um book
 - [x] Adicionar mongo em memoria para fazer os testes
 - [x] Criar CRUD para book service.
-- [ ] tratar erro Cannot read properties of null (reading '\_id') quando findOne
+- [x] tratar erro Cannot read properties of null (reading '\_id') quando findOne
       não encontra ninguém.
+- [x] Adicionar plugn para query paginada nos models book, chapter, arc e scene.
 - [x] Criar um model abstrato com base no Book e fazer book extender toda essa
       abstração.
 - [ ] Criar services/modules e controller para arc e scene.
-- [ ] Adicionar plugn para query paginada nos models book, chapter, arc e scene.
 - [ ] Remover bug onde as tags estão aparecendo nos arcos e cenas
 - [ ] instalar cross-env `yarn add -D cross-env` e configurar os scripts
-- [ ] tratar any dentro de StoryElementCrudService
+- [x] tratar any dentro de StoryElementCrudService

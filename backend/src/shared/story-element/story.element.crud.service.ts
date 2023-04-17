@@ -80,15 +80,15 @@ export abstract class StoryElementCrudService<T extends StoryElement> {
   }
 
   // Find a single story element in the database based on the provided filter
-  async findOne(queryDto?: StoryElementQueryOneDto): Promise<T | undefined> {
-    const { include, filter } = queryDto ?? {};
+  async findOne(queryDto: StoryElementQueryOneDto): Promise<T | undefined> {
+    const { include, filter } = queryDto;
     const { id } = filter;
 
-    const bookQuery = this.model.findById(id);
+    const query = this.model.findById(id);
 
-    this.populateWithIncludes(bookQuery, include);
+    this.populateWithIncludes(query, include);
 
-    return bookQuery.exec();
+    return query.exec();
   }
 
   // Delete a story element from the database by its ID

@@ -12,6 +12,11 @@ import {
 } from '../../request/query';
 
 export class StoryElementFilterDto extends BasicFilterDto {
+  constructor(partial: Partial<StoryElementFilterDto>) {
+    super();
+    Object.assign(this, partial);
+  }
+
   @ApiPropertyOptional({
     name: 'filter[name]',
     description: 'Search for name',

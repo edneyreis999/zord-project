@@ -14,6 +14,7 @@ import {
 } from '../../test/MongooseTestModule';
 import mongoose, { Model } from 'mongoose';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { PaginateQueryPage } from '../request/query';
 
 describe('ChapterController', () => {
   // references to the controller and service
@@ -423,8 +424,46 @@ describe('ChapterController', () => {
       }),
     ).rejects.toThrowError(`Invalid ID: ${invalidId}`);
   });
+  it('should paginate when findAll ', async () => {
+    const bookId = seedBookList[0]._id.toString();
+    const chapters = await controller.findAll(bookId, {
+      page: { limit: 1, offset: 0 },
+      sort: ['title'],
+    });
+    expect(chapters).toHaveLength(1);
+    expect(chapters[0].title).toEqual('chapter 1');
+    const chapters2 = await controller.findAll(bookId, {
+      page: { limit: 1, offset: 1 },
+      sort: ['title'],
+    });
+    expect(chapters2).toHaveLength(1);
+    expect(chapters2[0].title).toEqual('dummy chapter');
+  });
+  it('should use default values for offset and limit when not provided', async () => {
+    const bookId = seedBookList[0]._id.toString();
+    const defaultQuery = new PaginateQueryPage();
+
+    expect(defaultQuery.offset).toEqual(0);
+    expect(defaultQuery.limit).toEqual(10);
+
+    const chapters = await controller.findAll(bookId, {
+      sort: ['title'],
+    });
+
+    expect(chapters).toHaveLength(2);
+  });
   it.todo('should include arcs fields when findAll has include param');
   it.todo('should include arcs fields when findOne has include param');
+  it('should include book fields when findOne has include param', async () => {
+    const chapter = await controller.findOne(seedDummyChapter._id.toString(), {
+      include: ['book'],
+    });
+    const book = chapter.book as Book;
+    expect(chapter).toBeDefined();
+    expect(book).toBeDefined();
+    expect(book.title).toEqual(seedBookList[0].title);
+    expect(book.slug).toEqual(seedBookList[0].slug);
+  });
   it('should create a chapter with a file', async () => {
     const bookId = seedBookList[0]._id.toString();
     const chapter = await controller.createChapterByFile(

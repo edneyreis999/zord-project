@@ -259,10 +259,10 @@ describe('BookController', () => {
       include: ['chapters'],
     });
     expect(books).toHaveLength(seedBookList.length);
+    const chapters = books[0].chapters as Chapter[];
+
     expect(books[0].chapters).toHaveLength(1);
-    expect(books[0].chapters).toEqual(
-      expect.arrayContaining(books[0].chapters),
-    );
+    expect(books[0].chapters).toEqual(expect.arrayContaining(chapters));
   });
 
   it('should include chapter fields when findOne has include param', async () => {
@@ -271,8 +271,10 @@ describe('BookController', () => {
     });
     expect(book).toBeDefined();
     expect(book.id).toEqual(seedBookList[0]._id.toString());
+    const chapters = book.chapters as Chapter[];
+
     expect(book.chapters).toHaveLength(1);
-    expect(book.chapters).toEqual(expect.arrayContaining(book.chapters));
+    expect(book.chapters).toEqual(expect.arrayContaining(chapters));
   });
 
   it('should return empty chapters array when findOne has no include param', async () => {

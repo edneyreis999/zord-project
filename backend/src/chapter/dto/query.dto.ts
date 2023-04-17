@@ -21,7 +21,7 @@ class FilterChapterDto extends StoryElementFilterDto {
 }
 
 export class QueryOneChapterDto extends StoryElementQueryOneDto {
-  @Include(['arc'])
+  @Include(['book, arc'])
   readonly include?: string[];
 }
 
@@ -29,6 +29,6 @@ export class QueryManyChapterDto extends StoryElementQueryManyDto {
   @Filter(() => FilterChapterDto)
   filter?: FilterChapterDto;
 
-  @Include(['arc'])
+  @Include(['book, arc'])
   readonly include?: string[];
 }

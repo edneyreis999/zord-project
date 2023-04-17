@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Chapter } from '../schemas/chapter.schema';
+import { Book } from '../../book/schemas/book.schema';
 
 export class ResponseChapterDto {
   static fromChapter(chapter: Chapter): ResponseChapterDto {
@@ -7,6 +8,7 @@ export class ResponseChapterDto {
       id: chapter._id.toString(),
       title: chapter.title,
       slug: chapter.slug,
+      book: chapter.book as Book | string,
       arcs: chapter.arcs.map((arc) => arc.name),
       content: chapter.content,
       order: chapter.order,
@@ -40,6 +42,13 @@ export class ResponseChapterDto {
     example: 'ghork',
   })
   readonly slug: string;
+
+  @ApiProperty({
+    type: Book,
+    description: 'Book of the chapter',
+    example: "Ghork's story",
+  })
+  readonly book: Book | string;
 
   @ApiProperty({
     type: String,
