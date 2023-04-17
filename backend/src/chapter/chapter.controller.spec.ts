@@ -131,7 +131,7 @@ describe('ChapterController', () => {
     const chapters = await controller.findAll(bookId);
     expect(chapters).toHaveLength(seedBookList.length + 1);
 
-    const chapter2 = await controller.findOne(chapter.id, {});
+    const chapter2 = await controller.findOne({ filter: { id: chapter.id } });
     expect(chapter2).toBeDefined();
     expect(chapter2.id).toEqual(chapter.id);
     expect(chapter2.summary).toEqual(chapter.summary);
@@ -203,7 +203,9 @@ describe('ChapterController', () => {
   });
 
   it('should get the chapter by id', async () => {
-    const chapter = await controller.findOne(seedDummyChapter._id.toString());
+    const chapter = await controller.findOne({
+      filter: { id: seedDummyChapter._id.toString() },
+    });
 
     expect(chapter).toBeDefined();
     expect(chapter.id).toEqual(seedDummyChapter._id.toString());
@@ -296,7 +298,7 @@ describe('ChapterController', () => {
   });
   it('should not get a chapter by id that does not exist', async () => {
     await expect(
-      controller.findOne('5f5f9b9c6b5b1e1c6c5f1b3c', {}),
+      controller.findOne({ filter: { id: '5f5f9b9c6b5b1e1c6c5f1b3c' } }),
     ).rejects.toThrowError();
   });
 
@@ -357,7 +359,7 @@ describe('ChapterController', () => {
     expect(chapter.slug).toEqual('new-name');
     expect(chapter.summary).toEqual('New Summary');
 
-    const chapter2 = await controller.findOne(chapter.id, {});
+    const chapter2 = await controller.findOne({ filter: { id: chapter.id } });
     expect(chapter2).toBeDefined();
     expect(chapter2.id).toEqual(chapter.id);
     expect(chapter2.title).toEqual('New Name');
@@ -455,7 +457,8 @@ describe('ChapterController', () => {
   it.todo('should include arcs fields when findAll has include param');
   it.todo('should include arcs fields when findOne has include param');
   it('should include book fields when findOne has include param', async () => {
-    const chapter = await controller.findOne(seedDummyChapter._id.toString(), {
+    const chapter = await controller.findOne({
+      filter: { id: seedDummyChapter._id.toString() },
       include: ['book'],
     });
     const book = chapter.book as Book;

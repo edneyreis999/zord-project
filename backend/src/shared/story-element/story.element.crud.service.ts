@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { FilterQuery, Model, Types } from 'mongoose';
+import { FilterQuery, Model, SortOrder, Types } from 'mongoose';
 import { StoryElement } from '../../interfaces/story.element';
 import {
   StoryElementQueryManyDto,
@@ -34,49 +34,57 @@ export abstract class StoryElementCrudService<T extends StoryElement> {
 
   // Find all story elements in the database that match the provided filters and query parameters
   async findAll(queryDto: StoryElementQueryManyDto): Promise<T[]> {
-    const queryFilter: FilterQuery<T> = {};
     const { filter, include, page, sort } = queryDto;
     const { id, slug, title } = filter ?? {};
+
+    const queryFilter: FilterQuery<T> = {};
 
     if (id) {
       if (Types.ObjectId.isValid(id)) {
         queryFilter._id = id;
+        // Return the result early when filtering by ID
+        return this.model.find(queryFilter).exec();
       } else {
         throw new BadRequestException(`Invalid ID: ${id}`);
       }
     }
+
     if (title) {
-      queryFilter.title = new RegExp(filter.title, 'i'); // Add this line to enable case-insensitive partial matching
+      queryFilter.title = new RegExp(title, 'i');
     }
+    queryFilter.slug = new RegExp(slug, 'i');
     if (slug) {
-      queryFilter.slug = new RegExp(filter.slug, 'i'); // Add this line to enable case-insensitive partial matching
     }
 
-    const sortQuery = {};
-    if (sort) {
-      sort.forEach((sortItem) => {
-        const [key, order] =
-          sortItem[0] === '-' ? [sortItem.slice(1), -1] : [sortItem, 1];
-        sortQuery[key] = order;
-      });
-    }
+    const sortQuery = this.createSortQuery(sort);
 
-    const pagination = {
-      skip: page?.offset,
-      limit: page?.limit,
-    };
+    const { offset, limit } = page ?? {};
 
     const chapterQuery = this.model
       .find(queryFilter)
       .sort(sortQuery)
-      .skip(pagination.skip)
-      .limit(pagination.limit);
+      .skip(offset)
+      .limit(limit);
 
     if (include) {
       this.populateWithIncludes(chapterQuery, include);
     }
 
     return chapterQuery.exec();
+  }
+
+  private createSortQuery(sort: string[] | undefined): {
+    [key: string]: SortOrder;
+  } {
+    if (!sort) {
+      return {};
+    }
+
+    return sort.reduce((sortQuery, sortItem) => {
+      const [key, order] =
+        sortItem[0] === '-' ? [sortItem.slice(1), -1] : [sortItem, 1];
+      return { ...sortQuery, [key]: order };
+    }, {});
   }
 
   // Find a single story element in the database based on the provided filter
