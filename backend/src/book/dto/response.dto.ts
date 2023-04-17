@@ -39,7 +39,7 @@ export class ResponseBookDto extends CreateBookDto {
     description: 'List of chapters of this book',
     example: ['Chapter 1', 'Chapter 2'],
   })
-  readonly chapters: Chapter[];
+  readonly chapters: Chapter[] | string[];
 
   @ApiProperty({
     type: String,

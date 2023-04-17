@@ -12,7 +12,7 @@ import { PatchChapterDto } from './dto/patch.dto';
 
 @Injectable()
 export class ChapterService extends StoryElementCrudService<Chapter> {
-  protected availableFieldsToInclude = ['arcs'];
+  protected availableFieldsToInclude = ['book', 'arcs'];
 
   constructor(
     @InjectModel(Chapter.name) private chapterModel: Model<Chapter>,

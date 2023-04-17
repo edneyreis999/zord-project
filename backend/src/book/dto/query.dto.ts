@@ -1,4 +1,4 @@
-import { Filter, Include, Sort } from '../../request/query';
+import { Filter, Include } from '../../request/query';
 import {
   StoryElementFilterDto,
   StoryElementQueryManyDto,
@@ -17,7 +17,4 @@ export class QueryManyBookDto extends StoryElementQueryManyDto {
 
   @Include(['chapters'])
   readonly include?: string[];
-
-  @Sort(['title', '-title', 'createdAt', '-createdAt'])
-  readonly sort?: string[];
 }
