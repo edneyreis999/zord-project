@@ -24,8 +24,7 @@ export class PaginateQueryPage {
   @ApiPropertyOptional({
     name: 'page[offset]',
     type: Number,
-    description: 'Number of records to skip',
-    example: 10,
+    description: 'Number of records to skip (Example: 0)',
     default: 0,
   })
   @IsInt()
@@ -38,8 +37,7 @@ export class PaginateQueryPage {
   @ApiPropertyOptional({
     name: 'page[limit]',
     type: Number,
-    description: 'Number of records to return',
-    example: 20,
+    description: 'Number of records to return (Example: 10)',
     default: 10,
   })
   @IsInt()
@@ -68,8 +66,7 @@ export function Sort(fields: string[]) {
   return applyDecorators(
     ApiPropertyOptional({
       name: 'sort',
-      description: 'Sort the results',
-      example: example,
+      description: `Sort the results (Example: ${example})`,
       type: String,
     }),
     IsOptional(),
@@ -98,9 +95,9 @@ export function Include(fields: string[]) {
   return applyDecorators(
     ApiPropertyOptional({
       name: 'include',
-      description:
-        'Related resources should be returned. separated by a comma.',
-      example: fields.join(','),
+      description: `Populate the resource separated by a comma. (Example: ${fields.join(
+        ',',
+      )})`,
       type: String,
     }),
     IsOptional(),
@@ -175,8 +172,7 @@ export interface QueryDto {
 export class BasicFilterDto {
   @ApiPropertyOptional({
     name: 'filter[id]',
-    description: 'Search by id',
-    example: '6431a7c0272aea5bdcfa550f',
+    description: 'Search by id (Example: 6431a7c0272aea5bdcfa550f)',
   })
   @IsString()
   @IsOptional()

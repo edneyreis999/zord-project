@@ -92,16 +92,10 @@ export class ChapterController {
     return ResponseChapterDto.fromManyChapters(paginated);
   }
 
-  @CrudGetOne('/:id', ResponseChapterDto)
-  @ApiParam({ name: 'id', type: String })
+  @CrudGetOne('/id', ResponseChapterDto)
   async findOne(
-    @Param('id') id: string,
     @Query() query?: QueryOneChapterDto,
   ): Promise<ResponseChapterDto> {
-    query = query || {};
-    query.filter = {
-      id,
-    };
     const chapter = await this.chapterService.findOne(query);
     return ResponseChapterDto.fromChapter(chapter);
   }

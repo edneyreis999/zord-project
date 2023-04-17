@@ -10,6 +10,7 @@ export class ResponseBookDto extends CreateBookDto {
       title: book.title,
       slug: book.slug,
       chapters: book.chapters,
+      summary: book.summary,
       createdAt: book.createdAt.toISOString(),
       updatedAt: book.updatedAt.toISOString(),
     };
@@ -40,6 +41,13 @@ export class ResponseBookDto extends CreateBookDto {
     example: ['Chapter 1', 'Chapter 2'],
   })
   readonly chapters: Chapter[] | string[];
+
+  @ApiProperty({
+    type: String,
+    description: 'Summary of the book',
+    example: 'lorem ipsum dolor sit amet',
+  })
+  readonly summary: string;
 
   @ApiProperty({
     type: String,

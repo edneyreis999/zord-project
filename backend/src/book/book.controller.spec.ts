@@ -95,7 +95,7 @@ describe('BookController', () => {
     const books = await controller.findAll({});
     expect(books).toHaveLength(3);
 
-    const book2 = await controller.findOne(book.id, {});
+    const book2 = await controller.findOne({ filter: { id: book.id } });
     expect(book2).toBeDefined();
     expect(book2.id).toEqual(book.id);
   });
@@ -120,7 +120,9 @@ describe('BookController', () => {
   });
 
   it('should get a book by id', async () => {
-    const book = await controller.findOne(seedBookList[0]._id.toString(), {});
+    const bookId = seedBookList[0]._id.toString();
+
+    const book = await controller.findOne({ filter: { id: bookId } });
     expect(book).toBeDefined();
     expect(book.id).toEqual(seedBookList[0]._id.toString());
   });
@@ -134,7 +136,9 @@ describe('BookController', () => {
     expect(book.title).toEqual('New Name');
     expect(book.slug).toEqual('new-name');
 
-    const book2 = await controller.findOne(book.id, {});
+    const book2 = await controller.findOne({
+      filter: { id: seedBookList[0]._id.toString() },
+    });
     expect(book2).toBeDefined();
     expect(book2.id).toEqual(book.id);
     expect(book2.title).toEqual('New Name');
@@ -166,7 +170,9 @@ describe('BookController', () => {
 
   it('should not get a book by id that does not exist', async () => {
     await expect(
-      controller.findOne('5f5f9b9c6b5b1e1c6c5f1b3c', {}),
+      controller.findOne({
+        filter: { id: '5f5f9b9c6b5b1e1c6c5f1b3c' },
+      }),
     ).rejects.toThrowError();
   });
 
@@ -217,7 +223,9 @@ describe('BookController', () => {
     expect(book.title).toEqual('New Name');
     expect(book.slug).toEqual('new-name');
 
-    const book2 = await controller.findOne(book.id);
+    const book2 = await controller.findOne({
+      filter: { id: book.id },
+    });
     expect(book2).toBeDefined();
     expect(book2.id).toEqual(book.id);
     expect(book2.title).toEqual('New Name');
@@ -266,7 +274,8 @@ describe('BookController', () => {
   });
 
   it('should include chapter fields when findOne has include param', async () => {
-    const book = await controller.findOne(seedBookList[0]._id.toString(), {
+    const book = await controller.findOne({
+      filter: { id: seedBookList[0]._id.toString() },
       include: ['chapters'],
     });
     expect(book).toBeDefined();
@@ -278,7 +287,9 @@ describe('BookController', () => {
   });
 
   it('should return empty chapters array when findOne has no include param', async () => {
-    const book = await controller.findOne(seedBookList[0]._id.toString(), {});
+    const book = await controller.findOne({
+      filter: { id: seedBookList[0]._id.toString() },
+    });
     expect(book).toBeDefined();
     expect(book.id).toEqual(seedBookList[0]._id.toString());
     expect(book.chapters).toHaveLength(1);

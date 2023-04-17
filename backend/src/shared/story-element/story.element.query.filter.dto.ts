@@ -18,9 +18,8 @@ export class StoryElementFilterDto extends BasicFilterDto {
   }
 
   @ApiPropertyOptional({
-    name: 'filter[name]',
-    description: 'Search for name',
-    example: 'Ghork',
+    name: 'filter[title]',
+    description: 'Search for name (Example: Ghork)',
   })
   @IsString()
   @IsOptional()
@@ -29,8 +28,7 @@ export class StoryElementFilterDto extends BasicFilterDto {
 
   @ApiPropertyOptional({
     name: 'filter[slug]',
-    description: 'Search for slug',
-    example: 'ghork',
+    description: 'Search for slug (Example: ghork)',
   })
   @IsString()
   @IsOptional()

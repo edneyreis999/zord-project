@@ -35,16 +35,8 @@ export class BookController {
     return ResponseBookDto.fromManyBooks(paginated);
   }
 
-  @CrudGetOne('/:id', ResponseBookDto)
-  @ApiParam({ name: 'id', type: String })
-  async findOne(
-    @Param('id') id: string,
-    @Query() query?: QueryOneBookDto,
-  ): Promise<ResponseBookDto> {
-    query = query || {};
-    query.filter = {
-      id,
-    };
+  @CrudGetOne('/id', ResponseBookDto)
+  async findOne(@Query() query?: QueryOneBookDto): Promise<ResponseBookDto> {
     const book = await this.bookService.findOne(query);
     return ResponseBookDto.fromBook(book);
   }
