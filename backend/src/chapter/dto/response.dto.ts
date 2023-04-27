@@ -9,12 +9,12 @@ export class ResponseChapterDto {
       title: chapter.title,
       slug: chapter.slug,
       book: chapter.book as Book | string,
-      arcs: chapter.arcs.map((arc) => arc.name),
+      arcs: chapter?.arcs?.map((arc) => arc.name),
       content: chapter.content,
       order: chapter.order,
       summary: chapter.summary,
-      createdAt: chapter.createdAt.toISOString(),
-      updatedAt: chapter.updatedAt.toISOString(),
+      createdAt: chapter?.createdAt?.toISOString(),
+      updatedAt: chapter?.updatedAt?.toISOString(),
     };
   }
 

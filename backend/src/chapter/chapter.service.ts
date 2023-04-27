@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Chapter } from './schemas/chapter.schema';
 import { Model } from 'mongoose';
@@ -6,7 +6,7 @@ import { Arc } from '../schemas/arc';
 import { Scene } from '../schemas/scene';
 import { TextFileService } from '../text-file/text-file.service';
 import { BookService } from '../book/book.service';
-import { CreateChapterDto } from './dto/create.dto';
+import { CreateChapterDto, CreateChapterWithFileDto } from './dto/create.dto';
 import { StoryElementCrudService } from '../shared/story-element/story.element.crud.service';
 import { PatchChapterDto } from './dto/patch.dto';
 
@@ -24,60 +24,55 @@ export class ChapterService extends StoryElementCrudService<Chapter> {
     super(chapterModel);
   }
 
-  async create(
-    defaultData: Partial<Chapter> & CreateChapterDto,
+  async createWithFile(
+    defaultData: Partial<Chapter> & CreateChapterWithFileDto,
   ): Promise<Chapter> {
-    const { bookId, file, order } = defaultData;
-    if (!bookId) {
-      throw new Error('A bookId must be provided to create a chapter.');
-    }
+    const { bookId, file } = defaultData;
 
     const book = await this.bookService.findOne({
       filter: { id: bookId },
       include: ['chapters'],
     });
 
-    if (!book) {
-      throw new Error(`Book with id '${bookId}' not found.`);
-    }
+    defaultData.content = await this.textFileService.readFile(file);
+    // Extract arcs and scenes from the text file
+    defaultData.arcs = await this.processArcsAndScenes(defaultData.content);
 
-    if (!order) {
-      defaultData.order = book.chapters.length + 1;
-    } else {
-      // validate if there is already a chapter with the same order
-      const chapterWithSameOrder = book.chapters.find(
-        (chapter) => chapter.order === order,
-      );
-      if (chapterWithSameOrder) {
-        throw new Error(
-          `There is already a chapter with order '${order}' in book '${bookId}'.`,
-        );
-      }
-    }
-
-    if (!defaultData.title || defaultData.title === '') {
-      throw new Error('Title cannot be undefined or an empty string.');
-    } else {
-      const chapterWithSameTitle = book.chapters.find(
-        (chapter) => chapter.title === defaultData.title,
-      );
-      if (chapterWithSameTitle) {
-        throw new Error(
-          `There is already a chapter with title '${defaultData.title}' in book '${bookId}'.`,
-        );
-      }
-    }
-
-    if (file) {
-      defaultData.content = await this.textFileService.readFile(file);
-      // Extract arcs and scenes from the text file
-      defaultData.arcs = await this.processArcsAndScenes(defaultData.content);
-    }
     const chapter = await super.create({ ...defaultData, book });
 
-    await this.bookService.update(bookId, {
+    const updatedBook = await this.bookService.update(bookId, {
       chapters: [...book.chapters, chapter] as Chapter[],
     });
+
+    // Just to make sure the book is updated
+    chapter.book = updatedBook;
+
+    return chapter;
+  }
+
+  async createWithText(
+    defaultData: Partial<Chapter> & CreateChapterDto,
+  ): Promise<Chapter> {
+    const { bookId } = defaultData;
+
+    const book = await this.bookService.findOne({
+      filter: { id: bookId },
+      include: ['chapters'],
+    });
+
+    // TODO: Mover essa validação para o DTO
+    if (!book) {
+      throw new BadRequestException(`Book with id '${bookId}' not found.`);
+    }
+
+    const chapter = await super.create({ ...defaultData, book });
+
+    const updatedBook = await this.bookService.update(bookId, {
+      chapters: [...book.chapters, chapter] as Chapter[],
+    });
+
+    // Just to make sure the book is updated
+    chapter.book = updatedBook;
 
     return chapter;
   }
@@ -119,46 +114,25 @@ export class ChapterService extends StoryElementCrudService<Chapter> {
     id: string,
     defaultData: CreateChapterDto | PatchChapterDto,
   ): Promise<Chapter> {
-    const { bookId, order } = defaultData;
+    const { bookId } = defaultData;
     const book = await this.bookService.findOne({
       filter: { id: bookId },
       include: ['chapters'],
     });
 
     if (!book) {
-      throw new Error(`Book with id '${bookId}' not found.`);
+      throw new BadRequestException(`Book with id '${bookId}' not found.`);
     }
 
     const chapterToUpdate = book.chapters.find(
       (chapter) => chapter._id.toString() === id,
     );
+
+    // TODO: Colocar essa validação no decorator do DTO
     if (!chapterToUpdate) {
-      throw new Error(`Chapter with id '${id}' not found in book '${bookId}'.`);
-    }
-
-    if (!order) {
-      defaultData.order = book.chapters.length + 1;
-    } else {
-      // validate if there is already a chapter with the same order
-      const chapterWithSameOrder = book.chapters.find(
-        (chapter) => chapter.order === order,
+      throw new BadRequestException(
+        `Chapter with id '${id}' not found in book '${bookId}'.`,
       );
-      if (chapterWithSameOrder) {
-        throw new Error(
-          `There is already a chapter with order '${order}' in book '${bookId}'.`,
-        );
-      }
-    }
-
-    if (defaultData.title) {
-      const chapterWithSameTitle = book.chapters.find(
-        (chapter) => chapter.title === defaultData.title,
-      );
-      if (chapterWithSameTitle) {
-        throw new Error(
-          `There is already a chapter with title '${defaultData.title}' in book '${bookId}'.`,
-        );
-      }
     }
 
     return super.update(id, defaultData);

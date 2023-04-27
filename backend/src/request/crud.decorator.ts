@@ -33,6 +33,12 @@ export interface ChangeOptions {
 export function CrudGetOne(path: string | string[], output: ResourceType) {
   return applyDecorators(
     Get(path),
+    UsePipes(
+      new ValidationPipe({
+        transform: true,
+        transformOptions: { excludeExtraneousValues: true }, // enforce type-safe instance
+      }),
+    ),
     UseInterceptors(NotFoundInterceptor),
     ApiNotFoundResponse({ description: 'Resource not found' }),
     ApiOkResponse({ type: output }),

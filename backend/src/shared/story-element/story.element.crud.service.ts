@@ -1,9 +1,5 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { FilterQuery, Model, SortOrder, Types } from 'mongoose';
+import { Injectable } from '@nestjs/common';
+import { FilterQuery, Model, SortOrder } from 'mongoose';
 import { StoryElement } from '../../interfaces/story.element';
 import {
   StoryElementQueryManyDto,
@@ -40,13 +36,13 @@ export abstract class StoryElementCrudService<T extends StoryElement> {
     const queryFilter: FilterQuery<T> = {};
 
     if (id) {
-      if (Types.ObjectId.isValid(id)) {
-        queryFilter._id = id;
-        // Return the result early when filtering by ID
-        return this.model.find(queryFilter).exec();
-      } else {
-        throw new BadRequestException(`Invalid ID: ${id}`);
+      queryFilter._id = id;
+      const chapterQuery = this.model.find(queryFilter);
+      if (include) {
+        this.populateWithIncludes(chapterQuery, include);
       }
+
+      return chapterQuery.exec();
     }
 
     if (title) {
@@ -73,28 +69,20 @@ export abstract class StoryElementCrudService<T extends StoryElement> {
     return chapterQuery.exec();
   }
 
-  private createSortQuery(sort: string[] | undefined): {
-    [key: string]: SortOrder;
-  } {
-    if (!sort) {
-      return {};
-    }
-
-    return sort.reduce((sortQuery, sortItem) => {
-      const [key, order] =
-        sortItem[0] === '-' ? [sortItem.slice(1), -1] : [sortItem, 1];
-      return { ...sortQuery, [key]: order };
-    }, {});
-  }
-
   // Find a single story element in the database based on the provided filter
   async findOne(queryDto: StoryElementQueryOneDto): Promise<T | undefined> {
     const { include, filter } = queryDto;
     const { id } = filter;
 
-    const query = this.model.findById(id);
+    const query = this.model.findOne({ _id: id });
 
     this.populateWithIncludes(query, include);
+
+    return query.exec();
+  }
+
+  async findById(id: string): Promise<T | undefined> {
+    const query = this.model.findById(id);
 
     return query.exec();
   }
@@ -102,9 +90,6 @@ export abstract class StoryElementCrudService<T extends StoryElement> {
   // Delete a story element from the database by its ID
   async delete(id: string): Promise<T> {
     const deleted = await this.model.findByIdAndDelete(id).exec();
-    if (!deleted) {
-      throw new NotFoundException(`Document with ID ${id} not found`);
-    }
     return deleted;
   }
 
@@ -123,12 +108,6 @@ export abstract class StoryElementCrudService<T extends StoryElement> {
         runValidators: true, // Run validations on the update
       },
     );
-
-    if (!storyElementUpdated) {
-      throw new NotFoundException(
-        `Story Element ${this.model.name} not found by id: ${id}`,
-      );
-    }
 
     return storyElementUpdated;
   }
@@ -151,5 +130,19 @@ export abstract class StoryElementCrudService<T extends StoryElement> {
         query.populate(field);
       }
     });
+  }
+
+  private createSortQuery(sort: string[] | undefined): {
+    [key: string]: SortOrder;
+  } {
+    if (!sort) {
+      return {};
+    }
+
+    return sort.reduce((sortQuery, sortItem) => {
+      const [key, order] =
+        sortItem[0] === '-' ? [sortItem.slice(1), -1] : [sortItem, 1];
+      return { ...sortQuery, [key]: order };
+    }, {});
   }
 }

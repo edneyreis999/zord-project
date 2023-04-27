@@ -1,12 +1,17 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-import { IsDefined, IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import {
+  IsDefined,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 
 export class CreateBookDto {
   @ApiProperty({
     type: String,
-    description: 'Book title',
-    example: 'Book 1',
+    description: 'Book title (Example: Book 1)',
     maxLength: 50,
   })
   @IsString()
@@ -17,10 +22,11 @@ export class CreateBookDto {
 
   @ApiPropertyOptional({
     type: String,
-    description: 'Book Summary',
-    example: 'lorem ipsum dolor sit amet',
+    description: 'Book Summary (Example: lorem ipsum dolor sit amet)',
   })
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
+  @MaxLength(300)
   summary?: string;
 }

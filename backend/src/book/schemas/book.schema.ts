@@ -11,7 +11,6 @@ export class Book implements StoryElement {
 
   @Prop({
     required: true,
-    unique: true,
     index: true,
     maxlength: 50,
   })

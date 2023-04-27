@@ -14,8 +14,10 @@ import {
   IsString,
   Max,
   Min,
+  Validate,
   ValidateNested,
 } from 'class-validator';
+import { IsValidObjectId } from '../shared/validations/validation.objectId';
 
 /**
  * Validation to query pages
@@ -169,7 +171,7 @@ export interface QueryDto {
   include?: string[];
 }
 
-export class BasicFilterDto {
+export abstract class BasicFilterDto {
   @ApiPropertyOptional({
     name: 'filter[id]',
     description: 'Search by id (Example: 6431a7c0272aea5bdcfa550f)',
@@ -177,5 +179,6 @@ export class BasicFilterDto {
   @IsString()
   @IsOptional()
   @Expose()
+  @Validate(IsValidObjectId)
   id?: string;
 }

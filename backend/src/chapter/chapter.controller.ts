@@ -4,20 +4,19 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseFilePipeBuilder,
   Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import {
-  ApiBody,
-  ApiConsumes,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiConsumes, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ChapterService } from './chapter.service';
-import { CreateChapterDto } from './dto/create.dto';
+import {
+  CreateChapterDto,
+  CreateChapterWithFileDto,
+  CreateChapterWithTextDto,
+} from './dto/create.dto';
 import { ResponseChapterDto } from './dto/response.dto';
 import {
   CrudDelete,
@@ -31,48 +30,60 @@ import { PatchChapterDto } from './dto/patch.dto';
 import { QueryManyChapterDto, QueryOneChapterDto } from './dto/query.dto';
 
 @Controller('chapter')
-@ApiTags('chapter')
+@ApiTags('Chapters')
 export class ChapterController {
   constructor(private readonly chapterService: ChapterService) {}
 
-  @CrudPost('/:bookId/file', {
-    input: CreateChapterDto,
+  @CrudPost('/file', {
+    input: CreateChapterWithFileDto,
     output: ResponseChapterDto,
   })
-  @ApiParam({ name: 'bookId', type: String })
-  @ApiOperation({ summary: 'Importar arquivo de capítulo' })
+  @ApiOperation({
+    summary: 'Create a chapter with a chapter file.',
+    description:
+      'This endpoint allows you to create a new chapter by providing its text file.',
+  })
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('file'))
-  @ApiBody({
-    description: `O arquivo de texto a ser carregado`,
-    type: CreateChapterDto,
-  })
-  async createChapterByFile(
-    @Param('bookId') bookId: string,
-    @Body() createChapterDto: CreateChapterDto,
-    @UploadedFile() file: Express.Multer.File,
+  async createByFile(
+    @Body() createChapterDto: CreateChapterWithFileDto,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: 'txt',
+        })
+        .addMaxSizeValidator({
+          maxSize: 1000000,
+        })
+        .build({
+          exceptionFactory(error) {
+            throw new HttpException(error, HttpStatus.BAD_REQUEST);
+          },
+        }),
+    )
+    file: Express.Multer.File,
   ): Promise<ResponseChapterDto> {
-    this.validateFile(file);
+    createChapterDto.file = file;
 
-    const { title } = createChapterDto;
-
-    const chapter = await this.chapterService.create({
-      title,
-      bookId,
-      file,
-    });
+    const chapter = await this.chapterService.createWithFile(createChapterDto);
 
     return ResponseChapterDto.fromChapter(chapter);
   }
 
   @CrudPost('', {
-    input: CreateChapterDto,
+    input: CreateChapterWithTextDto,
     output: ResponseChapterDto,
   })
-  async create(
-    @Body() createChapterDto: CreateChapterDto,
+  @ApiConsumes('application/json')
+  @ApiOperation({
+    summary: 'Create a chapter with a text.',
+    description:
+      'This endpoint allows you to create a new chapter by providing its text content.',
+  })
+  async createByText(
+    @Body() createChapterDto: CreateChapterWithTextDto,
   ): Promise<ResponseChapterDto> {
-    const chapter = await this.chapterService.create(createChapterDto);
+    const chapter = await this.chapterService.createWithText(createChapterDto);
 
     return ResponseChapterDto.fromChapter(chapter);
   }
@@ -134,14 +145,5 @@ export class ChapterController {
     const deleted = await this.chapterService.delete(id);
 
     return ResponseChapterDto.fromChapter(deleted);
-  }
-
-  private validateFile(file: Express.Multer.File): void {
-    if (file.originalname.split('.').pop() !== 'txt') {
-      throw new HttpException(
-        'Invalid file type. Use .txt files',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
   }
 }

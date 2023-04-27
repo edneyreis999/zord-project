@@ -1,14 +1,11 @@
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
 import { ApiExcludeController } from '@nestjs/swagger';
 
 @ApiExcludeController()
-@Controller('/healthcheck')
+@Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
-
-  @Get()
+  @Get('/helthcheck')
   getHello(): string {
-    return this.appService.getHello();
+    return `Hello World! from ${process.env.NODE_ENV}`;
   }
 }
