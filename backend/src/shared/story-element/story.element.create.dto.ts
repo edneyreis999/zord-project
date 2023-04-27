@@ -9,6 +9,8 @@ import {
 } from 'class-validator';
 import { UniqueTitle } from '../validations/validation.title';
 import { SetValidOrder } from '../validations/validation.order';
+import { CustomServiceValidate } from '../../request/custom.service.validate';
+import { IsValidObjectIdAndExists } from '../validations/validation.objectId-exists';
 
 export class CreateStoryElementDto {
   @ApiProperty({
@@ -30,6 +32,10 @@ export class CreateStoryElementDto {
   @IsDefined()
   @IsString()
   @IsNotEmpty()
+  @CustomServiceValidate(IsValidObjectIdAndExists, {
+    service: 'BookService',
+    method: 'findById',
+  })
   bookId: string;
 
   @ApiPropertyOptional({

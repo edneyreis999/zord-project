@@ -14,7 +14,7 @@ import { Chapter, ChapterSchema } from '../src/chapter/schemas/chapter.schema';
 import { Arc, ArcSchema } from '../src/schemas/arc';
 import { Scene, SceneSchema } from '../src/schemas/scene';
 import { TextFileService } from '../src/text-file/text-file.service';
-import mongoose, { Model } from 'mongoose';
+import mongoose, { Model, Types } from 'mongoose';
 import { IsValidObjectIdAndExists } from '../src/shared/validations/validation.objectId-exists';
 import { SetValidOrderConstraint } from '../src/shared/validations/validation.order';
 import { UniqueTitle } from '../src/shared/validations/validation.title';
@@ -135,44 +135,149 @@ describe('ChapterController (e2e)', () => {
   describe('CrudGetAll', () => {});
 
   describe('CrudPost', () => {
-    it('should create a dummy chapter without order field', async () => {
-      const bookId = seedBookList[0]._id.toString();
-      const summary = 'summary of the chapter';
-      const content = 'content of the chapter';
-      const response = await request(app.getHttpServer())
-        .post('/chapter')
-        .send({
-          bookId: bookId,
-          title: 'title',
-          summary: summary,
-          content: content,
-        });
-      expect(response.status).toBe(201);
-      const book = response.body;
-      expect(book).toBeDefined();
+    describe('Create with an formated chapter file', () => {});
+    describe('Create with an text', () => {
+      it('should create a dummy chapter without order field', async () => {
+        const bookId = seedBookList[0]._id.toString();
+        const summary = 'summary of the chapter';
+        const content = 'content of the chapter';
+        const response = await request(app.getHttpServer())
+          .post('/chapter')
+          .send({
+            bookId: bookId,
+            title: 'title',
+            summary: summary,
+            content: content,
+          });
+        expect(response.status).toBe(201);
+        const book = response.body;
+        expect(book).toBeDefined();
 
-      const books = (await request(app.getHttpServer()).get('/chapter')).body;
-      expect(books).toHaveLength(3);
+        const books = (await request(app.getHttpServer()).get('/chapter')).body;
+        expect(books).toHaveLength(3);
 
-      const resFindOne = await request(app.getHttpServer())
-        .get('/chapter/id')
-        .query({ filter: { id: book.id } });
-      const chapter = resFindOne.body;
+        const resFindOne = await request(app.getHttpServer())
+          .get('/chapter/id')
+          .query({ filter: { id: book.id } });
+        const chapter = resFindOne.body;
 
-      expect(chapter).toEqual(
-        expect.objectContaining({
-          id: expect.any(String),
-          title: book.title,
-          slug: book.slug,
-          book: expect.objectContaining({ id: expect.any(String) }),
-          arcs: expect.any(Array),
-          content: content,
-          order: books.length,
-          summary: summary,
-          createdAt: expect.any(String),
-          updatedAt: expect.any(String),
-        }),
-      );
+        expect(chapter).toEqual(
+          expect.objectContaining({
+            id: expect.any(String),
+            title: book.title,
+            slug: book.slug,
+            book: expect.objectContaining({ id: expect.any(String) }),
+            arcs: expect.any(Array),
+            content: content,
+            order: books.length,
+            summary: summary,
+            createdAt: expect.any(String),
+            updatedAt: expect.any(String),
+          }),
+        );
+      });
+
+      it('should create a dummy chapter with custom order', async () => {
+        const bookId = seedBookList[0]._id.toString();
+        const summary = 'summary of the chapter';
+        const content = 'content of the chapter';
+        const response = await request(app.getHttpServer())
+          .post('/chapter')
+          .send({
+            bookId: bookId,
+            title: 'title',
+            summary: summary,
+            content: content,
+            order: seedBookList.length + 1,
+          });
+        expect(response.status).toBe(201);
+        const book = response.body;
+        expect(book).toBeDefined();
+
+        const books = (await request(app.getHttpServer()).get('/chapter')).body;
+        expect(books).toHaveLength(3);
+      });
+
+      it('should not create a chapter with an order that already exists', async () => {
+        const bookId = seedBookList[0]._id.toString();
+        const summary = 'summary of the chapter';
+        const content = 'content of the chapter';
+        const response = await request(app.getHttpServer())
+          .post('/chapter')
+          .send({
+            bookId: bookId,
+            title: 'title',
+            summary: summary,
+            content: content,
+            order: seedDummyChapter.order,
+          });
+        expect(response.status).toBe(400);
+        expect(response.body.message).toEqual([
+          `Chapter order '${seedDummyChapter.order}' must be unique within the book '${bookId}'`,
+        ]);
+      });
+
+      it('should not create a chapter with a duplicate title', async () => {
+        const bookId = seedBookList[0]._id.toString();
+        const title = seedDummyChapter.title;
+        const summary = 'new summary of the chapter';
+        const content = 'new content of the chapter';
+        const response = await request(app.getHttpServer())
+          .post('/chapter')
+          .send({
+            bookId: bookId,
+            title: title,
+            summary: summary,
+            content: content,
+          });
+        expect(response.status).toBe(400);
+        expect(response.body.message).toEqual([
+          `Chapter title '${title}' must be unique within the book '${bookId}'`,
+        ]);
+      });
+
+      it('should not create a chapter with a non existing book', async () => {
+        const bookId = new Types.ObjectId().toString();
+        const title = 'new title of the chapter';
+        const summary = 'new summary of the chapter';
+        const content = 'new content of the chapter';
+        const response = await request(app.getHttpServer())
+          .post('/chapter')
+          .send({
+            bookId: bookId,
+            title: title,
+            summary: summary,
+            content: content,
+            order: seedBookList.length + 1,
+          });
+        expect(response.status).toBe(400);
+        expect(response.body.message).toEqual([
+          `Chapter title 'new title of the chapter' must be unique within the book '${bookId}'`,
+          `bookId is invalid with value ${bookId}.`,
+          `Chapter order '${
+            seedBookList.length + 1
+          }' must be unique within the book '${bookId}'`,
+        ]);
+      });
+      it('should not create a chapter with a invalid book id', async () => {
+        const bookId = 'invalid Id';
+        const title = 'new title of the chapter';
+        const summary = 'new summary of the chapter';
+        const content = 'new content of the chapter';
+        const response = await request(app.getHttpServer())
+          .post('/chapter')
+          .send({
+            bookId: bookId,
+            title: title,
+            summary: summary,
+            content: content,
+            order: seedBookList.length + 1,
+          });
+        expect(response.status).toBe(400);
+        expect(response.body.message).toEqual([
+          `bookId is invalid with value ${bookId}.`,
+        ]);
+      });
     });
   });
 

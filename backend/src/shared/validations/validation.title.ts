@@ -50,6 +50,6 @@ export class UniqueTitle implements ValidatorConstraintInterface {
   defaultMessage(args: ValidationArguments) {
     const { object } = args;
     const { bookId, title } = object as CreateStoryElementDto;
-    return `Chapter title '${title}'' must be unique within the book '${bookId}'`;
+    return `Chapter title '${title}' must be unique within the book '${bookId}'`;
   }
 }
