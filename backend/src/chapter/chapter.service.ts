@@ -9,6 +9,7 @@ import { BookService } from '../book/book.service';
 import { CreateChapterDto, CreateChapterWithFileDto } from './dto/create.dto';
 import { StoryElementCrudService } from '../shared/story-element/story.element.crud.service';
 import { PatchChapterDto } from './dto/patch.dto';
+import { QueryOneChapterDto } from './dto/query.dto';
 
 @Injectable()
 export class ChapterService extends StoryElementCrudService<Chapter> {
@@ -40,9 +41,12 @@ export class ChapterService extends StoryElementCrudService<Chapter> {
 
     const chapter = await super.create({ ...defaultData, book });
 
-    const updatedBook = await this.bookService.update(bookId, {
-      chapters: [...book.chapters, chapter] as Chapter[],
-    });
+    const updatedBook = await this.bookService.update(
+      { filter: { id: bookId } },
+      {
+        chapters: [...book.chapters, chapter] as Chapter[],
+      },
+    );
 
     // Just to make sure the book is updated
     chapter.book = updatedBook;
@@ -67,9 +71,12 @@ export class ChapterService extends StoryElementCrudService<Chapter> {
 
     const chapter = await super.create({ ...defaultData, book });
 
-    const updatedBook = await this.bookService.update(bookId, {
-      chapters: [...book.chapters, chapter] as Chapter[],
-    });
+    const updatedBook = await this.bookService.update(
+      { filter: { id: bookId } },
+      {
+        chapters: [...book.chapters, chapter] as Chapter[],
+      },
+    );
 
     // Just to make sure the book is updated
     chapter.book = updatedBook;
@@ -111,18 +118,15 @@ export class ChapterService extends StoryElementCrudService<Chapter> {
   }
 
   async update(
-    id: string,
+    dto: QueryOneChapterDto,
     defaultData: CreateChapterDto | PatchChapterDto,
   ): Promise<Chapter> {
-    const { bookId } = defaultData;
+    const { filter } = dto;
+    const { bookId, id } = filter;
     const book = await this.bookService.findOne({
       filter: { id: bookId },
       include: ['chapters'],
     });
-
-    if (!book) {
-      throw new BadRequestException(`Book with id '${bookId}' not found.`);
-    }
 
     const chapterToUpdate = book.chapters.find(
       (chapter) => chapter._id.toString() === id,
@@ -135,6 +139,6 @@ export class ChapterService extends StoryElementCrudService<Chapter> {
       );
     }
 
-    return super.update(id, defaultData);
+    return super.update(dto, defaultData);
   }
 }

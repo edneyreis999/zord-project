@@ -3,13 +3,12 @@ import {
   Controller,
   HttpException,
   HttpStatus,
-  Param,
   ParseFilePipeBuilder,
   Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiConsumes, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ChapterService } from './chapter.service';
 import {
@@ -27,10 +26,14 @@ import {
   CrudPut,
 } from '../request/crud.decorator';
 import { PatchChapterDto } from './dto/patch.dto';
-import { QueryManyChapterDto, QueryOneChapterDto } from './dto/query.dto';
+import {
+  ChapterBasicFilterDto,
+  QueryManyChapterDto,
+  QueryOneChapterDto,
+} from './dto/query.dto';
 
 @Controller('chapter')
-@ApiTags('Chapters')
+@ApiTags('chapter')
 export class ChapterController {
   constructor(private readonly chapterService: ChapterService) {}
 
@@ -88,17 +91,10 @@ export class ChapterController {
     return ResponseChapterDto.fromChapter(chapter);
   }
 
-  @CrudGetAll('/:bookId', ResponseChapterDto)
-  @ApiParam({ name: 'bookId', type: String })
+  @CrudGetAll('', ResponseChapterDto)
   async findAll(
-    @Param('bookId') bookId: string,
     @Query() query?: QueryManyChapterDto,
   ): Promise<ResponseChapterDto[]> {
-    query = query || {};
-    query.filter = {
-      ...query.filter,
-      bookId,
-    };
     const paginated = await this.chapterService.findAll(query);
     return ResponseChapterDto.fromManyChapters(paginated);
   }
@@ -111,38 +107,37 @@ export class ChapterController {
     return ResponseChapterDto.fromChapter(chapter);
   }
 
-  @CrudPut('/:id', {
+  @CrudPut('', {
     input: CreateChapterDto,
     output: ResponseChapterDto,
   })
-  @ApiParam({ name: 'id', type: String })
   async update(
-    @Param('id') id: string,
+    @Query() query: ChapterBasicFilterDto,
     @Body() dto: CreateChapterDto,
   ): Promise<ResponseChapterDto> {
-    const response = await this.chapterService.update(id, dto);
+    const response = await this.chapterService.update(query, dto);
 
     return ResponseChapterDto.fromChapter(response);
   }
 
-  @CrudPatch('/:id', {
+  @CrudPatch('', {
     input: PatchChapterDto,
     output: ResponseChapterDto,
   })
-  @ApiParam({ name: 'id', type: String })
   async patch(
-    @Param('id') id: string,
+    @Query() query: ChapterBasicFilterDto,
     @Body() dto: PatchChapterDto,
   ): Promise<ResponseChapterDto> {
-    const response = await this.chapterService.update(id, dto);
+    const response = await this.chapterService.update(query, dto);
 
     return ResponseChapterDto.fromChapter(response);
   }
 
-  @CrudDelete('/:id')
-  @ApiParam({ name: 'id', type: String })
-  async remove(@Param('id') id: string): Promise<ResponseChapterDto> {
-    const deleted = await this.chapterService.delete(id);
+  @CrudDelete('')
+  async remove(
+    @Query() query?: ChapterBasicFilterDto,
+  ): Promise<ResponseChapterDto> {
+    const deleted = await this.chapterService.delete(query);
 
     return ResponseChapterDto.fromChapter(deleted);
   }

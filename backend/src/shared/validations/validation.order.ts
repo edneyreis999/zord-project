@@ -36,7 +36,7 @@ export class SetValidOrderConstraint implements ValidatorConstraintInterface {
     }
 
     let order = value;
-    if (!order) {
+    if (order === undefined || order === null) {
       const newOrder = generateUniqueOrder(order);
       order = newOrder;
 

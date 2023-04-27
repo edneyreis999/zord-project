@@ -63,7 +63,12 @@ export function CrudPost(path: string | string[], options: ChangeOptions) {
     Post(path),
     UseInterceptors(ValidationErrorInterceptor),
     ApiBody({ type: options.input }),
-    UsePipes(new ValidationPipe()),
+    UsePipes(
+      new ValidationPipe({
+        whitelist: true,
+        transform: true,
+      }),
+    ),
     ApiCreatedResponse({ type: options.output }),
     ApiBadRequestResponse({ description: 'The payload is invalid' }),
     ApiNotFoundResponse({ description: 'Resource was not found' }),
@@ -101,6 +106,8 @@ export function CrudDelete(path: string | string[]) {
   return applyDecorators(
     Delete(path),
     HttpCode(204),
+    UsePipes(new ValidationPipe()),
+    UseInterceptors(ValidationErrorInterceptor),
     ApiNoContentResponse({
       description: 'The resource has been successfully deleted',
     }),

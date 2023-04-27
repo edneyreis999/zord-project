@@ -23,7 +23,7 @@ export class Chapter implements StoryElement {
     type: mongoose.Schema.Types.ObjectId,
     ref: Book.name,
   })
-  book: Book | mongoose.Schema.Types.ObjectId;
+  book: Book;
 
   @Prop({
     required: true,
@@ -44,6 +44,7 @@ export class Chapter implements StoryElement {
 
   @Prop({
     type: Number,
+    required: true,
     min: 0,
     validate: {
       validator: Number.isInteger,
