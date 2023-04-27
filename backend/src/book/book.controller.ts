@@ -1,5 +1,5 @@
-import { Body, Controller, Param, Query } from '@nestjs/common';
-import { ApiParam, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import {
   CrudDelete,
   CrudGetAll,
@@ -11,7 +11,11 @@ import {
 import { CreateBookDto } from './dto/create.dto';
 import { ResponseBookDto } from './dto/response.dto';
 import { BookService } from './book.service';
-import { QueryManyBookDto, QueryOneBookDto } from './dto/query.dto';
+import {
+  BookBasicFilterDto,
+  QueryManyBookDto,
+  QueryOneBookDto,
+} from './dto/query.dto';
 import { PatchBookDto } from './dto/patch.dto';
 
 @Controller('book')
@@ -41,38 +45,35 @@ export class BookController {
     return ResponseBookDto.fromBook(book);
   }
 
-  @CrudPut('/:id', {
+  @CrudPut('', {
     input: CreateBookDto,
     output: ResponseBookDto,
   })
-  @ApiParam({ name: 'id', type: String })
   async update(
-    @Param('id') id: string,
+    @Query() query: BookBasicFilterDto,
     @Body() dto: CreateBookDto,
   ): Promise<ResponseBookDto> {
-    const response = await this.bookService.update(id, dto);
+    const response = await this.bookService.update(query, dto);
 
     return ResponseBookDto.fromBook(response);
   }
 
-  @CrudPatch('/:id', {
+  @CrudPatch('', {
     input: PatchBookDto,
     output: ResponseBookDto,
   })
-  @ApiParam({ name: 'id', type: String })
   async patch(
-    @Param('id') id: string,
+    @Query() query: BookBasicFilterDto,
     @Body() dto: PatchBookDto,
   ): Promise<ResponseBookDto> {
-    const response = await this.bookService.update(id, dto);
+    const response = await this.bookService.update(query, dto);
 
     return ResponseBookDto.fromBook(response);
   }
 
-  @CrudDelete('/:id')
-  @ApiParam({ name: 'id', type: String })
-  async remove(@Param('id') id: string): Promise<ResponseBookDto> {
-    const deleted = await this.bookService.delete(id);
+  @CrudDelete('')
+  async remove(@Query() query: BookBasicFilterDto): Promise<ResponseBookDto> {
+    const deleted = await this.bookService.delete(query);
 
     return ResponseBookDto.fromBook(deleted);
   }

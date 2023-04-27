@@ -88,13 +88,17 @@ export abstract class StoryElementCrudService<T extends StoryElement> {
   }
 
   // Delete a story element from the database by its ID
-  async delete(id: string): Promise<T> {
+  async delete(queryDto: StoryElementQueryOneDto): Promise<T> {
+    const { filter } = queryDto;
+    const { id } = filter;
     const deleted = await this.model.findByIdAndDelete(id).exec();
     return deleted;
   }
 
   // Update a story element in the database with the provided ID and data
-  async update(id: string, dto: Partial<T>): Promise<T> {
+  async update(queryDto: StoryElementQueryOneDto, dto: Partial<T>): Promise<T> {
+    const { filter } = queryDto;
+    const { id } = filter;
     const updateData: Partial<T> = { ...dto };
     if (dto.title) {
       updateData.slug = this.generateSlug(dto.title);

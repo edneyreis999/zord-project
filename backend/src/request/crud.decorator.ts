@@ -101,6 +101,8 @@ export function CrudDelete(path: string | string[]) {
   return applyDecorators(
     Delete(path),
     HttpCode(204),
+    UsePipes(new ValidationPipe()),
+    UseInterceptors(ValidationErrorInterceptor),
     ApiNoContentResponse({
       description: 'The resource has been successfully deleted',
     }),

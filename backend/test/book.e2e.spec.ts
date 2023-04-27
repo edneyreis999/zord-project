@@ -430,8 +430,12 @@ describe('BookController (e2e)', () => {
     it('should update a book', async () => {
       const newTitle = 'new title';
       const response = await request(app.getHttpServer())
-        .put(`/book/${seedBookList[0]._id.toString()}`)
+        .put(`/book`)
+        .query({
+          filter: { id: seedBookList[0]._id.toString() },
+        })
         .send({ title: newTitle });
+
       const book = response.body;
       expect(book).toBeDefined();
       expect(response.status).toBe(200);
@@ -466,8 +470,12 @@ describe('BookController (e2e)', () => {
 
     it('should not update a book with an empty title or summary', async () => {
       const response = await request(app.getHttpServer())
-        .put(`/book/${seedBookList[0]._id.toString()}`)
+        .put(`/book`)
+        .query({
+          filter: { id: seedBookList[0]._id.toString() },
+        })
         .send({ title: '', summary: '' });
+
       expect(response.status).toBe(400);
       expect(response.body.message).toEqual([
         'title should not be empty',
@@ -475,24 +483,45 @@ describe('BookController (e2e)', () => {
       ]);
     });
 
-    it('should be able to update a book with a duplicate name', async () => {
+    it('should be able to update a book with a duplicate title', async () => {
       const response = await request(app.getHttpServer())
-        .put(`/book/${seedBookList[0]._id.toString()}`)
+        .put(`/book`)
+        .query({
+          filter: { id: seedBookList[0]._id.toString() },
+        })
         .send({ title: seedBookList[1].title });
+
       expect(response.status).toBe(200);
       expect(response.body).toBeDefined();
       expect(response.body.title).toBe(seedBookList[1].title);
       expect(response.body.slug).toBe(seedBookList[1].slug);
     });
-    it.todo('should throw 400 if id is not valid');
+    it('should throw 400 if id is not valid', async () => {
+      const invalidId = 'invalidId';
+      const response = await request(app.getHttpServer())
+        .put(`/book`)
+        .query({
+          filter: { id: invalidId },
+        })
+        .send({ title: 'new title' });
+
+      expect(response.status).toBe(400);
+      expect(response.body.message).toEqual([
+        'filter.id is invalid with value invalidId.',
+      ]);
+    });
   });
 
   describe('CrudPatch', () => {
     it('should patch a book', async () => {
       const newTitle = 'New Title';
       const response = await request(app.getHttpServer())
-        .patch(`/book/${seedBookList[0]._id.toString()}`)
+        .patch(`/book`)
+        .query({
+          filter: { id: seedBookList[0]._id.toString() },
+        })
         .send({ title: newTitle });
+
       const book = response.body;
       expect(book).toBeDefined();
       expect(response.status).toBe(200);
@@ -526,9 +555,11 @@ describe('BookController (e2e)', () => {
 
   describe('CrudDelete', () => {
     it('should delete a book', async () => {
-      const response = await request(app.getHttpServer()).delete(
-        `/book/${seedBookList[0]._id.toString()}`,
-      );
+      const response = await request(app.getHttpServer())
+        .delete(`/book`)
+        .query({
+          filter: { id: seedBookList[0]._id.toString() },
+        });
       expect(response.status).toBe(204);
 
       const books = (await request(app.getHttpServer()).get('/book')).body;
@@ -536,15 +567,37 @@ describe('BookController (e2e)', () => {
     });
 
     it('should not delete a book that does not exist', async () => {
-      const response = await request(app.getHttpServer()).delete(
-        `/book/${new Types.ObjectId().toString()}`,
-      );
-      expect(response.status).toBe(404);
+      const randomId = new Types.ObjectId().toString();
+      const response = await request(app.getHttpServer())
+        .delete(`/book`)
+        .query({
+          filter: { id: randomId },
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body.message).toEqual([
+        `filter.id is invalid with value ${randomId}.`,
+      ]);
 
       const books = (await request(app.getHttpServer()).get('/book')).body;
       expect(books).toHaveLength(seedBookList.length);
     });
 
-    it.todo('should thorw 400 if id is not valid');
+    it('should thorw 400 if id is not valid', async () => {
+      const invalidId = '123';
+      const response = await request(app.getHttpServer())
+        .delete(`/book`)
+        .query({
+          filter: { id: invalidId },
+        });
+
+      expect(response.status).toBe(400);
+      expect(response.body.message).toEqual([
+        `filter.id is invalid with value ${invalidId}.`,
+      ]);
+
+      const books = (await request(app.getHttpServer()).get('/book')).body;
+      expect(books).toHaveLength(seedBookList.length);
+    });
   });
 });
