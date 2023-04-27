@@ -90,11 +90,13 @@ describe('BookController (e2e)', () => {
         title: 'Chapter 1',
         bookId: seedBookWithChapters._id.toString(),
         content: 'bla bla bla',
+        order: 1,
       }),
       chapterService.createWithText({
         title: 'Chapter 2',
         bookId: seedBookWithChapters._id.toString(),
         content: 'blu blu blu',
+        order: 2,
       }),
     ]);
 
