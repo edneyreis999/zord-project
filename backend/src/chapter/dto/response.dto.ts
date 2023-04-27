@@ -1,25 +1,33 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Chapter } from '../schemas/chapter.schema';
 import { Book } from '../../book/schemas/book.schema';
+import { ResponseBookDto } from '../../book/dto/response.dto';
+import { Types } from 'mongoose';
 
 export class ResponseChapterDto {
-  static fromChapter(chapter: Chapter): ResponseChapterDto {
-    return {
-      id: chapter._id.toString(),
-      title: chapter.title,
-      slug: chapter.slug,
-      book: chapter.book as Book | string,
-      arcs: chapter?.arcs?.map((arc) => arc.name),
-      content: chapter.content,
-      order: chapter.order,
-      summary: chapter.summary,
-      createdAt: chapter?.createdAt?.toISOString(),
-      updatedAt: chapter?.updatedAt?.toISOString(),
-    };
+  static fromChapter(chapter: Chapter | Types.ObjectId): ResponseChapterDto {
+    if (chapter instanceof Types.ObjectId) {
+      return {
+        id: chapter.toString(),
+      };
+    } else {
+      return {
+        id: chapter._id.toString(),
+        title: chapter.title,
+        slug: chapter.slug,
+        book: ResponseBookDto.fromBook(chapter.book),
+        arcs: chapter?.arcs?.map((arc) => arc.name),
+        content: chapter.content,
+        order: chapter.order,
+        summary: chapter.summary,
+        createdAt: chapter?.createdAt?.toISOString(),
+        updatedAt: chapter?.updatedAt?.toISOString(),
+      };
+    }
   }
 
-  static fromManyChapters(books: Chapter[]): ResponseChapterDto[] {
-    return books.map(ResponseChapterDto.fromChapter);
+  static fromManyChapters(chapters: Chapter[]): ResponseChapterDto[] {
+    return chapters.map(ResponseChapterDto.fromChapter);
   }
 
   @ApiProperty({
@@ -34,21 +42,21 @@ export class ResponseChapterDto {
     description: 'Chapter Name',
     example: 'chapter 1',
   })
-  readonly title: string;
+  readonly title?: string;
 
   @ApiProperty({
     type: String,
     description: 'slug of the chapter',
     example: 'ghork',
   })
-  readonly slug: string;
+  readonly slug?: string;
 
   @ApiProperty({
     type: Book,
     description: 'Book of the chapter',
     example: "Ghork's story",
   })
-  readonly book: Book | string;
+  readonly book?: ResponseBookDto | string;
 
   @ApiProperty({
     type: String,
@@ -56,40 +64,40 @@ export class ResponseChapterDto {
     description: 'List of arcs of this chapter',
     example: ['O plano de Lala', 'Prova de Fogo'],
   })
-  readonly arcs: string[];
+  readonly arcs?: string[];
 
   @ApiProperty({
     type: String,
     description: 'Content of the chapter',
     example: 'lorem ipsum dolor sit amet',
   })
-  readonly content: string;
+  readonly content?: string;
 
   @ApiProperty({
     type: String,
     description: 'order of the chapter',
     example: '1',
   })
-  readonly order: number;
+  readonly order?: number;
 
   @ApiProperty({
     type: String,
     description: 'Summary of the chapter',
     example: 'lorem ipsum dolor sit amet',
   })
-  readonly summary: string;
+  readonly summary?: string;
 
   @ApiProperty({
     type: String,
     description: 'Date of the creation of the chapter',
     example: '2022-11-16T19:10:48.059Z',
   })
-  readonly createdAt: string;
+  readonly createdAt?: string;
 
   @ApiProperty({
     type: String,
     description: 'Date of the last update of the chapter',
     example: '2022-11-16T19:10:48.059Z',
   })
-  readonly updatedAt: string;
+  readonly updatedAt?: string;
 }

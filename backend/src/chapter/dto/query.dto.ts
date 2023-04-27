@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IsString, IsOptional, Validate, IsDefined } from 'class-validator';
+import { IsString, IsOptional, IsDefined } from 'class-validator';
 import { Filter, Include } from '../../request/query';
 import {
   StoryElementFilterDto,
@@ -32,7 +32,10 @@ class FilterChapterDto extends StoryElementFilterDto {
   @IsString()
   @IsOptional()
   @Expose()
-  @Validate(IsValidObjectIdAndExists)
+  @CustomServiceValidate(IsValidObjectIdAndExists, {
+    service: 'ChapterService',
+    method: 'findById',
+  })
   id?: string;
 
   @ApiPropertyOptional({
@@ -43,7 +46,10 @@ class FilterChapterDto extends StoryElementFilterDto {
   @IsString()
   @IsOptional()
   @Expose()
-  @Validate(IsValidObjectIdAndExists)
+  @CustomServiceValidate(IsValidObjectIdAndExists, {
+    service: 'BookService',
+    method: 'findById',
+  })
   bookId?: string;
 }
 

@@ -7,7 +7,7 @@ import { Types } from 'mongoose';
 
 @ValidatorConstraint({ async: false })
 export class IsValidObjectId implements ValidatorConstraintInterface {
-  async validate(value: string, args: ValidationArguments) {
+  async validate(value: string) {
     if (!Types.ObjectId.isValid(value)) {
       return false;
     }

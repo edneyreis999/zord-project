@@ -33,7 +33,7 @@ import {
 } from './dto/query.dto';
 
 @Controller('chapter')
-@ApiTags('Chapters')
+@ApiTags('chapter')
 export class ChapterController {
   constructor(private readonly chapterService: ChapterService) {}
 
