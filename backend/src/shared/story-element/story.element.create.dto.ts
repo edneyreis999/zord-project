@@ -1,16 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-import {
-  IsDefined,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  Validate,
-} from 'class-validator';
-import { UniqueTitle } from '../validations/validation.title';
-import { SetValidOrder } from '../validations/validation.order';
-import { CustomServiceValidate } from '../../request/custom.service.validate';
-import { IsValidObjectIdAndExists } from '../validations/validation.objectId-exists';
+import { IsDefined, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateStoryElementDto {
   @ApiProperty({
@@ -21,7 +11,6 @@ export class CreateStoryElementDto {
   @IsDefined()
   @IsString()
   @IsNotEmpty()
-  @Validate(UniqueTitle)
   title: string;
 
   @ApiProperty({
@@ -32,10 +21,6 @@ export class CreateStoryElementDto {
   @IsDefined()
   @IsString()
   @IsNotEmpty()
-  @CustomServiceValidate(IsValidObjectIdAndExists, {
-    service: 'BookService',
-    method: 'findById',
-  })
   bookId: string;
 
   @ApiPropertyOptional({
@@ -64,6 +49,5 @@ export class CreateStoryElementDto {
     description: 'order (Example: 1)',
     minimum: 1,
   })
-  @SetValidOrder()
   order?: number;
 }

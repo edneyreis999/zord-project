@@ -8,6 +8,7 @@ import { Arc, ArcSchema } from '../schemas/arc';
 import { Scene, SceneSchema } from '../schemas/scene';
 import { BookService } from '../book/book.service';
 import { Book, BookSchema } from '../book/schemas/book.schema';
+import { ClsService } from 'nestjs-cls';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { Book, BookSchema } from '../book/schemas/book.schema';
       { name: Arc.name, schema: ArcSchema },
       { name: Scene.name, schema: SceneSchema },
     ]),
+    ClsService,
   ],
   controllers: [ChapterController],
   providers: [ChapterService, TextFileService, BookService],
