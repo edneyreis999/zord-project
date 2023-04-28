@@ -14,6 +14,7 @@ import { UniqueTitle } from './shared/validations/validation.title';
 import { SetValidOrderConstraint } from './shared/validations/validation.order';
 import { ConfigModule } from '@nestjs/config';
 import { IsValidObjectIdAndExists } from './shared/validations/validation.objectId-exists';
+import { BookIdValidationPipe } from './shared/pipes/bookid.validation.pipe';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { IsValidObjectIdAndExists } from './shared/validations/validation.object
     UniqueTitle,
     IsValidObjectIdAndExists,
     SetValidOrderConstraint,
+    BookIdValidationPipe,
   ],
 })
 export class AppModule {}

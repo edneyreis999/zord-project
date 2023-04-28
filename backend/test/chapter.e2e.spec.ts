@@ -20,6 +20,7 @@ import { SetValidOrderConstraint } from '../src/shared/validations/validation.or
 import { UniqueTitle } from '../src/shared/validations/validation.title';
 import { useContainer } from 'class-validator';
 import { ChapterController } from '../src/chapter/chapter.controller';
+import { BookIdValidationPipe } from '../src/shared/pipes/bookid.validation.pipe';
 
 describe('ChapterController (e2e)', () => {
   let app: INestApplication;
@@ -64,6 +65,7 @@ describe('ChapterController (e2e)', () => {
         UniqueTitle,
         IsValidObjectIdAndExists,
         SetValidOrderConstraint,
+        BookIdValidationPipe,
       ],
     }).compile();
 
@@ -176,6 +178,44 @@ describe('ChapterController (e2e)', () => {
           }),
         );
       });
+      it('should not create a chapter with a non existing book', async () => {
+        const bookId = new Types.ObjectId().toString();
+        const title = 'new title of the chapter';
+        const summary = 'new summary of the chapter';
+        const content = 'new content of the chapter';
+        const response = await request(app.getHttpServer())
+          .post('/chapter')
+          .send({
+            bookId: bookId,
+            title: title,
+            summary: summary,
+            content: content,
+            order: seedBookList.length + 1,
+          });
+        expect(response.status).toBe(404);
+        expect(response.body.message).toEqual(
+          `Book with id ${bookId} not found.`,
+        );
+      });
+      it('should not create a chapter with a invalid book id', async () => {
+        const bookId = 'invalid Id';
+        const title = 'new title of the chapter';
+        const summary = 'new summary of the chapter';
+        const content = 'new content of the chapter';
+        const response = await request(app.getHttpServer())
+          .post('/chapter')
+          .send({
+            bookId: bookId,
+            title: title,
+            summary: summary,
+            content: content,
+            order: seedBookList.length + 1,
+          });
+        expect(response.status).toBe(400);
+        expect(response.body.message).toEqual([
+          'bookId must be a valid ObjectId and get the value of invalid Id',
+        ]);
+      });
 
       it('should create a dummy chapter with custom order', async () => {
         const bookId = seedBookList[0]._id.toString();
@@ -233,49 +273,6 @@ describe('ChapterController (e2e)', () => {
         expect(response.status).toBe(400);
         expect(response.body.message).toEqual([
           `Chapter title '${title}' must be unique within the book '${bookId}'`,
-        ]);
-      });
-
-      it('should not create a chapter with a non existing book', async () => {
-        const bookId = new Types.ObjectId().toString();
-        const title = 'new title of the chapter';
-        const summary = 'new summary of the chapter';
-        const content = 'new content of the chapter';
-        const response = await request(app.getHttpServer())
-          .post('/chapter')
-          .send({
-            bookId: bookId,
-            title: title,
-            summary: summary,
-            content: content,
-            order: seedBookList.length + 1,
-          });
-        expect(response.status).toBe(400);
-        expect(response.body.message).toEqual([
-          `Chapter title 'new title of the chapter' must be unique within the book '${bookId}'`,
-          `bookId is invalid with value ${bookId}.`,
-          `Chapter order '${
-            seedBookList.length + 1
-          }' must be unique within the book '${bookId}'`,
-        ]);
-      });
-      it('should not create a chapter with a invalid book id', async () => {
-        const bookId = 'invalid Id';
-        const title = 'new title of the chapter';
-        const summary = 'new summary of the chapter';
-        const content = 'new content of the chapter';
-        const response = await request(app.getHttpServer())
-          .post('/chapter')
-          .send({
-            bookId: bookId,
-            title: title,
-            summary: summary,
-            content: content,
-            order: seedBookList.length + 1,
-          });
-        expect(response.status).toBe(400);
-        expect(response.body.message).toEqual([
-          `bookId is invalid with value ${bookId}.`,
         ]);
       });
     });

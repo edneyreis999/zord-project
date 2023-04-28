@@ -7,6 +7,7 @@ import {
   Query,
   UploadedFile,
   UseInterceptors,
+  UsePipes,
 } from '@nestjs/common';
 import { ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -31,6 +32,7 @@ import {
   QueryManyChapterDto,
   QueryOneChapterDto,
 } from './dto/query.dto';
+import { BookIdValidationPipe } from '../shared/pipes/bookid.validation.pipe';
 
 @Controller('chapter')
 @ApiTags('chapter')
@@ -73,6 +75,7 @@ export class ChapterController {
     return ResponseChapterDto.fromChapter(chapter);
   }
 
+  @UsePipes(BookIdValidationPipe)
   @CrudPost('', {
     input: CreateChapterWithTextDto,
     output: ResponseChapterDto,
