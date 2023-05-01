@@ -2,12 +2,13 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import {
   IsDefined,
+  IsMongoId,
   IsNotEmpty,
+  IsNumberString,
   IsOptional,
   IsString,
-  Validate,
+  MaxLength,
 } from 'class-validator';
-import { IsValidObjectId } from '../validations/validation.objectId';
 
 export class CreateStoryElementDto {
   @ApiProperty({
@@ -18,7 +19,7 @@ export class CreateStoryElementDto {
   @IsDefined()
   @IsString()
   @IsNotEmpty()
-  // @Validate(UniqueTitle)
+  @MaxLength(50)
   title: string;
 
   @ApiProperty({
@@ -29,7 +30,9 @@ export class CreateStoryElementDto {
   @IsDefined()
   @IsString()
   @IsNotEmpty()
-  @Validate(IsValidObjectId)
+  @IsMongoId({
+    message: 'book id invalid',
+  })
   bookId: string;
 
   @ApiPropertyOptional({
@@ -39,6 +42,7 @@ export class CreateStoryElementDto {
   })
   @IsString()
   @IsOptional()
+  @MaxLength(300)
   summary?: string;
 
   @ApiProperty({
@@ -58,6 +62,7 @@ export class CreateStoryElementDto {
     description: 'order (Example: 1)',
     minimum: 1,
   })
-  // @SetValidOrder()
+  @IsOptional()
+  @IsNumberString()
   order?: number;
 }

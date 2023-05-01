@@ -14,10 +14,17 @@ import { UniqueTitle } from './shared/validations/validation.title';
 import { SetValidOrderConstraint } from './shared/validations/validation.order';
 import { ConfigModule } from '@nestjs/config';
 import { IsValidObjectIdAndExists } from './shared/validations/validation.objectId-exists';
-import { BookIdValidationPipe } from './shared/pipes/bookid.validation.pipe';
+import { ClsModule } from 'nestjs-cls';
 
 @Module({
   imports: [
+    ClsModule.forRoot({
+      global: true,
+      middleware: {
+        mount: true,
+        generateId: true,
+      },
+    }),
     ConfigModule.forRoot(),
     ChapterModule,
     BookModule,
@@ -37,7 +44,6 @@ import { BookIdValidationPipe } from './shared/pipes/bookid.validation.pipe';
     UniqueTitle,
     IsValidObjectIdAndExists,
     SetValidOrderConstraint,
-    BookIdValidationPipe,
   ],
 })
 export class AppModule {}

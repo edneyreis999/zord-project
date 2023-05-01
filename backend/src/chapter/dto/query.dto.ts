@@ -1,30 +1,25 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IsString, IsOptional, IsDefined } from 'class-validator';
-import { Filter, Include } from '../../request/query';
+import { IsDefined, IsMongoId, IsOptional, IsString } from 'class-validator';
+import { Filter, FilterByIdDto, Include } from '../../request/query';
 import {
-  StoryElementFilterDto,
   StoryElementQueryManyDto,
   StoryElementQueryOneDto,
 } from '../../shared/story-element/story.element.query.filter.dto';
-import { IsValidObjectIdAndExists } from '../../shared/validations/validation.objectId-exists';
-import { CustomServiceValidate } from '../../request/custom.service.validate';
 
-export class ChapterFindByIdDto {
+class FilterManyChapterDto {
   @ApiProperty({
-    name: 'filter[id]',
-    description: 'Search by id (Example: 6431a7c0272aea5bdcfa550f)',
+    name: 'filter[bookId]',
+    description: 'Search by bookId (Example: 6431a7c0272aea5bdcfa550f)',
   })
   @IsString()
   @IsDefined()
   @Expose()
-  @CustomServiceValidate(IsValidObjectIdAndExists, {
-    service: 'ChapterService',
-    method: 'findById',
+  @IsMongoId({
+    message: 'bookId invalid',
   })
-  id: string;
-}
-class FilterChapterDto extends StoryElementFilterDto {
+  bookId: string;
+
   @ApiPropertyOptional({
     name: 'filter[id]',
     description: 'Search by id (Example: 6431a7c0272aea5bdcfa550f)',
@@ -32,44 +27,42 @@ class FilterChapterDto extends StoryElementFilterDto {
   @IsString()
   @IsOptional()
   @Expose()
-  @CustomServiceValidate(IsValidObjectIdAndExists, {
-    service: 'ChapterService',
-    method: 'findById',
+  @IsMongoId({
+    message: 'id invalid',
   })
-  id?: string;
+  id: string;
 
   @ApiPropertyOptional({
-    name: 'filter[bookId]',
-    description: 'Search for book ID',
-    example: 'Ghork',
+    name: 'filter[title]',
+    description: 'Search for name (Example: Ghork)',
   })
   @IsString()
   @IsOptional()
   @Expose()
-  @CustomServiceValidate(IsValidObjectIdAndExists, {
-    service: 'BookService',
-    method: 'findById',
-  })
-  bookId?: string;
-}
+  readonly title?: string;
 
-export class ChapterBasicFilterDto {
-  @Filter(() => ChapterFindByIdDto)
-  filter?: ChapterFindByIdDto;
+  @ApiPropertyOptional({
+    name: 'filter[slug]',
+    description: 'Search for slug (Example: ghork)',
+  })
+  @IsString()
+  @IsOptional()
+  @Expose()
+  readonly slug?: string;
 }
 
 export class QueryOneChapterDto extends StoryElementQueryOneDto {
-  @Include(['book, arc'])
+  @Include(['book', 'arc'])
   readonly include?: string[];
 
-  @Filter(() => FilterChapterDto)
-  filter?: FilterChapterDto;
+  @Filter(() => FilterByIdDto)
+  filter: FilterByIdDto;
 }
 
 export class QueryManyChapterDto extends StoryElementQueryManyDto {
-  @Filter(() => FilterChapterDto)
-  filter?: FilterChapterDto;
+  @Filter(() => FilterManyChapterDto)
+  filter: FilterManyChapterDto;
 
-  @Include(['book, arc'])
+  @Include(['book', 'arc'])
   readonly include?: string[];
 }

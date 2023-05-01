@@ -4,20 +4,20 @@
  *  - {@link https://github.com/nestjs/swagger/issues/90}
  */
 import { applyDecorators } from '@nestjs/common';
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, Transform, Type, TypeHelpOptions } from 'class-transformer';
 import {
   IsArray,
+  IsDefined,
   IsIn,
   IsInt,
+  IsMongoId,
   IsOptional,
   IsString,
   Max,
   Min,
-  Validate,
   ValidateNested,
 } from 'class-validator';
-import { IsValidObjectId } from '../shared/validations/validation.objectId';
 
 /**
  * Validation to query pages
@@ -150,12 +150,12 @@ export function Page() {
 // eslint-disable-next-line @typescript-eslint/ban-types
 export function Filter(typeFunction?: (type?: TypeHelpOptions) => Function) {
   return applyDecorators(
-    ApiPropertyOptional({
+    ApiProperty({
       name: 'filter',
       description: 'Filter the results',
     }),
     ValidateNested(),
-    IsOptional(),
+    IsDefined(),
     Type(typeFunction),
     Expose(),
   );
@@ -165,20 +165,22 @@ export function Filter(typeFunction?: (type?: TypeHelpOptions) => Function) {
  * Interface of query params to GET all resources
  */
 export interface QueryDto {
-  filter?: BasicFilterDto;
+  filter?: FilterByIdDto;
   page?: PaginateQueryPage;
   sort?: string[];
   include?: string[];
 }
 
-export abstract class BasicFilterDto {
-  @ApiPropertyOptional({
+export abstract class FilterByIdDto {
+  @ApiProperty({
     name: 'filter[id]',
     description: 'Search by id (Example: 6431a7c0272aea5bdcfa550f)',
   })
   @IsString()
-  @IsOptional()
+  @IsDefined()
   @Expose()
-  @Validate(IsValidObjectId)
-  id?: string;
+  @IsMongoId({
+    message: 'id invalid',
+  })
+  id: string;
 }

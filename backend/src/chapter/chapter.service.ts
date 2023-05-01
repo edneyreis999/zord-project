@@ -1,15 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Chapter } from './schemas/chapter.schema';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
+import { BookService } from '../book/book.service';
 import { Arc } from '../schemas/arc';
 import { Scene } from '../schemas/scene';
-import { TextFileService } from '../text-file/text-file.service';
-import { BookService } from '../book/book.service';
-import { CreateChapterDto, CreateChapterWithFileDto } from './dto/create.dto';
 import { StoryElementCrudService } from '../shared/story-element/story.element.crud.service';
-import { PatchChapterDto } from './dto/patch.dto';
-import { QueryOneChapterDto } from './dto/query.dto';
+import { generateSlug } from '../shared/story-element/story.element.utils';
+import { TextFileService } from '../text-file/text-file.service';
+import { QueryManyChapterDto } from './dto/query.dto';
+import { IChapter } from './interface/Chapter';
+import { Chapter } from './schemas/chapter.schema';
 
 @Injectable()
 export class ChapterService extends StoryElementCrudService<Chapter> {
@@ -25,63 +25,102 @@ export class ChapterService extends StoryElementCrudService<Chapter> {
     super(chapterModel);
   }
 
-  async createWithFile(
-    defaultData: Partial<Chapter> & CreateChapterWithFileDto,
-  ): Promise<Chapter> {
-    const { bookId, file } = defaultData;
+  async create(chapter: IChapter): Promise<Chapter> {
+    const { book } = chapter;
 
-    const book = await this.bookService.findOne({
-      filter: { id: bookId },
-      include: ['chapters'],
+    const arcs = await this.processArcsAndScenes(chapter.content);
+
+    const createdChapter = await super.create({
+      ...chapter,
+      arcs,
     });
 
-    defaultData.content = await this.textFileService.readFile(file);
-    // Extract arcs and scenes from the text file
-    defaultData.arcs = await this.processArcsAndScenes(defaultData.content);
+    book.chapters.push(createdChapter);
+    const updatedBook = await this.bookService.update(book);
 
-    const chapter = await super.create({ ...defaultData, book });
+    // Just to make sure the created chapter is updated
+    createdChapter.book = updatedBook;
 
-    const updatedBook = await this.bookService.update(
-      { filter: { id: bookId } },
-      {
-        chapters: [...book.chapters, chapter] as Chapter[],
-      },
-    );
-
-    // Just to make sure the book is updated
-    chapter.book = updatedBook;
-
-    return chapter;
+    return createdChapter;
   }
 
-  async createWithText(
-    defaultData: Partial<Chapter> & CreateChapterDto,
-  ): Promise<Chapter> {
-    const { bookId } = defaultData;
+  async update(chapter: IChapter): Promise<Chapter> {
+    const { id, title } = chapter;
 
-    const book = await this.bookService.findOne({
-      filter: { id: bookId },
-      include: ['chapters'],
-    });
-
-    // TODO: Mover essa validação para o DTO
-    if (!book) {
-      throw new BadRequestException(`Book with id '${bookId}' not found.`);
+    if (title) {
+      chapter.slug = generateSlug(title);
     }
 
-    const chapter = await super.create({ ...defaultData, book });
-
-    const updatedBook = await this.bookService.update(
-      { filter: { id: bookId } },
+    const chapterUpdated = await this.model.findOneAndUpdate(
+      { _id: id },
+      chapter,
       {
-        chapters: [...book.chapters, chapter] as Chapter[],
+        new: true, // Return the updated document
+        runValidators: true, // Run validations on the update
       },
     );
 
-    // Just to make sure the book is updated
-    chapter.book = updatedBook;
+    return chapterUpdated;
+  }
 
-    return chapter;
+  async findAll(queryDto: QueryManyChapterDto): Promise<Chapter[]> {
+    const { filter, include, page, sort } = queryDto;
+    const { id, bookId, slug, title } = filter;
+
+    const queryFilter: FilterQuery<Chapter> = {
+      book: bookId,
+    };
+
+    if (id) {
+      queryFilter._id = id;
+      const chapterQuery = this.model.find(queryFilter);
+      if (include) {
+        super.populateWithIncludes(chapterQuery, include);
+      }
+
+      return chapterQuery.exec();
+    }
+    if (title) {
+      queryFilter.title = new RegExp(title, 'i');
+    }
+    queryFilter.slug = new RegExp(slug, 'i');
+    if (slug) {
+    }
+
+    const sortQuery = this.createSortQuery(sort);
+
+    const { offset, limit } = page ?? {};
+
+    const chapterQuery = this.model
+      .find(queryFilter)
+      .sort(sortQuery)
+      .skip(offset)
+      .limit(limit);
+
+    if (include) {
+      this.populateWithIncludes(chapterQuery, include);
+    }
+
+    return chapterQuery.exec();
+  }
+
+  async delete(id: string): Promise<Chapter> {
+    const chapterDeleted = await super.delete(id);
+
+    if (!chapterDeleted) {
+      return null;
+    }
+
+    // Remove the chapter from the book
+    const book = await this.bookService.findById(
+      chapterDeleted.book._id.toString(),
+    );
+    book.chapters = book.chapters.filter(
+      (chapter) => chapter._id.toString() !== id,
+    );
+    await this.bookService.update(book);
+
+    return chapterDeleted;
   }
 
   private async processArcsAndScenes(chapterText: string): Promise<Arc[]> {
@@ -115,30 +154,5 @@ export class ChapterService extends StoryElementCrudService<Chapter> {
   private async createScene(name?: string, content?: string): Promise<Scene> {
     const scene = await this.sceneModel.create({ name, content });
     return scene?.toObject();
-  }
-
-  async update(
-    dto: QueryOneChapterDto,
-    defaultData: CreateChapterDto | PatchChapterDto,
-  ): Promise<Chapter> {
-    const { filter } = dto;
-    const { bookId, id } = filter;
-    const book = await this.bookService.findOne({
-      filter: { id: bookId },
-      include: ['chapters'],
-    });
-
-    const chapterToUpdate = book.chapters.find(
-      (chapter) => chapter._id.toString() === id,
-    );
-
-    // TODO: Colocar essa validação no decorator do DTO
-    if (!chapterToUpdate) {
-      throw new BadRequestException(
-        `Chapter with id '${id}' not found in book '${bookId}'.`,
-      );
-    }
-
-    return super.update(dto, defaultData);
   }
 }
