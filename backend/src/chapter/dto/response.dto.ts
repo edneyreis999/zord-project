@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Chapter } from '../schemas/chapter.schema';
-import { Book } from '../../book/schemas/book.schema';
-import { ResponseBookDto } from '../../book/dto/response.dto';
 import { Types } from 'mongoose';
+import { ResponseBookDto } from '../../book/dto/response.dto';
+import { Book } from '../../book/schemas/book.schema';
+import { Chapter } from '../schemas/chapter.schema';
 
 export class ResponseChapterDto {
   static fromChapter(chapter: Chapter | Types.ObjectId): ResponseChapterDto {
@@ -16,7 +16,7 @@ export class ResponseChapterDto {
         title: chapter.title,
         slug: chapter.slug,
         book: ResponseBookDto.fromBook(chapter.book),
-        arcs: chapter?.arcs?.map((arc) => arc.name),
+        arcs: chapter?.arcs?.map((arc) => arc.name ?? arc.toString()),
         content: chapter.content,
         order: chapter.order,
         summary: chapter.summary,

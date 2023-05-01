@@ -1,9 +1,9 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IsString, IsOptional } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 import {
-  BasicFilterDto,
   Filter,
+  FilterByIdDto,
   Include,
   Page,
   PaginateQueryPage,
@@ -11,7 +11,7 @@ import {
   Sort,
 } from '../../request/query';
 
-export class StoryElementFilterDto extends BasicFilterDto {
+export class StoryElementFilterDto extends FilterByIdDto {
   constructor(partial: Partial<StoryElementFilterDto>) {
     super();
     Object.assign(this, partial);
@@ -38,7 +38,7 @@ export class StoryElementFilterDto extends BasicFilterDto {
 
 export abstract class StoryElementQueryManyDto implements QueryDto {
   @Filter(() => StoryElementFilterDto)
-  filter?: StoryElementFilterDto;
+  filter: StoryElementFilterDto;
 
   @Sort(['title', '-title', 'createdAt', '-createdAt'])
   sort?: string[];
@@ -51,8 +51,8 @@ export abstract class StoryElementQueryManyDto implements QueryDto {
 }
 
 export abstract class StoryElementQueryOneDto {
-  @Filter(() => BasicFilterDto)
-  filter?: BasicFilterDto;
+  @Filter(() => FilterByIdDto)
+  filter: FilterByIdDto;
 
   @Include([])
   include?: string[];

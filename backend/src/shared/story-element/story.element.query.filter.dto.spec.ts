@@ -1,14 +1,16 @@
-import { StoryElementFilterDto } from './story.element.query.filter.dto';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
+import { Types } from 'mongoose';
 import { QueryManyBookDto } from '../../book/dto/query.dto';
 import { QueryOneChapterDto } from '../../chapter/dto/query.dto';
-import { BasicFilterDto } from '../../request/query';
+import { FilterByIdDto } from '../../request/query';
+import { StoryElementFilterDto } from './story.element.query.filter.dto';
 
 describe('StoryElementFilterDto', () => {
   describe('StoryElementFilterDto', () => {
     it('should validate title and slug as strings', async () => {
       const filterDto = new StoryElementFilterDto({
+        id: new Types.ObjectId().toHexString(),
         title: 'Ghork',
         slug: 'ghork',
       });
@@ -57,7 +59,7 @@ describe('StoryElementFilterDto', () => {
         filter: filterObject,
       });
 
-      expect(queryOneDto.filter).toBeInstanceOf(BasicFilterDto);
+      expect(queryOneDto.filter).toBeInstanceOf(FilterByIdDto);
       expect(queryOneDto.filter.id).toEqual('6431a7c0272aea5bdcfa550f');
     });
   });

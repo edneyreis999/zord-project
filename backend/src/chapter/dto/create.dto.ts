@@ -13,5 +13,3 @@ export class CreateChapterWithFileDto extends OmitType(CreateStoryElementDto, [
   })
   file?: Express.Multer.File;
 }
-
-export class CreateChapterWithTextDto extends CreateStoryElementDto {}

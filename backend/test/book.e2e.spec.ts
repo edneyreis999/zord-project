@@ -1,22 +1,23 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
 import { ConfigModule } from '@nestjs/config';
-import { rootMongooseTestModule } from './MongooseTestModule';
 import { MongooseModule } from '@nestjs/mongoose';
+import { Test, TestingModule } from '@nestjs/testing';
+import { useContainer } from 'class-validator';
+import { Model, Types } from 'mongoose';
+import * as request from 'supertest';
 import { BookController } from '../src/book/book.controller';
 import { BookService } from '../src/book/book.service';
 import { Book, BookSchema } from '../src/book/schemas/book.schema';
 import { ChapterService } from '../src/chapter/chapter.service';
+import { IChapter } from '../src/chapter/interface/Chapter';
 import { Chapter, ChapterSchema } from '../src/chapter/schemas/chapter.schema';
 import { Arc, ArcSchema } from '../src/schemas/arc';
 import { Scene, SceneSchema } from '../src/schemas/scene';
-import { TextFileService } from '../src/text-file/text-file.service';
-import { Model, Types } from 'mongoose';
 import { IsValidObjectIdAndExists } from '../src/shared/validations/validation.objectId-exists';
 import { SetValidOrderConstraint } from '../src/shared/validations/validation.order';
 import { UniqueTitle } from '../src/shared/validations/validation.title';
-import { useContainer } from 'class-validator';
+import { TextFileService } from '../src/text-file/text-file.service';
+import { rootMongooseTestModule } from './MongooseTestModule';
 
 describe('BookController (e2e)', () => {
   let app: INestApplication;
@@ -27,6 +28,7 @@ describe('BookController (e2e)', () => {
 
   let seedBookList: Book[];
   let seedBookWithChapters: Book;
+  let seedDummyChapters: Chapter[];
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -84,23 +86,31 @@ describe('BookController (e2e)', () => {
 
     const [book0, book1] = await Promise.all(promise);
     seedBookWithChapters = book0;
-
-    await Promise.all([
-      chapterService.createWithText({
-        title: 'Chapter 1',
-        bookId: seedBookWithChapters._id.toString(),
-        content: 'bla bla bla',
-        order: 1,
-      }),
-      chapterService.createWithText({
-        title: 'Chapter 2',
-        bookId: seedBookWithChapters._id.toString(),
-        content: 'blu blu blu',
-        order: 2,
-      }),
-    ]);
-
     seedBookList = [book0, book1];
+
+    const promiseChapter = [];
+    const chapterInput1: IChapter = {
+      title: 'Dummy Chapter',
+      book: seedBookWithChapters,
+      summary: 'summary of the chapter',
+      content: 'content of the chapter',
+      order: 1,
+    };
+    promiseChapter.push(chapterService.create(chapterInput1));
+
+    const chapterInput2: IChapter = {
+      title: 'Dummy Chapter 2',
+      book: seedBookWithChapters,
+      summary: 'summary of the chapter',
+      content: 'content of the chapter',
+      order: 2,
+    };
+
+    promiseChapter.push(chapterService.create(chapterInput2));
+
+    await Promise.all(promiseChapter).then((chapters) => {
+      seedDummyChapters = chapters;
+    });
   };
 
   describe('CrudGetOne', () => {
@@ -153,6 +163,7 @@ describe('BookController (e2e)', () => {
         });
       expect(response.status).toBe(200);
       const book = response.body;
+      expect(book.chapters).toHaveLength(seedDummyChapters.length);
       expect(book).toEqual(
         expect.objectContaining({
           chapters: expect.arrayContaining([

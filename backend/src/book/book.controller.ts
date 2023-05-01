@@ -8,15 +8,15 @@ import {
   CrudPost,
   CrudPut,
 } from '../request/crud.decorator';
-import { CreateBookDto } from './dto/create.dto';
-import { ResponseBookDto } from './dto/response.dto';
 import { BookService } from './book.service';
+import { CreateBookDto } from './dto/create.dto';
+import { PatchBookDto } from './dto/patch.dto';
 import {
   BookBasicFilterDto,
   QueryManyBookDto,
   QueryOneBookDto,
 } from './dto/query.dto';
-import { PatchBookDto } from './dto/patch.dto';
+import { ResponseBookDto } from './dto/response.dto';
 
 @Controller('book')
 @ApiTags('book')
@@ -49,11 +49,8 @@ export class BookController {
     input: CreateBookDto,
     output: ResponseBookDto,
   })
-  async update(
-    @Query() query: BookBasicFilterDto,
-    @Body() dto: CreateBookDto,
-  ): Promise<ResponseBookDto> {
-    const response = await this.bookService.update(query, dto);
+  async update(@Body() dto: CreateBookDto): Promise<ResponseBookDto> {
+    const response = await this.bookService.update(dto);
 
     return ResponseBookDto.fromBook(response);
   }
@@ -62,18 +59,16 @@ export class BookController {
     input: PatchBookDto,
     output: ResponseBookDto,
   })
-  async patch(
-    @Query() query: BookBasicFilterDto,
-    @Body() dto: PatchBookDto,
-  ): Promise<ResponseBookDto> {
-    const response = await this.bookService.update(query, dto);
+  async patch(@Body() dto: PatchBookDto): Promise<ResponseBookDto> {
+    const response = await this.bookService.update(dto);
 
     return ResponseBookDto.fromBook(response);
   }
 
   @CrudDelete('')
   async remove(@Query() query: BookBasicFilterDto): Promise<ResponseBookDto> {
-    const deleted = await this.bookService.delete(query);
+    const { id } = query.filter;
+    const deleted = await this.bookService.delete(id);
 
     return ResponseBookDto.fromBook(deleted);
   }

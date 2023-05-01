@@ -1,4 +1,17 @@
 import {
+  Delete,
+  Get,
+  HttpCode,
+  Patch,
+  Post,
+  Put,
+  Type,
+  UseInterceptors,
+  UsePipes,
+  ValidationPipe,
+  applyDecorators,
+} from '@nestjs/common';
+import {
   ApiBadGatewayResponse,
   ApiBadRequestResponse,
   ApiBody,
@@ -7,19 +20,6 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
 } from '@nestjs/swagger';
-import {
-  applyDecorators,
-  UsePipes,
-  ValidationPipe,
-  Type,
-  Get,
-  Post,
-  Put,
-  Delete,
-  UseInterceptors,
-  Patch,
-  HttpCode,
-} from '@nestjs/common';
 import { NotFoundInterceptor } from './not-found.interceptor';
 import { ValidationErrorInterceptor } from './validation-error.interceptor';
 
@@ -81,7 +81,13 @@ export function CrudPut(path: string | string[], options: ChangeOptions) {
     Put(path),
     UseInterceptors(ValidationErrorInterceptor),
     ApiBody({ type: options.input }),
-    UsePipes(new ValidationPipe()),
+    UsePipes(
+      new ValidationPipe({
+        whitelist: true,
+        transform: true,
+        forbidNonWhitelisted: true,
+      }),
+    ),
     ApiCreatedResponse({ type: options.output }),
     ApiBadRequestResponse({ description: 'The payload is invalid' }),
     ApiNotFoundResponse({ description: 'Resource not found' }),
@@ -94,7 +100,13 @@ export function CrudPatch(path: string | string[], options: ChangeOptions) {
     Patch(path),
     UseInterceptors(ValidationErrorInterceptor),
     ApiBody({ type: options.input }),
-    UsePipes(new ValidationPipe()),
+    UsePipes(
+      new ValidationPipe({
+        whitelist: true,
+        transform: true,
+        forbidNonWhitelisted: true,
+      }),
+    ),
     ApiCreatedResponse({ type: options.output }),
     ApiBadRequestResponse({ description: 'The payload is invalid' }),
     ApiNotFoundResponse({ description: 'Resource not found' }),

@@ -3,20 +3,15 @@ import {
   Controller,
   HttpException,
   HttpStatus,
+  NotFoundException,
   ParseFilePipeBuilder,
   Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ChapterService } from './chapter.service';
-import {
-  CreateChapterDto,
-  CreateChapterWithFileDto,
-  CreateChapterWithTextDto,
-} from './dto/create.dto';
-import { ResponseChapterDto } from './dto/response.dto';
+import { ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Book } from '../book/schemas/book.schema';
 import {
   CrudDelete,
   CrudGetAll,
@@ -25,12 +20,16 @@ import {
   CrudPost,
   CrudPut,
 } from '../request/crud.decorator';
-import { PatchChapterDto } from './dto/patch.dto';
-import {
-  ChapterBasicFilterDto,
-  QueryManyChapterDto,
-  QueryOneChapterDto,
-} from './dto/query.dto';
+import { FetchBookByIdPipe } from '../shared/pipes/fetch.book.by.id.pipe';
+import { FileToStringPipe } from '../shared/pipes/file.to.context.pipe';
+import { ValidateChapterCreationPipe } from '../shared/pipes/validate.chapter.creation.pipe';
+import { ValidateChapterUpdatePipe } from '../shared/pipes/validate.chapter.update.pipe';
+import { ChapterService } from './chapter.service';
+import { createChapterFromDto, updateChapterFromDto } from './chapter.utils';
+import { CreateChapterDto, CreateChapterWithFileDto } from './dto/create.dto';
+import { PatchChapterDto, UpdateChapterDto } from './dto/patch.dto';
+import { QueryManyChapterDto, QueryOneChapterDto } from './dto/query.dto';
+import { ResponseChapterDto } from './dto/response.dto';
 
 @Controller('chapter')
 @ApiTags('chapter')
@@ -46,14 +45,13 @@ export class ChapterController {
     description:
       'This endpoint allows you to create a new chapter by providing its text file.',
   })
-  @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
   async createByFile(
-    @Body() createChapterDto: CreateChapterWithFileDto,
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addFileTypeValidator({
-          fileType: 'txt',
+          fileType: 'text/plain',
         })
         .addMaxSizeValidator({
           maxSize: 1000000,
@@ -63,18 +61,23 @@ export class ChapterController {
             throw new HttpException(error, HttpStatus.BAD_REQUEST);
           },
         }),
+      FileToStringPipe,
     )
-    file: Express.Multer.File,
+    fileContent: string,
+    @Body('bookId', FetchBookByIdPipe) book: Book,
+    @Body(ValidateChapterCreationPipe) dto: CreateChapterWithFileDto,
   ): Promise<ResponseChapterDto> {
-    createChapterDto.file = file;
-
-    const chapter = await this.chapterService.createWithFile(createChapterDto);
+    const chapterInput = createChapterFromDto(
+      { ...dto, content: fileContent },
+      book,
+    );
+    const chapter = await this.chapterService.create(chapterInput);
 
     return ResponseChapterDto.fromChapter(chapter);
   }
 
   @CrudPost('', {
-    input: CreateChapterWithTextDto,
+    input: CreateChapterDto,
     output: ResponseChapterDto,
   })
   @ApiConsumes('application/json')
@@ -84,9 +87,11 @@ export class ChapterController {
       'This endpoint allows you to create a new chapter by providing its text content.',
   })
   async createByText(
-    @Body() createChapterDto: CreateChapterWithTextDto,
+    @Body(ValidateChapterCreationPipe) dto: CreateChapterDto,
+    @Body('bookId', FetchBookByIdPipe) book: Book,
   ): Promise<ResponseChapterDto> {
-    const chapter = await this.chapterService.createWithText(createChapterDto);
+    const chapterInput = createChapterFromDto(dto, book);
+    const chapter = await this.chapterService.create(chapterInput);
 
     return ResponseChapterDto.fromChapter(chapter);
   }
@@ -100,22 +105,27 @@ export class ChapterController {
   }
 
   @CrudGetOne('/id', ResponseChapterDto)
-  async findOne(
-    @Query() query?: QueryOneChapterDto,
+  async findById(
+    @Query() query: QueryOneChapterDto,
   ): Promise<ResponseChapterDto> {
-    const chapter = await this.chapterService.findOne(query);
+    const { filter, include } = query;
+    const { id } = filter;
+    const chapter = await this.chapterService.findById(id, include);
+    if (!chapter) {
+      throw new NotFoundException(`Chapter with id ${id} not found`);
+    }
     return ResponseChapterDto.fromChapter(chapter);
   }
 
   @CrudPut('', {
-    input: CreateChapterDto,
+    input: UpdateChapterDto,
     output: ResponseChapterDto,
   })
   async update(
-    @Query() query: ChapterBasicFilterDto,
-    @Body() dto: CreateChapterDto,
+    @Body(ValidateChapterUpdatePipe) dto: UpdateChapterDto,
   ): Promise<ResponseChapterDto> {
-    const response = await this.chapterService.update(query, dto);
+    const chapterInput = updateChapterFromDto(dto);
+    const response = await this.chapterService.update(chapterInput);
 
     return ResponseChapterDto.fromChapter(response);
   }
@@ -125,19 +135,24 @@ export class ChapterController {
     output: ResponseChapterDto,
   })
   async patch(
-    @Query() query: ChapterBasicFilterDto,
-    @Body() dto: PatchChapterDto,
+    @Body(ValidateChapterUpdatePipe) dto: PatchChapterDto,
   ): Promise<ResponseChapterDto> {
-    const response = await this.chapterService.update(query, dto);
+    const chapterInput = updateChapterFromDto(dto);
+    const response = await this.chapterService.update(chapterInput);
 
     return ResponseChapterDto.fromChapter(response);
   }
 
   @CrudDelete('')
   async remove(
-    @Query() query?: ChapterBasicFilterDto,
+    @Query() query: QueryOneChapterDto,
   ): Promise<ResponseChapterDto> {
-    const deleted = await this.chapterService.delete(query);
+    const { id } = query.filter;
+    const deleted = await this.chapterService.delete(id);
+
+    if (!deleted) {
+      throw new NotFoundException(`Chapter with id ${id} not found`);
+    }
 
     return ResponseChapterDto.fromChapter(deleted);
   }
