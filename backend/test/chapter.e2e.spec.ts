@@ -4,16 +4,17 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { useContainer } from 'class-validator';
 import mongoose, { Model, Types } from 'mongoose';
-import { ClsModule } from 'nestjs-cls';
+import { ClsModule, ClsService } from 'nestjs-cls';
 import * as request from 'supertest';
+import { Arc, ArcSchema } from '../src/arc/schemas/arc';
 import { BookService } from '../src/book/book.service';
 import { Book, BookSchema } from '../src/book/schemas/book.schema';
 import { ChapterController } from '../src/chapter/chapter.controller';
 import { ChapterService } from '../src/chapter/chapter.service';
 import { IChapter } from '../src/chapter/interface/Chapter';
 import { Chapter, ChapterSchema } from '../src/chapter/schemas/chapter.schema';
-import { Arc, ArcSchema } from '../src/schemas/arc';
-import { Scene, SceneSchema } from '../src/schemas/scene';
+import { IZordContext } from '../src/interfaces/cls.store';
+import { Scene, SceneSchema } from '../src/scene/schemas/scene';
 import { FetchBookByIdPipe } from '../src/shared/pipes/fetch.book.by.id.pipe';
 import { FetchChapterByIdPipe } from '../src/shared/pipes/fetch.chapter.by.id.pipe';
 import { ValidateUniqueOrderPipe } from '../src/shared/pipes/validate.unique.order.pipe';
@@ -32,7 +33,7 @@ describe('ChapterController (e2e)', () => {
   // external references
   let bookService: BookService;
   let bookModel: Model<Book>;
-  // let cls: ClsService<IContext>;
+  let cls: ClsService<IZordContext>;
 
   // default values
   let seedBookList: Book[];
@@ -79,7 +80,7 @@ describe('ChapterController (e2e)', () => {
     useContainer(moduleFixture, { fallbackOnErrors: true });
 
     // Also retrieve the ClsService for later use.
-    // cls = moduleFixture.get(ClsService<IContext>);
+    cls = moduleFixture.get(ClsService<IZordContext>);
 
     app = moduleFixture.createNestApplication();
     await app.init();
@@ -89,6 +90,10 @@ describe('ChapterController (e2e)', () => {
     await model.deleteMany({});
     await bookModel.deleteMany({});
     await seedDb();
+    // Wrap the test call in the `runWith` method
+    // in which we can pass hand-crafted store values.
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    await cls.run(() => {});
   });
 
   afterAll(async () => {
@@ -117,7 +122,6 @@ describe('ChapterController (e2e)', () => {
 
     seedBookList = [book0, book1];
 
-    const promiseChapter = [];
     const chapterInput1: IChapter = {
       title: 'Dummy Chapter',
       book: book0,
@@ -125,7 +129,8 @@ describe('ChapterController (e2e)', () => {
       content: 'content of the chapter',
       order: 1,
     };
-    promiseChapter.push(service.create(chapterInput1));
+
+    const chapter1 = await service.create(chapterInput1);
 
     const chapterInput2: IChapter = {
       title: 'Dummy Chapter 2',
@@ -135,11 +140,9 @@ describe('ChapterController (e2e)', () => {
       order: 2,
     };
 
-    promiseChapter.push(service.create(chapterInput2));
+    const chapter2 = await service.create(chapterInput2);
 
-    await Promise.all(promiseChapter).then((chapters) => {
-      seedDummyChapters = chapters;
-    });
+    seedDummyChapters = [chapter1, chapter2];
   };
 
   describe('Chapter module', () => {
@@ -157,7 +160,24 @@ describe('ChapterController (e2e)', () => {
         const chapter = response.body;
         expect(chapter).toHaveProperty('title', seedDummyChapters[0].title);
       });
-      it('should not get a chapter with wrong id', async () => {
+      it('should throw an error when filter has an unexpected field', async () => {
+        const chapterId = seedDummyChapters[0]._id.toString();
+        const response = await request(app.getHttpServer())
+          .get(`/chapter/id`)
+          .query({
+            filter: {
+              id: chapterId,
+              unexpected: 'unexpected',
+            },
+          });
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({
+          statusCode: 400,
+          message: ['filter.property unexpected should not exist'],
+          error: 'Bad Request',
+        });
+      });
+      it('should not get a chapter by id that does not exist', async () => {
         const chapterId = new Types.ObjectId().toString();
         const response = await request(app.getHttpServer())
           .get(`/chapter/id`)
@@ -173,7 +193,7 @@ describe('ChapterController (e2e)', () => {
           error: 'Not Found',
         });
       });
-      it('should thorw an error if id is not a valid ObjectId', async () => {
+      it('should thorw an error when id is not a valid ObjectId', async () => {
         const chapterId = '123';
         const response = await request(app.getHttpServer())
           .get(`/chapter/id`)
@@ -189,7 +209,7 @@ describe('ChapterController (e2e)', () => {
           error: 'Bad Request',
         });
       });
-      it('should throw an error if id is not provided', async () => {
+      it('should throw an error when id is not provided', async () => {
         const response = await request(app.getHttpServer())
           .get(`/chapter/id`)
           .query({
@@ -201,6 +221,7 @@ describe('ChapterController (e2e)', () => {
         expect(response.body).toEqual({
           statusCode: 400,
           message: [
+            'filter.property title should not exist',
             'filter.id should not be null or undefined',
             'filter.id invalid',
             'filter.id must be a string',
@@ -208,13 +229,30 @@ describe('ChapterController (e2e)', () => {
           error: 'Bad Request',
         });
       });
-      it('should throw an error if filter is not provided', async () => {
+      it('should throw an error when filter is not provided', async () => {
         const response = await request(app.getHttpServer()).get(`/chapter/id`);
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
           statusCode: 400,
           message: ['filter should not be null or undefined'],
           error: 'Bad Request',
+        });
+      });
+      it('should return an book id when findOne has no include param', async () => {
+        const chapterId = seedDummyChapters[0]._id.toString();
+        const response = await request(app.getHttpServer())
+          .get(`/chapter/id`)
+          .query({
+            filter: {
+              id: chapterId,
+            },
+          });
+        expect(response.status).toBe(200);
+        const chapter = response.body;
+
+        expect(chapter).toHaveProperty('title', seedDummyChapters[0].title);
+        expect(chapter).toHaveProperty('book', {
+          id: seedBookList[0]._id.toString(),
         });
       });
       it('should include book fields when findOne has include param', async () => {
@@ -233,6 +271,25 @@ describe('ChapterController (e2e)', () => {
         expect(chapter).toHaveProperty('book');
         expect(chapter.book).toHaveProperty('title', seedBookList[0].title);
         expect(chapter.book).toHaveProperty('summary', seedBookList[0].summary);
+      });
+      it('should throw an error when include param is not expected', async () => {
+        const chapterId = seedDummyChapters[0]._id.toString();
+        const response = await request(app.getHttpServer())
+          .get(`/chapter/id`)
+          .query({
+            filter: {
+              id: chapterId,
+            },
+            include: ['book', 'dummy'],
+          });
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({
+          statusCode: 400,
+          message: [
+            'each value in include must be one of the following values: book, arc',
+          ],
+          error: 'Bad Request',
+        });
       });
     });
 
@@ -259,6 +316,23 @@ describe('ChapterController (e2e)', () => {
             }),
           ]),
         );
+      });
+      it('should throw an error when filter has an unexpected field', async () => {
+        const bookId = seedBookList[0]._id.toString();
+        const response = await request(app.getHttpServer())
+          .get(`/chapter`)
+          .query({
+            filter: {
+              bookId: bookId,
+              dummy: 'dummy',
+            },
+          });
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({
+          statusCode: 400,
+          message: ['filter.property dummy should not exist'],
+          error: 'Bad Request',
+        });
       });
       it('should not get chapters without filter in query string', async () => {
         const response = await request(app.getHttpServer())
@@ -418,7 +492,7 @@ describe('ChapterController (e2e)', () => {
           ]),
         );
       });
-      it('should throw error when the sort field was not foreseen', async () => {
+      it('should throw error when the sort field was not expected', async () => {
         const bookId = seedBookList[0]._id.toString();
         const response = await request(app.getHttpServer())
           .get(`/chapter`)
@@ -525,6 +599,63 @@ describe('ChapterController (e2e)', () => {
             }),
             expect.objectContaining({
               title: seedDummyChapters[1].title,
+            }),
+          ]),
+        );
+      });
+      it('should include book fields when findAll has include book param', async () => {
+        const bookId = seedBookList[0]._id.toString();
+        const response = await request(app.getHttpServer())
+          .get(`/chapter`)
+          .query({
+            filter: {
+              bookId: bookId,
+            },
+            sort: ['title'],
+            include: ['book'],
+          });
+        expect(response.status).toBe(200);
+        const chapters = response.body;
+        expect(chapters).toHaveLength(2);
+        expect(chapters).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              title: seedDummyChapters[0].title,
+              book: expect.objectContaining({
+                title: seedBookList[0].title,
+              }),
+            }),
+            expect.objectContaining({
+              title: seedDummyChapters[1].title,
+              book: expect.objectContaining({
+                title: seedBookList[0].title,
+              }),
+            }),
+          ]),
+        );
+      });
+      it('should include book fields when findAll has include book param and filter chapter by id', async () => {
+        const bookId = seedBookList[0]._id.toString();
+        const chapterId = seedDummyChapters[0]._id.toString();
+        const response = await request(app.getHttpServer())
+          .get(`/chapter`)
+          .query({
+            filter: {
+              bookId: bookId,
+              id: chapterId,
+            },
+            include: ['book'],
+          });
+        expect(response.status).toBe(200);
+        const chapters = response.body;
+        expect(chapters).toHaveLength(1);
+        expect(chapters).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              title: seedDummyChapters[0].title,
+              book: expect.objectContaining({
+                title: seedBookList[0].title,
+              }),
             }),
           ]),
         );
@@ -709,7 +840,7 @@ describe('ChapterController (e2e)', () => {
               book: expect.objectContaining({ id: expect.any(String) }),
               arcs: expect.any(Array),
               content: content,
-              order: seedBookList[0].chapters.length + 1,
+              order: 3,
               summary: summary,
               createdAt: expect.any(String),
               updatedAt: expect.any(String),
@@ -859,7 +990,7 @@ describe('ChapterController (e2e)', () => {
           'id must be a string',
         ]);
       });
-      it('should not update a chapter with a non existing chapter', async () => {
+      it('should not update a chapter that does not exist', async () => {
         const chapterId = new Types.ObjectId().toString();
         const title = 'new title of the chapter';
         const summary = 'new summary of the chapter';
@@ -876,6 +1007,20 @@ describe('ChapterController (e2e)', () => {
         expect(response.body.message).toEqual(
           `Chapter with id ${chapterId} not found.`,
         );
+      });
+      it('should not update chapter with an empty title', async () => {
+        const chapterId = seedDummyChapters[0]._id.toString();
+        const content = 'new content of the chapter';
+        const response = await request(app.getHttpServer())
+          .put(`/chapter`)
+          .send({
+            id: chapterId,
+            title: '',
+            summary: '',
+            content: content,
+          });
+        expect(response.status).toBe(400);
+        expect(response.body.message).toEqual(['title should not be empty']);
       });
       it('should not update chapter book id', async () => {
         const chapterId = seedDummyChapters[0]._id.toString();
@@ -1150,10 +1295,10 @@ describe('ChapterController (e2e)', () => {
           `Chapter with id ${chapterId} not found`,
         );
 
-        const ownerBook = await bookService.findById(
-          seedDummyChapters[0].book._id.toString(),
+        const ownerBookAfter = await bookService.findById(
+          seedBookList[0]._id.toString(),
         );
-        expect(ownerBook.chapters).toHaveLength(seedDummyChapters.length);
+        expect(ownerBookAfter.chapters).toHaveLength(seedDummyChapters.length);
       });
       it('should throw an error if the chapter id is invalid', async () => {
         const chapterId = 'invalid id';

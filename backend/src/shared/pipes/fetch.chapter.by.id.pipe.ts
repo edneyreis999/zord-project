@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException, PipeTransform } from '@nestjs/common';
 import { ClsService } from 'nestjs-cls';
 import { ChapterService } from '../../chapter/chapter.service';
-import { IContext } from '../../interfaces/cls.store';
+import { IZordContext } from '../../interfaces/cls.store';
 
 @Injectable()
 export class FetchChapterByIdPipe implements PipeTransform {
   constructor(
     private readonly chapterService: ChapterService,
-    private readonly cls: ClsService<IContext>,
+    private readonly cls: ClsService<IZordContext>,
   ) {}
 
   async transform(chapterId: string) {
@@ -20,7 +20,6 @@ export class FetchChapterByIdPipe implements PipeTransform {
       throw new NotFoundException(`Chapter with id ${chapterId} not found.`);
     }
 
-    this.cls.set('chapter', chapter);
     return chapter;
   }
 }

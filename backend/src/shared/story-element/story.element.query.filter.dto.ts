@@ -4,6 +4,7 @@ import { IsOptional, IsString } from 'class-validator';
 import {
   Filter,
   FilterByIdDto,
+  FilterDto,
   Include,
   Page,
   PaginateQueryPage,
@@ -11,12 +12,7 @@ import {
   Sort,
 } from '../../request/query';
 
-export class StoryElementFilterDto extends FilterByIdDto {
-  constructor(partial: Partial<StoryElementFilterDto>) {
-    super();
-    Object.assign(this, partial);
-  }
-
+export class FilterManyStoryElementDto extends FilterDto {
   @ApiPropertyOptional({
     name: 'filter[title]',
     description: 'Search for name (Example: Ghork)',
@@ -37,8 +33,8 @@ export class StoryElementFilterDto extends FilterByIdDto {
 }
 
 export abstract class StoryElementQueryManyDto implements QueryDto {
-  @Filter(() => StoryElementFilterDto)
-  filter: StoryElementFilterDto;
+  @Filter(() => FilterManyStoryElementDto)
+  filter: FilterManyStoryElementDto;
 
   @Sort(['title', '-title', 'createdAt', '-createdAt'])
   sort?: string[];

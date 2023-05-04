@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ClsService } from 'nestjs-cls';
+import { Arc, ArcSchema } from '../arc/schemas/arc';
 import { BookService } from '../book/book.service';
 import { Book, BookSchema } from '../book/schemas/book.schema';
-import { Arc, ArcSchema } from '../schemas/arc';
-import { Scene, SceneSchema } from '../schemas/scene';
+import { Scene, SceneSchema } from '../scene/schemas/scene';
 import { FetchBookByIdPipe } from '../shared/pipes/fetch.book.by.id.pipe';
 import { FetchChapterByIdPipe } from '../shared/pipes/fetch.chapter.by.id.pipe';
 import { ValidateUniqueOrderPipe } from '../shared/pipes/validate.unique.order.pipe';
@@ -22,16 +21,16 @@ import { Chapter, ChapterSchema } from './schemas/chapter.schema';
       { name: Arc.name, schema: ArcSchema },
       { name: Scene.name, schema: SceneSchema },
     ]),
-    ClsService,
+    // ClsService,
   ],
   controllers: [ChapterController],
   providers: [
     ChapterService,
     TextFileService,
     BookService,
-    ValidateUniqueTitlePipe,
-    ValidateUniqueOrderPipe,
     FetchBookByIdPipe,
+    ValidateUniqueOrderPipe,
+    ValidateUniqueTitlePipe,
     FetchChapterByIdPipe,
   ],
 })

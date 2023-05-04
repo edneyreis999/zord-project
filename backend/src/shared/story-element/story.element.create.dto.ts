@@ -2,7 +2,6 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import {
   IsDefined,
-  IsMongoId,
   IsNotEmpty,
   IsNumberString,
   IsOptional,
@@ -21,19 +20,6 @@ export class CreateStoryElementDto {
   @IsNotEmpty()
   @MaxLength(50)
   title: string;
-
-  @ApiProperty({
-    type: String,
-    name: 'bookId',
-    description: 'Book id (Example: 5f9f1c9b9c9c1c0c8c8c8c8c)',
-  })
-  @IsDefined()
-  @IsString()
-  @IsNotEmpty()
-  @IsMongoId({
-    message: 'book id invalid',
-  })
-  bookId: string;
 
   @ApiPropertyOptional({
     name: 'summary',

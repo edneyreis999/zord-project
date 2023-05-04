@@ -1,14 +1,10 @@
 import { Filter, FilterByIdDto, Include } from '../../request/query';
 import {
-  StoryElementFilterDto,
+  FilterManyStoryElementDto,
   StoryElementQueryManyDto,
+  StoryElementQueryOneDto,
 } from '../../shared/story-element/story.element.query.filter.dto';
-
-export class BookBasicFilterDto {
-  @Filter(() => FilterByIdDto)
-  filter: FilterByIdDto;
-}
-export class QueryOneBookDto extends BookBasicFilterDto {
+export class QueryOneBookDto extends StoryElementQueryOneDto {
   @Include(['chapters'])
   readonly include?: string[];
 
@@ -17,8 +13,8 @@ export class QueryOneBookDto extends BookBasicFilterDto {
 }
 
 export class QueryManyBookDto extends StoryElementQueryManyDto {
-  @Filter(() => StoryElementFilterDto)
-  readonly filter: StoryElementFilterDto;
+  @Filter(() => FilterManyStoryElementDto)
+  readonly filter: FilterManyStoryElementDto;
 
   @Include(['chapters'])
   readonly include?: string[];
