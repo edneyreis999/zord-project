@@ -4,7 +4,7 @@
  *  - {@link https://github.com/nestjs/swagger/issues/90}
  */
 import { applyDecorators } from '@nestjs/common';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { Expose, Transform, Type, TypeHelpOptions } from 'class-transformer';
 import {
   IsArray,
@@ -165,13 +165,13 @@ export function Filter(typeFunction?: (type?: TypeHelpOptions) => Function) {
  * Interface of query params to GET all resources
  */
 export interface QueryDto {
-  filter?: FilterByIdDto;
+  filter?: FilterDto;
   page?: PaginateQueryPage;
   sort?: string[];
   include?: string[];
 }
 
-export abstract class FilterByIdDto {
+export class FilterByIdDto {
   @ApiProperty({
     name: 'filter[id]',
     description: 'Search by id (Example: 6431a7c0272aea5bdcfa550f)',
@@ -184,3 +184,5 @@ export abstract class FilterByIdDto {
   })
   id: string;
 }
+
+export class FilterDto extends PartialType(FilterByIdDto) {}

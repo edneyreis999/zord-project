@@ -1,20 +1,15 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from './app.controller';
-import { ChapterModule } from './chapter/chapter.module';
-import { ChapterService } from './chapter/chapter.service';
-import { TextFileService } from './text-file/text-file.service';
-import { Chapter, ChapterSchema } from './chapter/schemas/chapter.schema';
-import { Arc, ArcSchema } from './schemas/arc';
-import { Scene, SceneSchema } from './schemas/scene';
-import { BookModule } from './book/book.module';
-import { BookService } from './book/book.service';
-import { Book, BookSchema } from './book/schemas/book.schema';
-import { UniqueTitle } from './shared/validations/validation.title';
-import { SetValidOrderConstraint } from './shared/validations/validation.order';
 import { ConfigModule } from '@nestjs/config';
-import { IsValidObjectIdAndExists } from './shared/validations/validation.objectId-exists';
+import { MongooseModule } from '@nestjs/mongoose';
 import { ClsModule } from 'nestjs-cls';
+import { AppController } from './app.controller';
+import { Arc, ArcSchema } from './arc/schemas/arc';
+import { BookModule } from './book/book.module';
+import { Book, BookSchema } from './book/schemas/book.schema';
+import { ChapterModule } from './chapter/chapter.module';
+import { Chapter, ChapterSchema } from './chapter/schemas/chapter.schema';
+import { Scene, SceneSchema } from './scene/schemas/scene';
+import { TextFileService } from './text-file/text-file.service';
 
 @Module({
   imports: [
@@ -37,13 +32,6 @@ import { ClsModule } from 'nestjs-cls';
     ]),
   ],
   controllers: [AppController],
-  providers: [
-    ChapterService,
-    TextFileService,
-    BookService,
-    UniqueTitle,
-    IsValidObjectIdAndExists,
-    SetValidOrderConstraint,
-  ],
+  providers: [TextFileService],
 })
 export class AppModule {}

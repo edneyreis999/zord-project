@@ -35,8 +35,9 @@ export function CrudGetOne(path: string | string[], output: ResourceType) {
     Get(path),
     UsePipes(
       new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
         transform: true,
-        transformOptions: { excludeExtraneousValues: true }, // enforce type-safe instance
       }),
     ),
     UseInterceptors(NotFoundInterceptor),
@@ -50,8 +51,9 @@ export function CrudGetAll(path: string | string[], output: ResourceType) {
     Get(path),
     UsePipes(
       new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
         transform: true,
-        transformOptions: { excludeExtraneousValues: true }, // enforce type-safe instance
       }),
     ),
     ApiOkResponse({ type: output, isArray: true }),

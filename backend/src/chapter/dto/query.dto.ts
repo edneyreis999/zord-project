@@ -1,13 +1,14 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IsDefined, IsMongoId, IsOptional, IsString } from 'class-validator';
+import { IsDefined, IsMongoId, IsString } from 'class-validator';
 import { Filter, FilterByIdDto, Include } from '../../request/query';
 import {
+  FilterManyStoryElementDto,
   StoryElementQueryManyDto,
   StoryElementQueryOneDto,
 } from '../../shared/story-element/story.element.query.filter.dto';
 
-class FilterManyChapterDto {
+class FilterManyChapterDto extends FilterManyStoryElementDto {
   @ApiProperty({
     name: 'filter[bookId]',
     description: 'Search by bookId (Example: 6431a7c0272aea5bdcfa550f)',
@@ -19,36 +20,6 @@ class FilterManyChapterDto {
     message: 'bookId invalid',
   })
   bookId: string;
-
-  @ApiPropertyOptional({
-    name: 'filter[id]',
-    description: 'Search by id (Example: 6431a7c0272aea5bdcfa550f)',
-  })
-  @IsString()
-  @IsOptional()
-  @Expose()
-  @IsMongoId({
-    message: 'id invalid',
-  })
-  id: string;
-
-  @ApiPropertyOptional({
-    name: 'filter[title]',
-    description: 'Search for name (Example: Ghork)',
-  })
-  @IsString()
-  @IsOptional()
-  @Expose()
-  readonly title?: string;
-
-  @ApiPropertyOptional({
-    name: 'filter[slug]',
-    description: 'Search for slug (Example: ghork)',
-  })
-  @IsString()
-  @IsOptional()
-  @Expose()
-  readonly slug?: string;
 }
 
 export class QueryOneChapterDto extends StoryElementQueryOneDto {

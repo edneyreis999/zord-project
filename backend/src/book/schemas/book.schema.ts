@@ -1,12 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { Chapter } from '../../chapter/schemas/chapter.schema';
-import { StoryElement } from '../../interfaces/story.element';
+import { IBook } from '../interfaces/book';
 
 export type BookDocument = HydratedDocument<Book>;
 
 @Schema({ timestamps: true })
-export class Book implements StoryElement {
+export class Book implements IBook {
   _id: mongoose.Schema.Types.ObjectId;
 
   @Prop({

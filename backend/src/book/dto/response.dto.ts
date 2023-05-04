@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Book } from '../schemas/book.schema';
-import { ResponseChapterDto } from '../../chapter/dto/response.dto';
 import { Types } from 'mongoose';
+import { ResponseChapterDto } from '../../chapter/dto/response.dto';
+import { Book } from '../schemas/book.schema';
 
 export class ResponseBookDto {
   static fromBook(book: Book | Types.ObjectId): ResponseBookDto {
@@ -53,7 +53,7 @@ export class ResponseBookDto {
     description: 'List of chapters of this book',
     example: ['Chapter 1', 'Chapter 2'],
   })
-  readonly chapters?: ResponseChapterDto[] | string[];
+  readonly chapters?: ResponseChapterDto[];
 
   @ApiProperty({
     type: String,

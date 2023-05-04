@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { FilterQuery, Model, SortOrder } from 'mongoose';
-import { StoryElement } from '../../interfaces/story.element';
+import { StoryElement } from './interface/story.element';
 import {
   StoryElementQueryManyDto,
   StoryElementQueryOneDto,

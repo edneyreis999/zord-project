@@ -56,7 +56,7 @@ export class ResponseChapterDto {
     description: 'Book of the chapter',
     example: "Ghork's story",
   })
-  readonly book?: ResponseBookDto | string;
+  readonly book?: ResponseBookDto;
 
   @ApiProperty({
     type: String,

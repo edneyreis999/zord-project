@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-import { Scene, SceneSchema } from './scene';
+import { Scene, SceneSchema } from '../../scene/schemas/scene';
 
 export type ArcDocument = Arc & Document;
 

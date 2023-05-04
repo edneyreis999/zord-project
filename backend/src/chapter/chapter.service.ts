@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
+import { ClsService } from 'nestjs-cls';
+import { Arc } from '../arc/schemas/arc';
 import { BookService } from '../book/book.service';
-import { Arc } from '../schemas/arc';
-import { Scene } from '../schemas/scene';
+import { IZordContext } from '../interfaces/cls.store';
+import { Scene } from '../scene/schemas/scene';
 import { StoryElementCrudService } from '../shared/story-element/story.element.crud.service';
 import { generateSlug } from '../shared/story-element/story.element.utils';
 import { TextFileService } from '../text-file/text-file.service';
@@ -21,6 +23,7 @@ export class ChapterService extends StoryElementCrudService<Chapter> {
     @InjectModel(Scene.name) private sceneModel: Model<Scene>,
     private readonly textFileService: TextFileService,
     private readonly bookService: BookService,
+    private readonly cls: ClsService<IZordContext>,
   ) {
     super(chapterModel);
   }
@@ -35,8 +38,10 @@ export class ChapterService extends StoryElementCrudService<Chapter> {
       arcs,
     });
 
-    book.chapters.push(createdChapter);
-    const updatedBook = await this.bookService.update(book);
+    const updatedBook = await this.bookService.addChapter(
+      book._id.toString(),
+      createdChapter,
+    );
 
     // Just to make sure the created chapter is updated
     createdChapter.book = updatedBook;
@@ -112,15 +117,25 @@ export class ChapterService extends StoryElementCrudService<Chapter> {
     }
 
     // Remove the chapter from the book
-    const book = await this.bookService.findById(
+    await this.bookService.removeChapter(
       chapterDeleted.book._id.toString(),
+      chapterDeleted,
     );
-    book.chapters = book.chapters.filter(
-      (chapter) => chapter._id.toString() !== id,
-    );
-    await this.bookService.update(book);
 
     return chapterDeleted;
+  }
+
+  /**
+   * Find a chapter by its ID and optionally include related data.
+   *
+   * @param {string} id - The ID of the chapter to be fetched.
+   * @param {string[]} [include=this.availableFieldsToInclude] - An array of related fields to include in the response (default is to include all available fields).
+   * @returns {Promise<Book>} A promise that resolves to the found chapter with its related data included based on the `include` parameter.
+   */
+  async findById(id: string, include?: string[]): Promise<Chapter> {
+    const chapter = await super.findById(id, include);
+    // this.cls.set('chapter', chapter);
+    return chapter;
   }
 
   private async processArcsAndScenes(chapterText: string): Promise<Arc[]> {
