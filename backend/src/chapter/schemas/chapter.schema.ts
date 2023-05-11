@@ -32,7 +32,7 @@ export class Chapter implements IChapter {
   slug: string;
 
   @Prop({
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: Arc.name }],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Arc' }],
   })
   arcs: Arc[];
 

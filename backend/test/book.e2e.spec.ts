@@ -13,7 +13,8 @@ import { Book, BookSchema } from '../src/book/schemas/book.schema';
 import { ChapterService } from '../src/chapter/chapter.service';
 import { IChapter } from '../src/chapter/interface/Chapter';
 import { Chapter, ChapterSchema } from '../src/chapter/schemas/chapter.schema';
-import { Scene, SceneSchema } from '../src/scene/schemas/scene';
+import { SceneService } from '../src/scene/scene.service';
+import { Scene, SceneSchema } from '../src/scene/schemas/scene.schema';
 import { FetchBookByIdPipe } from '../src/shared/pipes/fetch.book.by.id.pipe';
 import { TextFileService } from '../src/text-file/text-file.service';
 import { rootMongooseTestModule } from './MongooseTestModule';
@@ -54,6 +55,7 @@ describe('BookController (e2e)', () => {
         TextFileService,
         BookService,
         FetchBookByIdPipe,
+        SceneService,
       ],
     }).compile();
     service = moduleFixture.get<BookService>(BookService);

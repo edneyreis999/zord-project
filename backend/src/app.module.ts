@@ -8,7 +8,10 @@ import { BookModule } from './book/book.module';
 import { Book, BookSchema } from './book/schemas/book.schema';
 import { ChapterModule } from './chapter/chapter.module';
 import { Chapter, ChapterSchema } from './chapter/schemas/chapter.schema';
-import { Scene, SceneSchema } from './scene/schemas/scene';
+import { SceneController } from './scene/scene.controller';
+import { SceneModule } from './scene/scene.module';
+import { SceneService } from './scene/scene.service';
+import { Scene, SceneSchema } from './scene/schemas/scene.schema';
 import { TextFileService } from './text-file/text-file.service';
 
 @Module({
@@ -30,8 +33,9 @@ import { TextFileService } from './text-file/text-file.service';
       { name: Arc.name, schema: ArcSchema },
       { name: Scene.name, schema: SceneSchema },
     ]),
+    SceneModule,
   ],
-  controllers: [AppController],
-  providers: [TextFileService],
+  controllers: [AppController, SceneController],
+  providers: [TextFileService, SceneService],
 })
 export class AppModule {}
