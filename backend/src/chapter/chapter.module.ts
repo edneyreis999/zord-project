@@ -3,7 +3,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Arc, ArcSchema } from '../arc/schemas/arc';
 import { BookService } from '../book/book.service';
 import { Book, BookSchema } from '../book/schemas/book.schema';
-import { Scene, SceneSchema } from '../scene/schemas/scene';
+import { SceneService } from '../scene/scene.service';
+import { Scene, SceneSchema } from '../scene/schemas/scene.schema';
 import { FetchBookByIdPipe } from '../shared/pipes/fetch.book.by.id.pipe';
 import { FetchChapterByIdPipe } from '../shared/pipes/fetch.chapter.by.id.pipe';
 import { ValidateUniqueOrderPipe } from '../shared/pipes/validate.unique.order.pipe';
@@ -28,6 +29,7 @@ import { Chapter, ChapterSchema } from './schemas/chapter.schema';
     ChapterService,
     TextFileService,
     BookService,
+    SceneService,
     FetchBookByIdPipe,
     ValidateUniqueOrderPipe,
     ValidateUniqueTitlePipe,

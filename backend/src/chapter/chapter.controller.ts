@@ -105,7 +105,7 @@ export class ChapterController {
   }
 
   @CrudGetOne('/id', ResponseChapterDto)
-  async findById(
+  async findOne(
     @Query() query: QueryOneChapterDto,
   ): Promise<ResponseChapterDto> {
     const { filter, include } = query;

@@ -33,8 +33,7 @@ export class FilterManyStoryElementDto extends FilterDto {
 }
 
 export abstract class StoryElementQueryManyDto implements QueryDto {
-  @Filter(() => FilterManyStoryElementDto)
-  filter: FilterManyStoryElementDto;
+  abstract filter: FilterManyStoryElementDto;
 
   @Sort(['title', '-title', 'createdAt', '-createdAt'])
   sort?: string[];
@@ -42,8 +41,7 @@ export abstract class StoryElementQueryManyDto implements QueryDto {
   @Page()
   page?: PaginateQueryPage;
 
-  @Include([])
-  include?: string[];
+  abstract include?: string[];
 }
 
 export abstract class StoryElementQueryOneDto {

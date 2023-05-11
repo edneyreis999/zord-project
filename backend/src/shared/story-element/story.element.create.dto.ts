@@ -44,9 +44,8 @@ export class CreateStoryElementDto {
 
   @ApiPropertyOptional({
     name: 'order',
-    type: Number,
+    type: String,
     description: 'order (Example: 1)',
-    minimum: 1,
   })
   @IsOptional()
   @IsNumberString()
