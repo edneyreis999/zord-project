@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Arc, ArcSchema } from '../arc/schemas/arc';
+import { ArcService } from '../arc/arc.service';
+import { Arc, ArcSchema } from '../arc/schemas/arc.schema';
 import { BookService } from '../book/book.service';
 import { Book, BookSchema } from '../book/schemas/book.schema';
 import { SceneService } from '../scene/scene.service';
@@ -30,6 +31,7 @@ import { Chapter, ChapterSchema } from './schemas/chapter.schema';
     TextFileService,
     BookService,
     SceneService,
+    ArcService,
     FetchBookByIdPipe,
     ValidateUniqueOrderPipe,
     ValidateUniqueTitlePipe,

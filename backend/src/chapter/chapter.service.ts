@@ -2,9 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 import { ClsService } from 'nestjs-cls';
-import { Arc } from '../arc/schemas/arc';
+import { ArcService } from '../arc/arc.service';
+import { IArc } from '../arc/interface/arc';
+import { Arc } from '../arc/schemas/arc.schema';
 import { BookService } from '../book/book.service';
 import { IZordContext } from '../interfaces/cls.store';
+import { IScene } from '../scene/interface/Scene';
 import { SceneService } from '../scene/scene.service';
 import { Scene } from '../scene/schemas/scene.schema';
 import { StoryElementCrudService } from '../shared/story-element/story.element.crud.service';
@@ -20,10 +23,10 @@ export class ChapterService extends StoryElementCrudService<Chapter> {
 
   constructor(
     @InjectModel(Chapter.name) private chapterModel: Model<Chapter>,
-    @InjectModel(Arc.name) private arcModel: Model<Arc>,
     private readonly textFileService: TextFileService,
     private readonly bookService: BookService,
     private readonly sceneService: SceneService,
+    private readonly arcService: ArcService,
     private readonly cls: ClsService<IZordContext>,
   ) {
     super(chapterModel);
@@ -141,21 +144,30 @@ export class ChapterService extends StoryElementCrudService<Chapter> {
   private async processArcsAndScenes(chapter: Chapter): Promise<Arc[]> {
     const arcsText = await this.textFileService.extractArcs(chapter.content);
     const arcs: Arc[] = [];
+    const { order: chOrder } = chapter;
 
     // Iterate over arcs, creating and adding them to the chapter
     for (const [index, arcText] of arcsText.entries()) {
-      const arcName = `arc-${index + 1}`;
-      const arc = await this.createArc(arcName, arcText);
+      const arcOrder = index + 1;
+      const arcTitle = `ch-${chOrder}-arc-${arcOrder}`;
+      const arc = await this.createArc({
+        title: arcTitle,
+        content: arcText,
+        order: index + 1,
+        chapter: chapter,
+        summary: '',
+      });
       const scenesText = await this.textFileService.extractScenes(arc.content);
 
       // Iterate over scenes, creating and adding them to the arc
       for (const [sceneIndex, sceneText] of scenesText.entries()) {
-        const sceneName = `${arcName}-scene-${sceneIndex + 1}`;
+        const sceneName = `$arc-${arcOrder}-scene-${sceneIndex + 1}`;
         const scene = await this.createScene({
           title: sceneName,
           content: sceneText,
           order: sceneIndex + 1,
           chapter: chapter,
+          summary: '',
         });
         arc.scenes.push(scene);
       }
@@ -166,17 +178,19 @@ export class ChapterService extends StoryElementCrudService<Chapter> {
     return arcs;
   }
 
-  private async createArc(name: string, content?: string): Promise<Arc> {
-    const arc = await this.arcModel.create({ name, content });
-    return arc?.toObject();
+  private async createArc(arcInput: IArc): Promise<Arc> {
+    const { title, content, order, chapter } = arcInput;
+    const arc = await this.arcService.create({
+      title: title,
+      content: content,
+      order: order,
+      summary: '',
+      chapter: chapter,
+    });
+    return arc;
   }
 
-  private async createScene(sceneInput: {
-    title: string;
-    content: string;
-    order: number;
-    chapter: Chapter;
-  }): Promise<Scene> {
+  private async createScene(sceneInput: IScene): Promise<Scene> {
     const { title, content, order, chapter } = sceneInput;
     const scene = await this.sceneService.create({
       title: title,

@@ -6,17 +6,16 @@ import { useContainer } from 'class-validator';
 import { Model, Types } from 'mongoose';
 import { ClsModule } from 'nestjs-cls';
 import * as request from 'supertest';
-import { Arc, ArcSchema } from '../src/arc/schemas/arc';
+import { Arc, ArcSchema } from '../src/arc/schemas/arc.schema';
 import { BookController } from '../src/book/book.controller';
 import { BookService } from '../src/book/book.service';
 import { Book, BookSchema } from '../src/book/schemas/book.schema';
+import { ChapterModule } from '../src/chapter/chapter.module';
 import { ChapterService } from '../src/chapter/chapter.service';
 import { IChapter } from '../src/chapter/interface/Chapter';
 import { Chapter, ChapterSchema } from '../src/chapter/schemas/chapter.schema';
-import { SceneService } from '../src/scene/scene.service';
 import { Scene, SceneSchema } from '../src/scene/schemas/scene.schema';
 import { FetchBookByIdPipe } from '../src/shared/pipes/fetch.book.by.id.pipe';
-import { TextFileService } from '../src/text-file/text-file.service';
 import { rootMongooseTestModule } from './MongooseTestModule';
 
 describe('BookController (e2e)', () => {
@@ -48,15 +47,10 @@ describe('BookController (e2e)', () => {
             generateId: true,
           },
         }),
+        ChapterModule,
       ],
       controllers: [BookController],
-      providers: [
-        ChapterService,
-        TextFileService,
-        BookService,
-        FetchBookByIdPipe,
-        SceneService,
-      ],
+      providers: [BookService, FetchBookByIdPipe],
     }).compile();
     service = moduleFixture.get<BookService>(BookService);
     chapterService = moduleFixture.get<ChapterService>(ChapterService);
