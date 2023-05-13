@@ -6,7 +6,8 @@ import { useContainer } from 'class-validator';
 import mongoose, { Model, Types } from 'mongoose';
 import { ClsModule, ClsService } from 'nestjs-cls';
 import * as request from 'supertest';
-import { Arc, ArcSchema } from '../src/arc/schemas/arc';
+import { ArcService } from '../src/arc/arc.service';
+import { Arc, ArcSchema } from '../src/arc/schemas/arc.schema';
 import { BookService } from '../src/book/book.service';
 import { Book, BookSchema } from '../src/book/schemas/book.schema';
 import { ChapterController } from '../src/chapter/chapter.controller';
@@ -69,6 +70,7 @@ describe('ChapterController (e2e)', () => {
         FetchBookByIdPipe,
         FetchChapterByIdPipe,
         SceneService,
+        ArcService,
       ],
     }).compile();
 
@@ -705,7 +707,6 @@ describe('ChapterController (e2e)', () => {
             .attach('file', './test/resources/cap1-complete.txt');
           expect(response.status).toBe(201);
           const createdChapter = response.body;
-          console.log(createdChapter);
           expect(createdChapter).toEqual(
             expect.objectContaining({
               id: expect.any(String),

@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { Arc } from '../../arc/schemas/arc';
+import { Arc } from '../../arc/schemas/arc.schema';
 import { Book } from '../../book/schemas/book.schema';
 import { IChapter } from '../interface/Chapter';
 

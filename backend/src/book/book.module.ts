@@ -1,12 +1,10 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Arc, ArcSchema } from '../arc/schemas/arc';
-import { ChapterService } from '../chapter/chapter.service';
+import { Arc, ArcSchema } from '../arc/schemas/arc.schema';
+import { ChapterModule } from '../chapter/chapter.module';
 import { Chapter, ChapterSchema } from '../chapter/schemas/chapter.schema';
-import { SceneService } from '../scene/scene.service';
 import { Scene, SceneSchema } from '../scene/schemas/scene.schema';
 import { FetchBookByIdPipe } from '../shared/pipes/fetch.book.by.id.pipe';
-import { TextFileService } from '../text-file/text-file.service';
 import { BookController } from './book.controller';
 import { BookService } from './book.service';
 import { Book, BookSchema } from './schemas/book.schema';
@@ -19,15 +17,10 @@ import { Book, BookSchema } from './schemas/book.schema';
       { name: Arc.name, schema: ArcSchema },
       { name: Scene.name, schema: SceneSchema },
     ]),
+    ChapterModule,
     // ClsService,
   ],
-  providers: [
-    BookService,
-    ChapterService,
-    FetchBookByIdPipe,
-    TextFileService,
-    SceneService,
-  ],
+  providers: [BookService, FetchBookByIdPipe],
   controllers: [BookController],
 })
 export class BookModule {}

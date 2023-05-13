@@ -1,12 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument } from 'mongoose';
-import { Arc } from '../../arc/schemas/arc.schema';
-import { IScene } from '../interface/Scene';
 
-export type SceneDocument = HydratedDocument<Scene>;
+import mongoose, { HydratedDocument } from 'mongoose';
+import { Chapter } from '../../chapter/schemas/chapter.schema';
+import { Scene } from '../../scene/schemas/scene.schema';
+import { IArc } from '../interface/arc';
+
+export type ArcDocument = HydratedDocument<Arc>;
 
 @Schema({ timestamps: true, autoIndex: true })
-export class Scene implements IScene {
+export class Arc implements IArc {
   _id: mongoose.Schema.Types.ObjectId;
 
   @Prop({
@@ -32,9 +34,14 @@ export class Scene implements IScene {
   @Prop({
     required: true,
     type: mongoose.Schema.Types.ObjectId,
-    ref: Arc.name,
+    ref: Chapter.name,
   })
-  arc: Arc;
+  chapter: Chapter;
+
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Scene' }],
+  })
+  scenes: Scene[];
 
   @Prop({
     type: Number,
@@ -52,7 +59,7 @@ export class Scene implements IScene {
   updatedAt: Date;
 }
 
-export const SceneSchema = SchemaFactory.createForClass(Scene).set(
+export const ArcSchema = SchemaFactory.createForClass(Arc).set(
   'selectPopulatedPaths',
   false,
 );

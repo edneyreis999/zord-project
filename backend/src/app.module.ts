@@ -3,7 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ClsModule } from 'nestjs-cls';
 import { AppController } from './app.controller';
-import { Arc, ArcSchema } from './arc/schemas/arc';
+import { ArcModule } from './arc/arc.module';
+import { Arc, ArcSchema } from './arc/schemas/arc.schema';
 import { BookModule } from './book/book.module';
 import { Book, BookSchema } from './book/schemas/book.schema';
 import { ChapterModule } from './chapter/chapter.module';
@@ -34,6 +35,7 @@ import { TextFileService } from './text-file/text-file.service';
       { name: Scene.name, schema: SceneSchema },
     ]),
     SceneModule,
+    ArcModule,
   ],
   controllers: [AppController, SceneController],
   providers: [TextFileService, SceneService],

@@ -1,43 +1,19 @@
-
-PRÓLOGO 
- 
- 
-<arc><scene>No passado, Gildrat era uma cidade habitada exclusivamente por anões, pioneira na organização econômica e na criação da primeira moeda do continente, além de ser famosa por ser o berço da engenharia. Porém, a ascensão do imperador Dambur mudou o curso da história. A exploração da sagrada mina de Melios e a destruição do selo responsável por ligar a superfície com o mundo inferior resultaram na invasão de Ekios pelos Ignotos.</scene>
- <scene>A união dos anões e dos elfos do reino Arcaror resultou na criação de Daratrine, um lugar que se tornou refúgio para os desabrigados e lar daqueles que haviam perdido tudo. Diferentes povos se uniram em um exército improvisado que lutava com toda a sua força para defender-se da invasão, apesar dos esforços heroicos dos defensores de Daratrine, os ignotos continuavam avançando por todo o continente, tornando-se cada vez mais poderosos a cada dia. Mas um jovem mago, aprendiz de Cetra, conseguiu recriar o selo mágico que ligava a superfície de Ekios com o mundo inferior. Com a contribuição de todos os seres da superfície e a ajuda de uma valente tribo de orcs, foi criado um plano para invadir a mina de Melios e restaurar o selo, enfraquecendo os Ignotos e pondo fim à guerra.</scene>
-<scene>Com o fim da guerra, Daratrine cresceu e prosperou, tornando-se uma mistura de culturas e seres. Os elfos criaram a escola Liberdade Aurea, oferecendo ensino gratuito até a fase adulta. Os anões contribuíram para a formação de um mercado variado e criaram a moeda local, os Drakeis. Os orcs fundaram a Horda Consagrada, garantindo a proteção de Daratrine contra possíveis ataques, enquanto os trolls foram responsáveis por alimentar muitos com suas fazendas às margens do rio Lumi. Foi criado um conselho para discutir assuntos importantes, como a preservação da harmonia e o desenvolvimento socioeconômico dos cidadãos. Daratrine, um lugar de esperança e unidade, continua a escrever sua história de paz e progresso.</scene></arc>
-
- 
+<arc>No passado, Gildrat era uma cidade habitada exclusivamente por anões, pioneira na organização econômica e na criação da primeira moeda do continente, além de ser famosa por ser o berço da engenharia. Porém, a ascensão do imperador Dambur mudou o curso da história. A exploração da sagrada mina de Melios e a destruição do selo responsável por ligar a superfície com o mundo inferior resultaram na invasão de Ekios pelos Ignotos.
+ A união dos anões e dos elfos do reino Arcaror resultou na criação de Daratrine, um lugar que se tornou refúgio para os desabrigados e lar daqueles que haviam perdido tudo. Diferentes povos se uniram em um exército improvisado que lutava com toda a sua força para defender-se da invasão, apesar dos esforços heroicos dos defensores de Daratrine, os ignotos continuavam avançando por todo o continente, tornando-se cada vez mais poderosos a cada dia. Mas um jovem mago, aprendiz de Cetra, conseguiu recriar o selo mágico que ligava a superfície de Ekios com o mundo inferior. Com a contribuição de todos os seres da superfície e a ajuda de uma valente tribo de orcs, foi criado um plano para invadir a mina de Melios e restaurar o selo, enfraquecendo os Ignotos e pondo fim à guerra. 
+Com o fim da guerra, Daratrine cresceu e prosperou, tornando-se uma mistura de culturas e seres. Os elfos criaram a escola Liberdade Aurea, oferecendo ensino gratuito até a fase adulta. Os anões contribuíram para a formação de um mercado variado e criaram a moeda local, os Drakeis. Os orcs fundaram a Horda Consagrada, garantindo a proteção de Daratrine contra possíveis ataques, enquanto os trolls foram responsáveis por alimentar muitos com suas fazendas às margens do rio Lumi. Foi criado um conselho para discutir assuntos importantes, como a preservação da harmonia e o desenvolvimento socioeconômico dos cidadãos. Daratrine, um lugar de esperança e unidade, continua a escrever sua história de paz e progresso.</arc>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
- 
- 
- 
-NOITE DA HISTÓRIA 
- 
-
-<arc><scene>Um grupo de monstrinhos vindo das profundezas corria pelas ruas. Os primeiros raios de sol iluminavam as casas e as ruas já estavam cheias de animação. Logo atrás, mascarados, estavam os guerreiros da grande batalha, as suas espadas eram gravetos e suas roupas doadas pelos irmãos mais velhos, mas apesar das limitações, a imaginação os transportava para a grande batalha que estava por vir. Era noite de história em Daratrine, e nada poderia impedir as crianças de aproveitarem cada minuto.
+<arc>Um grupo de monstrinhos vindo das profundezas corria pelas ruas. Os primeiros raios de sol iluminavam as casas e as ruas já estavam cheias de animação. Logo atrás, mascarados, estavam os guerreiros da grande batalha, as suas espadas eram gravetos e suas roupas doadas pelos irmãos mais velhos, mas apesar das limitações, a imaginação os transportava para a grande batalha que estava por vir. Era noite de história em Daratrine, e nada poderia impedir as crianças de aproveitarem cada minuto.
 Os adultos carregavam mesas e cadeiras por entre as vielas, passando por trabalhadores que decoravam as fachadas das lojas com bandeirinhas coloridas. As crianças corriam entre eles, era um dia especial, feito para contemplar a glória do passado e renovar a esperança no futuro. Mas, mesmo sem entender o verdadeiro significado daquele dia, elas sabiam que algo diferente estava no ar. 
 A brincadeira os levou até a praça central da cidade, onde o cheiro das comidas tradicionais de cada raça se espalhava pelo ar. Na tenda dos orcs, carne de caça em palitos era o prato principal, enquanto a ala rural de Daratrine servia saborosas sopas de legumes preparadas por um grupo de trolls, a raça dominante da região. A tenda dos elfos anciões oferecia delícias doces cujas receitas passavam de geração em geração e davam água na boca. Tudo era para todos, mas as bancas que mais chamavam a atenção eram aquelas que misturavam receitas de várias tradições, refletindo a diversidade da própria cidade.
 Enquanto os adultos preparavam a grande fogueira que seria acesa mais tarde, rodas de histórias e peças de fantoches eram trazidas para entreter os pequenos. O sol começou a se pôr e a noite caiu rapidamente. Os jovens já dançavam ao som das músicas de um animado grupo de goblins. E dois ogros imponentes, segurando runas mágicas, sussurraram um feitiço e lançaram faíscas na lenha. Algumas crianças pararam, surpresas, pela magia diante de seus olhos, enquanto outras continuaram sua brincadeira, já acostumadas com a magia diária da cidade.
-O grande palco foi erguido logo atrás da fogueira e a lua começou a aparecer pouco a pouco no céu. Quando estava no ponto mais alto, todos se reuniram na praça central que acomodava a cidade na mesma data a cada ano. Naquela noite, as noções tribais voltavam e os filhos eram cuidados pela comunidade que os acomodava mais para frente a fim de ouvir a apresentação. </scene> </arc>
-<arc><scene>Um anão de pele clara, com uma barba branca e longa que dava a ele uma aparência intrigante, caminhou com passos firmes em direção ao coreto da praça central de Daratrine. No seu rosto, uma cicatriz atravessava o olho direito, coberta por um tapa-olho. Era impossível não notar a presença dele e sua chegada foi anunciada pela curiosidade dos presentes que, em silêncio, acompanhavam seus passos. Com uma poção em mãos, ergueu o braço, bebeu o líquido e tossiu, limpou a garganta e se dirigiu aos presentes: 
-— Sejam bem-vindos à noite de história em Daratrine, onde a tradição é honrada e a imaginação é celebrada.
-A voz do anão ecoou pela praça e todos os presentes se calaram, ansiosos para ouvir o que ele tinha a dizer. Sua voz, segura e confiante era agradável de se ouvir e suas palavras carregavam o peso de uma longa tradição de contar histórias. As crianças que ainda estavam longe, ao escutarem aquilo, correram desesperadas e sentaram-se em volta do coreto.
+O grande palco foi erguido logo atrás da fogueira e a lua começou a aparecer pouco a pouco no céu. Quando estava no ponto mais alto, todos se reuniram na praça central que acomodava a cidade na mesma data a cada ano. Naquela noite, as noções tribais voltavam e os filhos eram cuidados pela comunidade que os acomodava mais para frente a fim de ouvir a apresentação. 
+Um anão de pele clara, com uma barba branca e longa que dava a ele uma aparência intrigante, caminhou com passos firmes em direção ao coreto da praça central de Daratrine. No seu rosto, uma cicatriz atravessava o olho direito, coberta por um tapa-olho. Era impossível não notar a presença dele e sua chegada foi anunciada pela curiosidade dos presentes que, em silêncio, acompanhavam seus passos. Com uma poção em mãos, ergueu o braço, bebeu o líquido e tossiu, limpou a garganta e se dirigiu aos presentes: 
+— Sejam bem-vindos à noite de história em Daratrine, onde a tradição é honrada e a imaginação é celebrada.</arc>
+<arc>A voz do anão ecoou pela praça e todos os presentes se calaram, ansiosos para ouvir o que ele tinha a dizer. Sua voz, segura e confiante era agradável de se ouvir e suas palavras carregavam o peso de uma longa tradição de contar histórias. As crianças que ainda estavam longe, ao escutarem aquilo, correram desesperadas e sentaram-se em volta do coreto.
 O anão aguardou um momento, até que a algazarra se acalmasse e continuou:
-— Meu nome é Theodor Rheed, eu fiquei encarregado, esta noite, de compartilhar com todos vocês a história por trás daquela estátua. — disse, apontando para a representação de um orc que ficava atrás do palco.</scene>
-<scene>A estátua, esculpida com maestria, apresentava um pequeno orc mirrado, segurando um martelo com destreza. Apesar de sua aparência frágil, a escultura transmitia uma energia vibrante e uma força interior inigualável. A pedra escura utilizada em sua confecção lhe conferia uma imponência natural, fazendo-a se destacar no meio da praça. Era uma obra de arte admirável e uma prova da habilidade do artista em capturar a essência daquele pequeno, mas corajoso orc.
+— Meu nome é Theodor Rheed, eu fiquei encarregado, esta noite, de compartilhar com todos vocês a história por trás daquela estátua. — disse, apontando para a representação de um orc que ficava atrás do palco.
+A estátua, esculpida com maestria, apresentava um pequeno orc mirrado, segurando um martelo com destreza. Apesar de sua aparência frágil, a escultura transmitia uma energia vibrante e uma força interior inigualável. A pedra escura utilizada em sua confecção lhe conferia uma imponência natural, fazendo-a se destacar no meio da praça. Era uma obra de arte admirável e uma prova da habilidade do artista em capturar a essência daquele pequeno, mas corajoso orc.
 Então, o anão olhou para a plateia e, com um sorriso no rosto, perguntou às crianças sentadas na primeira fileira: 
 — Mas, antes de começarmos, eu gostaria de saber o nome de cada um e o que querem ser quando crescerem... Quero alguns voluntários.
 As crianças trocaram olhares, hesitantes. Até que um pequeno orc, fantasiado de guerreiro, levantou a mão e disse:
@@ -49,7 +25,7 @@ Dois orcs empolgados levantaram as mãos, quase que simultaneamente.
 — Eu sou a Puk, e vou lutar pelo nosso povo!
 — Quero ser um alquimista, como meu pai! Meu nome é Slug — gritou um pequeno goblin.
 Uma garotinha elfa, tímida, sussurrou:  
-—  Meu nome é Amora e eu quero usar magia... 
+—  Meu nome é Amora e eu quero usar magia igual meu avô... 
 Enquanto as crianças gritavam seus grandes sonhos, Rheed coçou a barba e pensou: 
 — Interessante, a maioria das crianças orcs ainda desejam uma carreira militar. — Ele sorriu, pois sabia que a história que iria contar tocaria as crianças de alguma forma. Ele então pegou uma segunda poção escondida no bolso e a bebeu, fazendo com que sua barba brilhasse em um tom azulado. Encheu o peito de ar e, ao soprar, uma lufada de ar colorido saiu de sua boca, tomando forma ao seu redor. As crianças ficaram maravilhadas e empolgadas com a fumaça que começou a se solidificar em uma cúpula que cobria toda a área do palco, incluindo a plateia.
 Um pátio começou a surgir aos poucos e a névoa se entrelaçou como em um tecido que gradualmente costurou uma nova realidade. Quando a neblina começou a se dissipar, elas se encontraram em um lugar que parecia a escola da cidade, mas com um toque estranho.
@@ -68,12 +44,12 @@ Sem olhar para trás, o orc entra em uma porta que tinha uma placa indicando "Au
 A porta da sala de aula que tinha aparecido repentinamente voltou a ser uma névoa densa, deixando as crianças ainda mais confusas.
            — Não tenham medo! Isso é tudo parte do show! — disse Rheed saindo em meio a névoa com um olhar misterioso. 
           Ele abriu o frasco de poção e o exibiu para a plateia. 
-          — Essa é uma poção capaz de tornar visível as memórias de alguém! O que vocês estão vendo aqui não é real, são apenas memórias retiradas do próprio orc da estátua. Não se preocupem, essas criaturas não podem ver, escutar ou tocar em vocês.</scene> </arc>
+          — Essa é uma poção capaz de tornar visível as memórias de alguém! O que vocês estão vendo aqui não é real, são apenas memórias retiradas do próprio orc da estátua. Não se preocupem, essas criaturas não podem ver, escutar ou tocar em vocês.
 
              Mas, antes que pudesse dar continuidade, Rheed é interrompido:
 — Uau, uma poção Mnésica? Meu pai já me falou do poder dela. Que demais! — Completa o goblin. 
-— Isso mesmo pequenino. E agora, sem mais interrupções, voltemos para a nossa história! — disse ele, dando um passo para trás e mergulhando novamente na névoa densa.
-Ao refazer a névoa da poção, a cena volta a ter nitidez e a ação recomeça. Dentro da sala de aula de combate, a maioria dos presentes era composta por orcs, seguidos de trolls e alguns poucos ogros. As carteiras, de proporções especialmente largas e robustas, pareciam prontas para acomodar os futuros guerreiros que ali se preparavam. Por meio das janelas ao fundo, era possível observar o topo da torre onde as bandeiras da Horda Consagrada tremulavam, envoltas em sua glória e tradição.
+— Isso mesmo pequenino. E agora, sem mais interrupções, voltemos para a nossa história! — disse ele, dando um passo para trás e mergulhando novamente na névoa densa.</arc>
+<arc>Ao refazer a névoa da poção, a cena volta a ter nitidez e a ação recomeça. Dentro da sala de aula de combate, a maioria dos presentes era composta por orcs, seguidos de trolls e alguns poucos ogros. As carteiras, de proporções especialmente largas e robustas, pareciam prontas para acomodar os futuros guerreiros que ali se preparavam. Por meio das janelas ao fundo, era possível observar o topo da torre onde as bandeiras da Horda Consagrada tremulavam, envoltas em sua glória e tradição.
 Os alunos da aula de combate estavam agitados, rindo e conversando alto, mas assim que o sinal tocou, eles rapidamente se viraram para a professora troll. Sabiam que, se quisessem entrar na Horda Consagrada, precisavam prestar atenção e se destacar.
 A troll estava prestes a começar a aula quando o orc entra ofegante na sala, parecendo ter corrido uma maratona. A troll se vira para ele e, com uma voz severa, pergunta: 
 — Atrasado, Ghork?
@@ -100,8 +76,8 @@ Ele arregala os olhos apenas por um segundo e tamborila os dedos no tampo da mes
 Os outros alunos da sala logo notaram a enrolação de Eraste e começaram a caçoar do orc. As gargalhadas ecoavam por todo o ambiente, como um coral afinado de chacota. Eraste sentiu-se encurralado, sem saber como agir. Ele tentou ignorar, mas a zombaria persistiu, fazendo seu rosto corar como um tomate maduro.
 Polona suspira. 
 — Deixa, Eraste, pode se sentar.
-Eraste encara Ghork por mais um momento, com um olhar tão vingativo que o pobre orc sente um arrepio percorrer a espinha, como se uma avalanche de medo estivesse prestes a desabá-la. Quando o sinal anuncia o fim da aula, Ghork se levanta apressado e arrasta consigo o amigo Drull, sem querer ficar para trás e acabar sozinho na mira do orc irado.
-Ao chegarem ao refeitório, uma fila de estudantes já se formava e Drull não se conteve ao sentir o aroma da refeição que seria servida naquele dia.
+Eraste encara Ghork por mais um momento, com um olhar tão vingativo que o pobre orc sente um arrepio percorrer a espinha, como se uma avalanche de medo estivesse prestes a desabá-la. Quando o sinal anuncia o fim da aula, Ghork se levanta apressado e arrasta consigo o amigo Drull, sem querer ficar para trás e acabar sozinho na mira do orc irado.</arc>
+<arc>Ao chegarem ao refeitório, uma fila de estudantes já se formava e Drull não se conteve ao sentir o aroma da refeição que seria servida naquele dia.
 — Cheiro bom! — exclama ele, erguendo o nariz.
 — Nossa, está mesmo, acho que torta de lebre-dente-de-sabre é o prato principal de hoje. — diz Ghork, já se encaminhando para a fila.
  O amplo salão é revestido de mármore creme, com mesas espalhadas por toda sua extensão. Grupos de alunos já estavam se sentando com suas travessas de comida e alguns goblins auxiliares da cantina circulavam com jarros de suco.
@@ -153,8 +129,8 @@ Os amigos se viram para olhá-la, expressando diferentes níveis de confusão.
 — Sim, meu povo, é um plano infalível! — Lala anuncia, toda animada.
 — De novo, não… — reclama Ghork, sabendo que os planos da amiga nunca dão certo.
 Drull coça a cabeça.
-— Gente, sério, eu sou uma elfa, né? E elfos são cheios de truques! Não podia ficar de fora dessa! Passei dias pensando em um plano para todos nós entrarmos lá juntos. E eu garanto que vai ser diferente dessa vez! Vocês vão adorar! 
-— Pensando desde quando? — Dam pergunta, confuso.
+— Gente, sério, eu sou uma elfa, né? E elfos são cheios de truques! Não podia ficar de fora dessa! Passei dias pensando em um plano para todos nós entrarmos lá juntos. E eu garanto que vai ser diferente dessa vez! Vocês vão adorar!</arc> 
+<arc>— Pensando desde quando? — Dam pergunta, confuso.
 — Desde agora, na verdade! Mas calma. Deixa eu terminar de contar. — Lala continua, animada. — Dam, você vai se fantasiar e fingir ser o inspetor enviado de Cetra. Eu vou estar na sua bagagem. O ideal seria Drull me carregar. Mas, como ele já vai estar no pátio fazendo a prova, vai ter que ser você mesmo. — ela aponta para Dam que agarra seu dedo. 
 — Eu não! Não posso entrar lá. É proibido! Só pode entrar quem vai participar da Prova de Fogo. Eu não vou fazer isso... — reclama Dam
 — Claro que vai! Você vai estar fantasiado de inspetor! E quando conseguir entrar, vai pedir aos soldados que o levem até perto do local onde vai acontecer a Prova de Fogo. Quando estiver lá, vai dizer que esqueceu seu cajado e que vai buscá-lo, mas aí você já deixa as malas. Então, você pede para te escoltarem de volta até a entrada e vai embora. O resto é comigo, eu uso uma runa mágica da minha família para chegar até a prova!
@@ -180,17 +156,8 @@ Lala mostra os braços:
 — Aula? Combate!!!! — Drull vibra, batendo na mesa. 
 — Sim Drull, a última aula de campo. — Ghork diz e se vira para Dam. — Te encontramos na saída? 
 Dam arfa:
- — Está bem…
-Uma breve pausa ocorre e a névoa que cerca as crianças se dissipa um pouco.
-Os pequenos ficam em polvorosa, Amora, entusiasmada com atitude de Lala ao defender Ghork, logo diz:
-_   Essa é das minhas! Sou assim também, defendo quem precisa. Só o plano dela é que achei meio furado...
-Rheed solta uma gargalhada e, voltando-se para as crianças, diz:
-
-___ Que bom que estão gostando, mas ainda temos muito o que ver e ouvir. Tenho certeza de que vocês ainda irão se identificar com muitas atitudes tomadas pelos personagens desta história...
-[
-Neste momento, a névoa volta a ficar mais densa e as imagens reaparecem, encantando as crianças.
- Aqui dá para inserir mais uma cena do Rheed ] 
-Depois da aula da prática de combate, Ghork e Drull esperam por Dam na frente da Liberdade Áurea como combinado. Dam chega alguns minutos atrasado e eles seguem caminho juntos para casa, como fazem diariamente.
+ — Está bem…</arc>
+<arc>Depois da aula da prática de combate, Ghork e Drull esperam por Dam na frente da Liberdade Áurea como combinado. Dam chega alguns minutos atrasado e eles seguem caminho juntos para casa, como fazem diariamente.
 — Ei, Ghork, é estranho voltar sem a Lala, né? — Dam suspira enquanto eles seguem caminho juntos para casa, usando o caminho de pedras lisas para chegar ao centro da cidade.
 — É, cara. Eu vou sentir falta da gente voltando para casa, os quatro juntos... — Ghork aponta para o outro lado. — Vamos voltar pela frente da cidade alta hoje.
 — Pelo centro! Mais perto! — Drull reclama. 
@@ -235,14 +202,10 @@ Banla bufa em resposta:
 A acusação de Banla faz Ghork se sentir desconfortável, pois ele sabe que é verdade. O pai tem um problema com bebidas e muitas vezes se perde no caminho para casa.
 — Eu acho que ele não encontrou nenhum serviço no centro hoje... — explica Shad, pegando a tigela de Ghork e enchendo-a de ensopado. — Come, filho, vai esfriar.
 Ghork se delicia com o ensopado preparado com todo o amor pela mãe. Apesar do caldo estar mais ralo que o de costume, Ghork adora o sabor. Enquanto come, ele se questiona o motivo da ausência do pai à mesa. A resposta vem em forma de pensamento: 
-— Talvez meu pai não esteja aqui porque eu ainda não trouxe orgulho para ele, mas isso irá mudar, eu vou dar o meu melhor.
+ Talvez meu pai não esteja aqui porque eu ainda não trouxe orgulho para ele, mas isso irá mudar, eu vou dar o meu melhor.
 Determinado a honrar sua família e superar todos os obstáculos que surgirem em seu caminho, Ghork sabe que o amanhã será o começo de uma nova era. Olhando para sua mãe e madrinha, ele sente o amor e o apoio incondicional delas, sabendo que não está sozinho nessa jornada. Ghork está pronto para escrever sua própria história, quebrar o preconceito que sempre sofreu e mostrar para todos do que é capaz.
+Por trás da névoa, Rheed podia ver a reação dos pequenos diante suas últimas palavras.
+Ele aproveitou o momento e com voz firma completou:
+— Muitas vezes a pior batalha é aquela que travamos dia após dia, enfrentando preconceitos e desilusões. A resiliência é algo fundamental para permanecermos firmes diante das dificuldades que o cotidiano nos impõe. Um verdadeiro herói surge do enfrentamento desses conflitos.
+Fez uma pausa e respirou profundamente, enquanto passava a mão pela barba longa e branca com um ar pensativo.</arc>
 
-A névoa, mais uma vez, diminui, permitindo ver a reação dos pequenos diante dessas últimas palavras. Era possível perceber uma atmosfera de confiança e empatia.
-Rheed aproveitou o momento e com voz firme completou:
-__ Muitas vezes a pior batalha é aquela que travamos dia após dia, enfrentando preconceitos e desilusões. A resiliência é algo fundamental para permanecermos firmes diante das dificuldades que o cotidiano nos impõe. Um verdadeiro herói surge do enfrentamento desses conflitos iniciais.
-Fez uma pausa e respirou profundamente, enquanto passava a mão pela barba longa e branca com um ar pensativo.
-__ Mas voltemos à história, pois mais emoções nos esperam.
-E falando isso, fez retornar a névoa, deixando encantados seus pequenos ouvintes.
-
-[Aqui dá para inserir o Rheed de novo, dando o gancho para o próximo capitulo] 
