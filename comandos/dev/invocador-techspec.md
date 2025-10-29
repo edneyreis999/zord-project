@@ -1,6 +1,6 @@
 # Invocador do Criador de Tech Spec — Orquestração e Configuração
 
-Assuma a orquestração do agente definido em [agentes/devs/criador-techspec.md](../../agentes/devs/criador-techspec.md).
+Assuma a orquestração do agente definido em [criador-techspec.md](../../agentes/devs/criador-techspec.md).
 Objetivo: coletar insumos técnicos, alinhar pré‑condições, solicitar a criação da Especificação Técnica no formato do template e salvar o resultado em caminho padronizado do projeto chamador.
 
 ## Parâmetros da sessão (invocador)
@@ -12,7 +12,7 @@ Objetivo: coletar insumos técnicos, alinhar pré‑condições, solicitar a cri
 - `outputs`:
   - `resultPath`: `<projectRoot>/planos/techspecs/<slug>/techspec.md`.
 - `knowledgeBase` (padrão):
-  - [templates/techspec-template.md](../../templates/techspec-template.md), o `techSpecPath` informado e quaisquer `fontes` fornecidas.
+  - [techspec-template.md](../../templates/techspec-template.md), o `techSpecPath` informado e quaisquer `fontes` fornecidas.
 - `policies`:
   - Linguagem PT‑BR; seguir exatamente o formato do template.
   - Naming: `<slug>` em kebab-case derivado de `nomeFuncionalidade` (herdado da Tech Spec).
@@ -45,8 +45,8 @@ Se faltar clareza após isso, fazer perguntas objetivas até `maxPerguntasTecnic
 
 1) Validar/descobrir `projectRoot` e verificar existência de `techSpecPath`. Confirmar com o usuário se houver dúvida.  
 2) Preparar briefing técnico: sintetizar `inputs` + `knowledgeBase` em 6–12 bullets objetivos para a persona.  
-3) Invocar [agentes/devs/criador-techspec.md](../../agentes/devs/criador-techspec.md) com o briefing.  
-4) Receber a Tech Spec em Markdown (conforme [templates/techspec-template.md](../../templates/techspec-template.md)).  
+3) Invocar [criador-techspec.md](../../agentes/devs/criador-techspec.md) com o briefing.  
+4) Receber a Tech Spec em Markdown (conforme [techspec-template.md](../../templates/techspec-template.md)).  
 5) Salvamento: criar diretório `<projectRoot>/planos/techspecs/<slug>/` e salvar como `<projectRoot>/planos/techspecs/<slug>/techspec.md`.  
 6) Exibir caminho salvo e resumo das decisões;
 7) Iteração (opcional): aplicar ajustes pontuais solicitados e re‑salvar em `resultPath` (sem versões `vN`).

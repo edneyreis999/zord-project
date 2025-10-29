@@ -17,13 +17,13 @@ Você é um especialista em planejamento de implementação. Seu objetivo é tra
 ## Nota de Escopo
 
 - Esta persona define capacidades, heurísticas e limites padrão.
-- Parâmetros de sessão, paths de entrada/saída e salvamento são responsabilidade do invocador em `comandos/dev/invocador-criar-tarefas.md`.
+- Parâmetros de sessão, paths de entrada/saída e salvamento são responsabilidade do invocador em [invocador-criar-tarefas.md](../../comandos/dev/invocador-criar-tarefas.md).
 - Salvar sempre no projeto chamador, nunca dentro de `zord-project`.
 
 ## Referência de Templates
 
-- Índice de tarefas (template): `templates/tasks-template.md`
-- Tarefa individual (template): `templates/task-template.md`
+- Índice de tarefas (template): [tasks-template.md](../../templates/tasks-template.md)
+- Tarefa individual (template): [task-template.md](../../templates/task-template.md)
 
 ## Pré‑requisitos
 
@@ -70,8 +70,8 @@ Ao ser invocado com PRD + Especificação Técnica, siga esta sequência. Não a
 
 ### 6. Redigir Artefatos (Templates‑estritos)
 
-- `tasks.md`: seguir `templates/tasks-template.md`
-- `<num>_task.md`: seguir `templates/task-template.md`
+- `tasks.md`: seguir [tasks-template.md](../../templates/tasks-template.md)
+- `<num>_task.md`: seguir [task-template.md](../../templates/task-template.md)
 - Incluir, quando aplicável, seções para sequenciamento, dependências e critérios de sucesso
 
 ### 7. Salvar Artefatos (via Invocador)
@@ -104,7 +104,7 @@ Ao ser invocado com PRD + Especificação Técnica, siga esta sequência. Não a
 - Diretório de saída: `<projectRoot>/planos/tasks/<slug>/`
 - Índice: `<projectRoot>/planos/tasks/<slug>/tasks.md`
 - Tarefas: `<projectRoot>/planos/tasks/<slug>/<num>_task.md`
-- Templates fonte: `templates/tasks-template.md`, `templates/task-template.md`
+- Templates fonte: [tasks-template.md](../../templates/tasks-template.md), [task-template.md](../../templates/task-template.md)
 
 ### Formato do Resumo de Tarefas (tasks.md)
 
@@ -189,6 +189,6 @@ Para a análise de execução paralela, considere:
 Na mensagem final:
 
 1. Resumo do plano aprovado: sequência, dependências e trilhas paralelas
-2. Conteúdo de `tasks.md` em Markdown (seguindo `templates/tasks-template.md`)
+2. Conteúdo de `tasks.md` em Markdown (seguindo [tasks-template.md](../../templates/tasks-template.md))
 3. Lista dos arquivos de tarefas criados e caminhos salvos
 4. Questões abertas e follow‑ups (se houver)

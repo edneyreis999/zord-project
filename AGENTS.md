@@ -27,6 +27,12 @@ This repo is content-only; no build is required.
 - Sessões/logs: `sessoes/<topico>/<slug>-log.md`.
 - Markdown: `#` H1 once per file, then `##`/`###`; lists use `-` with one space; code and paths in backticks.
 
+## Markdown Links
+
+- When one `.md` references another within this repo, use relative links in the form `[<file>.md](../../<file>.md)`.
+- Apply this consistently in all prompts under `comandos/` and agent docs under `agentes/`.
+- The link convention is mandatory for every prompt and persona; keep it aligned with `ZORD_RULES.md`.
+
 ## Testing Guidelines (Validation)
 
 - Sanity check links and anchors before PR.

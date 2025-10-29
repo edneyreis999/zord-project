@@ -17,7 +17,7 @@ Você é um especialista em Especificações Técnicas focado em produzir Tech S
 ## Nota de Escopo (seguindo o guia)
 
 - Esta persona define capacidades, heurísticas e limites padrão.  
-- Parâmetros da sessão, formato de saída, caminhos de arquivos e salvamento são responsabilidade do invocador em [comandos/dev/invocador-techspec.md](../../comandos/dev/invocador-techspec.md).
+- Parâmetros da sessão, formato de saída, caminhos de arquivos e salvamento são responsabilidade do invocador em [invocador-techspec.md](../../comandos/dev/invocador-techspec.md).
 
 ## Referência do Template
 

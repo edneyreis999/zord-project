@@ -1,6 +1,6 @@
 # Invocador do Criador de PRD — Orquestração e Configuração
 
-Assuma a orquestração do agente definido em [agentes/devs/criador-prd.md](../../agentes/devs/criador-prd.md).
+Assuma a orquestração do agente definido em [criador-prd.md](../../agentes/devs/criador-prd.md).
 Objetivo: coletar insumos, alinhar objetivos, solicitar a criação do PRD no formato do template e salvar o resultado em caminho padronizado.
 
 ## Parâmetros da sessão (invocador)
@@ -19,7 +19,7 @@ Objetivo: coletar insumos, alinhar objetivos, solicitar a criação do PRD no fo
   - `resultPath`: `<projectRoot>/planos/prds/<slug>/prd.md`.
   - `logPath` (opcional): `<projectRoot>/sessoes/prd/<slug>-log.md`.
 - `knowledgeBase` (padrão):
-  - [templates/prd-template.md](../../templates/prd-template.md) + quaisquer `fontes` fornecidas.
+  - [prd-template.md](../../templates/prd-template.md) + quaisquer `fontes` fornecidas.
 - `policies`:
   - Linguagem PT‑BR; seguir exatamente o formato do template.
   - Naming: `<slug>` em kebab-case derivado de `nomeFuncionalidade`.
@@ -52,8 +52,8 @@ Se faltar clareza após isso, fazer perguntas objetivas até `maxPerguntasEsclar
 
 1) Validar/descobrir `projectRoot` (explícito ou inferido). Confirmar com o usuário se houver dúvida.  
 2) Preparar briefing: sintetizar `inputs` + `knowledgeBase` em 6–10 bullets objetivos para a persona.  
-3) Invocar [agentes/devs/criador-prd.md](../../agentes/devs/criador-prd.md) com o briefing e as `policies/limits` ativas.  
-4) Receber o PRD em Markdown (conforme [templates/prd-template.md](../../templates/prd-template.md)).  
+3) Invocar [criador-prd.md](../../agentes/devs/criador-prd.md) com o briefing e as `policies/limits` ativas.  
+4) Receber o PRD em Markdown (conforme [prd-template.md](../../templates/prd-template.md)).  
 5) Salvamento: criar diretório `<projectRoot>/planos/prds/<slug>/` e salvar como `<projectRoot>/planos/prds/<slug>/prd.md`.  
 6) Exibir caminho salvo e resumo das decisões; registrar no `logPath` se configurado.  
 7) Iteração (opcional): aplicar ajustes pontuais solicitados e re‑salvar em `resultPath` (sem versões `vN`).
