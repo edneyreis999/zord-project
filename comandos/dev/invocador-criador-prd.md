@@ -16,7 +16,7 @@ Objetivo: coletar insumos, alinhar objetivos, solicitar a criação do PRD no fo
   - `fontes`: paths e/ou trechos de referência (opcional, recomendado).
   - `context`: string/enum para ativar nuances da persona (opcional).
 - `outputs`:
-  - `resultPath`: `<projectRoot>/planos/prds/<slug>/prd.md`.
+  - `resultPath`: `<projectRoot>/planos/<slug>/prds/prd.md`.
   - `logPath` (opcional): `<projectRoot>/sessoes/prd/<slug>-log.md`.
 - `knowledgeBase` (padrão):
   - [prd-template.md](../../templates/prd-template.md) + quaisquer `fontes` fornecidas.
@@ -54,7 +54,7 @@ Se faltar clareza após isso, fazer perguntas objetivas até `maxPerguntasEsclar
 2) Preparar briefing: sintetizar `inputs` + `knowledgeBase` em 6–10 bullets objetivos para a persona.  
 3) Invocar [criador-prd.md](../../agentes/devs/criador-prd.md) com o briefing e as `policies/limits` ativas.  
 4) Receber o PRD em Markdown (conforme [prd-template.md](../../templates/prd-template.md)).  
-5) Salvamento: criar diretório `<projectRoot>/planos/prds/<slug>/` e salvar como `<projectRoot>/planos/prds/<slug>/prd.md`.  
+5) Salvamento: criar diretório `<projectRoot>/planos/<slug>/prds/` e salvar como `<projectRoot>/planos/<slug>/prds/prd.md`.  
 6) Exibir caminho salvo e resumo das decisões; registrar no `logPath` se configurado.  
 7) Iteração (opcional): aplicar ajustes pontuais solicitados e re‑salvar em `resultPath` (sem versões `vN`).
 
@@ -76,4 +76,4 @@ Se faltar clareza após isso, fazer perguntas objetivas até `maxPerguntasEsclar
 Envie em uma única mensagem:  
 `ProjectRoot:` caminho absoluto  |  `Funcionalidade:` nome curto  |  `Objetivos:` 3–6 bullets  |  `Usuários:` personas/fluxos  |  `Restrições:` tech/negócio  |  `Não‑objetivos:` fora de escopo  |  `Fontes:` paths/links.  
 
-O invocador criará o briefing, gerará o PRD via `agentes/devs/criador-prd.md`, salvará em `<projectRoot>/planos/prds/<slug>/prd.md` e retornará o caminho e o sumário.
+O invocador criará o briefing, gerará o PRD via `agentes/devs/criador-prd.md`, salvará em `<projectRoot>/planos/<slug>/prds/prd.md` e retornará o caminho e o sumário.

@@ -26,7 +26,7 @@ Você é um especialista em Especificações Técnicas focado em produzir Tech S
 ## Pré‑requisitos
 
 - Revisar padrões e convenções do projeto (arquitetura, testes, segurança, observabilidade)
-- Confirmar que o PRD existe no caminho informado pelo invocador (ex.: `<projectRoot>/planos/prds/<slug>/prd.md`)
+- Confirmar que o PRD existe no caminho informado pelo invocador (ex.: `<projectRoot>/planos/<slug>/prds/prd.md`)
 
 ## Fluxo de Trabalho
 
@@ -48,7 +48,7 @@ Ao ser invocado com um PRD aprovado, siga esta sequência. Não avance sem encer
 
 ### 3. Validar com consenso (Obrigatório)
 
-- Usar a ferramenta de consenso do Zen (Zen MCP) com modelos ChatGPT‑5 e gemini 2.5.
+- Usar a ferramenta de consenso do Zen (Zen MCP) com modelos gpt5-pro e gemini-2.5-pro.
 - Submeter o plano para análise crítica e incorporar recomendações até convergência.
 - Registrar notas de consenso, mudanças aplicadas e o plano final aprovado.
 
@@ -73,7 +73,7 @@ Ao ser invocado com um PRD aprovado, siga esta sequência. Não avance sem encer
 
 ### 7. Salvar Tech Spec (Obrigatório)
 
-- Salvar como: `<projectRoot>/planos/techspecs/<slug>/techspec.md`
+- Salvar como: `<projectRoot>/planos/<slug>/techspecs/techspec.md`
 - Confirmar operação de escrita e caminho
 
 ### 8. Reportar Resultados
@@ -102,7 +102,7 @@ Ao ser invocado com um PRD aprovado, siga esta sequência. Não avance sem encer
 - [ ] Plano detalhado criado e validado por consenso
 - [ ] Análise profunda do repositório completada
 - [ ] Tech Spec gerada usando o template
-- [ ] Arquivo escrito em `<projectRoot>/planos/techspecs/<slug>/techspec.md`
+- [ ] Arquivo escrito em `<projectRoot>/planos/<slug>/techspecs/techspec.md`
 - [ ] Caminho final de saída fornecido e confirmação
 
 ## Protocolo de Saída

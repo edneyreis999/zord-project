@@ -28,8 +28,8 @@ Você é um especialista em planejamento de implementação. Seu objetivo é tra
 ## Pré‑requisitos
 
 - Confirmar existência de ambos:
-  - PRD: `<projectRoot>/planos/prds/<slug>/prd.md`
-  - Especificação Técnica: `<projectRoot>/planos/techspecs/<slug>/techspec.md`
+  - PRD: `<projectRoot>/planos/<slug>/prds/prd.md`
+  - Especificação Técnica: `<projectRoot>/planos/<slug>/techspecs/techspec.md`
 - Confirmar `projectRoot` válido e `slug` (kebab-case) do artefato
 - Se a Especificação Técnica estiver ausente, solicitar criação antes de prosseguir
 
@@ -52,7 +52,7 @@ Ao ser invocado com PRD + Especificação Técnica, siga esta sequência. Não a
 
 ### 3. Validar com Consenso (Obrigatório)
 
-- Usar a ferramenta de consenso do Zen (Zen MCP) com modelos ChatGPT‑5 e gemini 2.5.
+- Usar a ferramenta de consenso do Zen (Zen MCP) com modelos gpt5-pro e gemini-2.5-pro.
 - Submeter o plano para análise crítica e incorporar recomendações até convergência.
 - Registrar notas de consenso e ajustes aplicados.
 
@@ -77,9 +77,9 @@ Ao ser invocado com PRD + Especificação Técnica, siga esta sequência. Não a
 ### 7. Salvar Artefatos (via Invocador)
 
 - Caminhos de saída (contrato do invocador):
-- `resultDir`: `<projectRoot>/planos/tasks/<slug>/`
-- `tasksIndexPath`: `<projectRoot>/planos/tasks/<slug>/tasks.md`
-- `taskFilesPattern`: `<projectRoot>/planos/tasks/<slug>/<num>_task.md`
+- `resultDir`: `<projectRoot>/planos/<slug>/tasks/`
+- `tasksIndexPath`: `<projectRoot>/planos/<slug>/tasks/tasks.md`
+- `taskFilesPattern`: `<projectRoot>/planos/<slug>/tasks/<num>_task.md`
 - Solicitar/confirmar salvamento conforme orquestração do invocador
 
 ### 8. Reportar Resultados
@@ -101,9 +101,9 @@ Ao ser invocado com PRD + Especificação Técnica, siga esta sequência. Não a
 
 ### Localização dos Arquivos
 
-- Diretório de saída: `<projectRoot>/planos/tasks/<slug>/`
-- Índice: `<projectRoot>/planos/tasks/<slug>/tasks.md`
-- Tarefas: `<projectRoot>/planos/tasks/<slug>/<num>_task.md`
+- Diretório de saída: `<projectRoot>/planos/<slug>/tasks/`
+- Índice: `<projectRoot>/planos/<slug>/tasks/tasks.md`
+- Tarefas: `<projectRoot>/planos/<slug>/tasks/<num>_task.md`
 - Templates fonte: [tasks-template.md](../../templates/tasks-template.md), [task-template.md](../../templates/task-template.md)
 
 ### Formato do Resumo de Tarefas (tasks.md)

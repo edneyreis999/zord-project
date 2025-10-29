@@ -10,7 +10,7 @@ Objetivo: coletar insumos técnicos, alinhar pré‑condições, solicitar a cri
   - `prd.md`: O arquivo PRD no qual a tech spec deve se basear. Arquivo deve ser fornecido ao chamar esse invocador. Ele sempre estará localizado no `sprojectRoot`.
   - `nomeFuncionalidade`: nome curto/slug herdado do PRD aprovado (será usado no `<slug>`).
 - `outputs`:
-  - `resultPath`: `<projectRoot>/planos/techspecs/<slug>/techspec.md`.
+  - `resultPath`: `<projectRoot>/planos/<slug>/techspecs/techspec.md`.
 - `knowledgeBase` (padrão):
   - [techspec-template.md](../../templates/techspec-template.md), o `techSpecPath` informado e quaisquer `fontes` fornecidas.
 - `policies`:
@@ -47,7 +47,7 @@ Se faltar clareza após isso, fazer perguntas objetivas até `maxPerguntasTecnic
 2) Preparar briefing técnico: sintetizar `inputs` + `knowledgeBase` em 6–12 bullets objetivos para a persona.  
 3) Invocar [criador-techspec.md](../../agentes/devs/criador-techspec.md) com o briefing.  
 4) Receber a Tech Spec em Markdown (conforme [techspec-template.md](../../templates/techspec-template.md)).  
-5) Salvamento: criar diretório `<projectRoot>/planos/techspecs/<slug>/` e salvar como `<projectRoot>/planos/techspecs/<slug>/techspec.md`.  
+5) Salvamento: criar diretório `<projectRoot>/planos/<slug>/techspecs/` e salvar como `<projectRoot>/planos/<slug>/techspecs/techspec.md`.  
 6) Exibir caminho salvo e resumo das decisões;
 7) Iteração (opcional): aplicar ajustes pontuais solicitados e re‑salvar em `resultPath` (sem versões `vN`).
 
@@ -67,6 +67,6 @@ Se faltar clareza após isso, fazer perguntas objetivas até `maxPerguntasTecnic
 ## Quickstart
 
 Envie em uma única mensagem:  
-`ProjectRoot:` caminho absoluto  |  `PRD:` `<projectRoot>/planos/prds/<slug>/prd.md`  |  `Funcionalidade:` nome curto  |  `Objetivos técnicos:` bullets  |  `Restrições técnicas:` bullets  |  `Fontes:` paths/links.  
+`ProjectRoot:` caminho absoluto  |  `PRD:` `<projectRoot>/planos/<slug>/prds/prd.md`  |  `Funcionalidade:` nome curto  |  `Objetivos técnicos:` bullets  |  `Restrições técnicas:` bullets  |  `Fontes:` paths/links.  
 
-O invocador criará o briefing técnico, gerará a Tech Spec via `agentes/devs/criador-techspec.md`, salvará em `<projectRoot>/planos/techspecs/<slug>/techspec.md` e retornará o caminho e o sumário.
+O invocador criará o briefing técnico, gerará a Tech Spec via `agentes/devs/criador-techspec.md`, salvará em `<projectRoot>/planos/<slug>/techspecs/techspec.md` e retornará o caminho e o sumário.

@@ -11,9 +11,9 @@ Objetivo: a partir de um PRD e de uma Especificação Técnica existentes, gerar
   - `techSpecPath`: caminho da Especificação Técnica da funcionalidade. Imprescindível fornecer ao invocar.
   - `nomeFuncionalidade`: nome curto/slug herdado do PRD aprovado (será usado no `<slug>`).
 - `outputs`:
-  - `resultDir`: `<projectRoot>/planos/tasks/<slug>/`.
-  - `tasksIndexPath`: `<projectRoot>/planos/tasks/<slug>/tasks.md`.
-  - `taskFilesPattern`: `<projectRoot>/planos/tasks/<slug>/<num>_task.md`.
+  - `resultDir`: `<projectRoot>/planos/<slug>/tasks/`.
+  - `tasksIndexPath`: `<projectRoot>/planos/<slug>/tasks/tasks.md`.
+  - `taskFilesPattern`: `<projectRoot>/planos/<slug>/tasks/<num>_task.md`.
 - `knowledgeBase` (padrão):
   - [tasks-template.md](../../templates/tasks-template.md), [task-template.md](../../templates/task-template.md), além de `prdPath` e `techSpecPath` informados.
 - `policies`:
@@ -48,7 +48,7 @@ Se persistirem dúvidas após isso, fazer perguntas objetivas até `maxPerguntas
 2) Preparar briefing de planejamento: sintetizar `inputs` + `knowledgeBase` em 6–12 bullets objetivos para a persona.  
 3) Invocar [criador-tarefas.md](../../agentes/devs/criador-tarefas.md) com o briefing, informando claramente `resultDir`, `tasksIndexPath` e `taskFilesPattern`.  
 4) Receber o resumo de tarefas (`tasks.md`) e os arquivos de tarefas individuais conforme templates.  
-5) Salvamento: criar diretório `<projectRoot>/planos/tasks/<slug>/` e salvar `tasks.md` + arquivos `<num>_task.md`.  
+5) Salvamento: criar diretório `<projectRoot>/planos/<slug>/tasks/` e salvar `tasks.md` + arquivos `<num>_task.md`.  
 6) Exibir caminhos salvos e um resumo do plano (sequência, dependências, trilhas paralelas).  
 7) Iteração (opcional): aplicar ajustes solicitados e re‑salvar (sem versões `vN`).
 
@@ -68,6 +68,6 @@ Se persistirem dúvidas após isso, fazer perguntas objetivas até `maxPerguntas
 ## Quickstart
 
 Envie em uma única mensagem:  
-`ProjectRoot:` caminho absoluto  |  `PRD:` `<projectRoot>/planos/prds/<slug>/prd.md`  |  `TechSpec:` `<projectRoot>/planos/techspecs/<slug>/techspec.md`  |  `Funcionalidade:` nome curto  |  `Prioridades/Restrições:` bullets  |  `Fontes:` paths/links.  
+`ProjectRoot:` caminho absoluto  |  `PRD:` `<projectRoot>/planos/<slug>/prds/prd.md`  |  `TechSpec:` `<projectRoot>/planos/<slug>/techspecs/techspec.md`  |  `Funcionalidade:` nome curto  |  `Prioridades/Restrições:` bullets  |  `Fontes:` paths/links.  
 
-O invocador validará os caminhos, criará o briefing e invocará [criador-tarefas.md](../../agentes/devs/criador-tarefas.md). Em seguida, salvará `tasks.md` e arquivos `<num>_task.md` em `<projectRoot>/planos/tasks/<slug>/` e retornará os caminhos e o sumário.
+O invocador validará os caminhos, criará o briefing e invocará [criador-tarefas.md](../../agentes/devs/criador-tarefas.md). Em seguida, salvará `tasks.md` e arquivos `<num>_task.md` em `<projectRoot>/planos/<slug>/tasks/` e retornará os caminhos e o sumário.
