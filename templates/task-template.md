@@ -8,9 +8,16 @@
 <scope>core_feature|middleware|configuration|performance</scope>
 <complexity>low|medium|high</complexity>
 <dependencies>external_apis|database|temporal|http_server</dependencies>
+<prd_ref>./prd.md</prd_ref>
+<techspec_ref>./techspec.md</techspec_ref>
 </task_context>
 
 # Tarefa X.0: [Título da Tarefa Principal]
+
+## Referências de Origem
+
+- PRD: [prd.md](./prd.md)  <!-- Use link relativo conforme ZORD_RULES.md; ajuste o caminho/nome se necessário -->
+- Tech Spec: [techspec.md](./techspec.md)  <!-- Use link relativo conforme ZORD_RULES.md; ajuste o caminho/nome se necessário -->
 
 ## Visão Geral
 
