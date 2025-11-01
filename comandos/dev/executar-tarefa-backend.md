@@ -18,6 +18,7 @@ Antes de iniciar, confirme que **TODOS** os arquivos abaixo estão presentes no 
 - `*_*task.md` (todos os arquivos numerados de tarefa, ex.: `1_task.md`, `2_task.md`)
 - `prd.md`
 - `techspec.md`
+- Detalhes de como executar o projeto.
 
 Se qualquer arquivo obrigatório não estiver disponível, **interrompa imediatamente** a execução, solicite explicitamente o arquivo ausente e aguarde. Não prossiga sem esses documentos. Diagramas (por exemplo, arquitetura, sequência, banco de dados) são opcionais, mas bem-vindos quando fornecidos.
 
@@ -35,6 +36,7 @@ Se qualquer arquivo obrigatório não estiver disponível, **interrompa imediata
 - Identificar integrações necessárias (Prisma, Sequelize, Passport + JWT, Swagger, Joi, `class-validator`, `class-transformer`, `dotenv`, `uuid`, `sqlite3`).
 - Se surgir decisão arquitetural não definida (ex.: padrões de integração, arquitetura de módulos), **pausar** e questionar o solicitante antes de avançar.
 - Elaborar plano de abordagem numerado, cobrindo criação de boilerplates via Nest CLI, regras de negócio, testes (Jest + Supertest) e documentação.
+- Identificar uso de bibliotecas ou pacotes externos que serão utilizados na implementação e pesquisar suas devidas documentações usando o mcp do context7.
 
 ### 3. Configuração Técnica
 
@@ -55,15 +57,19 @@ Se qualquer arquivo obrigatório não estiver disponível, **interrompa imediata
 - Seguir o modo [MODE_Backend_TDD](../../modes/MODE_Backend_TDD.md): escrever testes (Jest, Supertest) antes/depois da implementação, garantindo cobertura de fluxos principais e alternativos.
 - Executar testes e validar ausência de erros de lint/prettier antes de finalizar.
 - Registrar resultados, evidências e comandos executados.
+- Execute o projeto e confira os logs para ver se está tudo rodando como esperado.
 
 ### 6. Entrega e Follow-up
 
 - Realizar síntese da tarefa concluída, detalhando arquivos modificados/gerados e status dos testes.
-- Apontar próximos passos ou pendências (ex.: migrações, deploy, revisão).
+- Assim que finalizar uma task, abra o `tasks.md` e marque imediatamente a tarefa correspondente como concluída antes de iniciar outra.
+- Se a alteração cria ou altera um endpoint, se já não existir, criar um novo exemplo de payload no arquivo `api.http` na raiz do projeto. Com comentarios de como usar.
+- Se houve algum aprendizado durante a execução da task, documentar em um arquivo .md no diretorio docs/dev-log
 
 ## Notas Importantes
 
 - Respeite integralmente o comportamento do agente [backend-nestjs](../../agentes/devs/backend-nestjs.md) e os guard rails descritos.
-- Utilize `loadsh` (lodash) como utilitário padrão para coleções e manipulações.
 - Nunca finalize sem testes executados e sem validar contra PRD, Tech Spec e tarefas.
+- Nunca finalize sem executar eslint e prettier.
+- Nunca finalize sem rodar o projeto e executar ao menos uma vez os endpoints alterados usando o arquivo `api.http`.
 - Mantenha comunicação clara com o solicitante sempre que surgir incerteza arquitetural ou falta de contexto.

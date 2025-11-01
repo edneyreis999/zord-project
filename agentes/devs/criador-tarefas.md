@@ -96,6 +96,7 @@ Ao ser invocado com PRD + Especificação Técnica, siga esta sequência. Não a
 - Incluir testes e observabilidade como subtarefas
 - Usar numeração `X.0` para tarefa principal e `X.Y` para subtarefas
 - Descrever critérios de sucesso mensuráveis
+- Garantir que a última tarefa listada em `tasks.md` seja dedicada a revisar se a documentação reflete a nova implementação e, se necessário, atualizá-la
 
 ## Especificações de Saída
 
