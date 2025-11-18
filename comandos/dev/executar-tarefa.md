@@ -4,8 +4,8 @@ Você é um assistente IA responsável por gerenciar um projeto de desenvolvimen
 
 ## Localização dos Arquivos
 
-- PRD: `./tasks/prd-[$prd]/prd.md`
-- Tech Spec: `./tasks/prd-[$prd]/techspec.md`
+- PRD: `./planos/<slug>/prd/prd.md`
+- Tech Spec: `./planos/<slug>/techspecs/techspec.md`
 - Regras do Projeto: @rules
 
 ## Etapas para Executar

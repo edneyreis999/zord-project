@@ -1,0 +1,64 @@
+# =============================================================================
+# Dockerfile para Desenvolvimento NestJS
+# =============================================================================
+# Este Dockerfile é otimizado para ambiente de desenvolvimento com hot-reload.
+# NÃO use em produção - para produção, use multi-stage build.
+#
+# Características:
+# - Imagem slim para reduzir tamanho
+# - NestJS CLI instalado globalmente
+# - Usuário não-root para segurança
+# - Não faz build (usa volume mount)
+# - Mantém container ativo para desenvolvimento interativo
+# =============================================================================
+
+FROM node:20.5.1-slim
+
+# Metadata
+LABEL maintainer="your-email@example.com"
+LABEL description="NestJS Development Environment"
+LABEL version="1.0.0"
+
+# Instalar NestJS CLI globalmente
+# Versão específica para garantir consistência
+RUN npm install -g @nestjs/cli@10.1.17
+
+# Segurança: trocar para usuário não-root
+# O user 'node' já existe na imagem oficial do Node.js (UID: 1000, GID: 1000)
+USER node
+
+# Criar e definir diretório de trabalho
+# /home/node já pertence ao user 'node', evitando problemas de permissão
+WORKDIR /home/node/app
+
+# CMD padrão: mantém container ativo
+# Pode ser sobrescrito por docker-compose.yaml
+CMD ["tail", "-f", "/dev/null"]
+
+# Porta padrão do NestJS (documentação)
+# Não abre a porta, apenas documenta
+EXPOSE 3000
+
+# Health check opcional (descomente se necessário)
+# HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
+#   CMD node -e "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+
+# =============================================================================
+# Build e Execução
+# =============================================================================
+#
+# Build:
+#   docker build -t myapp-dev .
+#
+# Run standalone (sem compose):
+#   docker run -it --rm \
+#     -v $(pwd):/home/node/app \
+#     -v /home/node/app/node_modules \
+#     -p 3000:3000 \
+#     myapp-dev \
+#     npm run start:dev
+#
+# Run com docker-compose (recomendado):
+#   docker-compose up
+#
+# =============================================================================

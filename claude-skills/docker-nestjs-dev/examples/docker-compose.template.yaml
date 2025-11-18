@@ -1,0 +1,176 @@
+# =============================================================================
+# Docker Compose para Desenvolvimento NestJS
+# =============================================================================
+# Este arquivo configura um ambiente completo de desenvolvimento com:
+# - Aplicação NestJS com hot-reload
+# - PostgreSQL com persistência
+# - Redis para cache
+# - RabbitMQ para mensageria (opcional)
+# - Health checks em todos os serviços
+# - Networks isoladas
+# =============================================================================
+
+version: '3.8'
+
+# =============================================================================
+# YAML Anchors para DRY (Don't Repeat Yourself)
+# =============================================================================
+x-app-common: &app-common
+  build:
+    context: .
+    dockerfile: Dockerfile
+  volumes:
+    - .:/home/node/app                      # Hot-reload
+    - /home/node/app/node_modules           # Volume anônimo (performance)
+    - '/etc/timezone:/etc/timezone:ro'      # Sync timezone
+    - '/etc/localtime:/etc/localtime:ro'    # Sync localtime
+  extra_hosts:
+    - "host.docker.internal:host-gateway"   # Acesso ao host
+  networks:
+    - backend
+
+# =============================================================================
+# Services
+# =============================================================================
+services:
+  # ---------------------------------------------------------------------------
+  # Aplicação NestJS
+  # ---------------------------------------------------------------------------
+  app:
+    <<: *app-common
+    container_name: ${APP_NAME:-nestjs-app}
+    command: sh ./.docker/start.sh
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    env_file:
+      - ./envs/.env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      # rabbitmq:
+      #   condition: service_healthy
+    restart: unless-stopped
+    stdin_open: true  # Para debugging interativo
+    tty: true
+
+  # ---------------------------------------------------------------------------
+  # PostgreSQL Database
+  # ---------------------------------------------------------------------------
+  db:
+    image: postgres:15-alpine
+    container_name: ${DB_CONTAINER:-postgres-db}
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-dev_db}
+      POSTGRES_USER: ${DB_USER:-dev_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-dev_pass}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # - ./docker/db/init.sql:/docker-entrypoint-initdb.d/init.sql  # SQL inicial
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-dev_user} -d ${DB_DATABASE:-dev_db}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - backend
+
+  # ---------------------------------------------------------------------------
+  # Redis Cache
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: ${REDIS_CONTAINER:-redis-cache}
+    command: redis-server --appendonly yes
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+    networks:
+      - backend
+
+  # ---------------------------------------------------------------------------
+  # RabbitMQ Message Queue (Opcional - descomente se necessário)
+  # ---------------------------------------------------------------------------
+  # rabbitmq:
+  #   image: rabbitmq:3-management-alpine
+  #   container_name: ${RABBITMQ_CONTAINER:-rabbitmq}
+  #   environment:
+  #     RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-dev_user}
+  #     RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-dev_pass}
+  #     RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-/}
+  #   ports:
+  #     - "${RABBITMQ_PORT:-5672}:5672"        # AMQP protocol
+  #     - "${RABBITMQ_MGMT_PORT:-15672}:15672" # Management UI
+  #   volumes:
+  #     - rabbitmq_data:/var/lib/rabbitmq
+  #   healthcheck:
+  #     test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+  #     interval: 5s
+  #     timeout: 3s
+  #     retries: 10
+  #     start_period: 30s
+  #   restart: unless-stopped
+  #   networks:
+  #     - backend
+
+# =============================================================================
+# Volumes (Persistência de Dados)
+# =============================================================================
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  # rabbitmq_data:
+  #   driver: local
+
+# =============================================================================
+# Networks (Isolamento de Serviços)
+# =============================================================================
+networks:
+  backend:
+    driver: bridge
+
+# =============================================================================
+# Comandos Úteis
+# =============================================================================
+#
+# Iniciar ambiente:
+#   docker-compose up
+#   docker-compose up -d              # Background
+#   docker-compose up --build         # Rebuild images
+#
+# Parar ambiente:
+#   docker-compose down
+#   docker-compose down -v            # Remove volumes (⚠️ perde dados)
+#
+# Ver logs:
+#   docker-compose logs -f
+#   docker-compose logs -f app        # Apenas app
+#   docker-compose logs --tail=100 app
+#
+# Executar comandos:
+#   docker-compose exec app bash
+#   docker-compose exec app npm test
+#   docker-compose exec app npx nest g module users
+#
+# Reset database:
+#   docker-compose down -v
+#   docker-compose up db
+#
+# Status dos serviços:
+#   docker-compose ps
+#
+# =============================================================================
