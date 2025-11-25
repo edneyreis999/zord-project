@@ -65,6 +65,7 @@ Se qualquer arquivo obrigatório não estiver disponível, **interrompa imediata
 - Assim que finalizar uma task, abra o `tasks.md` e marque imediatamente a tarefa correspondente como concluída antes de iniciar outra.
 - Se a alteração cria ou altera um endpoint, se já não existir, criar um novo exemplo de payload no arquivo `api.http` na raiz do projeto. Com comentarios de como usar.
 - Se houve algum aprendizado durante a execução da task, documentar em um arquivo .md no diretorio docs/dev-log
+- Garantir que o guia de testes manuais para QA esteja escrito em markdown no mesmo diretorio da task e nomeado como <numero-task>_testes_para_QA.md
 
 ## Notas Importantes
 

@@ -6,7 +6,6 @@ Você é um assistente IA responsável por gerenciar um projeto de desenvolvimen
 
 - PRD: `./planos/<slug>/prd/prd.md`
 - Tech Spec: `./planos/<slug>/techspecs/techspec.md`
-- Regras do Projeto: @rules
 
 ## Etapas para Executar
 
@@ -61,5 +60,6 @@ Após fornecer o resumo e abordagem, comece imediatamente a implementar a tarefa
 - Fazer alterações de código
 - Seguir padrões estabelecidos do projeto
 - Garantir que todos os requisitos sejam atendidos
+- Garantir que o guia de testes manuais para QA esteja escrito em markdown no mesmo diretorio da task e nomeado como <numero-task>_testes_para_QA.md
 
 **VOCÊ DEVE** iniciar a implementação logo após o processo acima.
