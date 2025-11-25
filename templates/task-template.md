@@ -38,5 +38,9 @@
 
 ## Critérios de Sucesso
 
-- [Resultados mensuráveis]
-- [Requisitos de qualidade]
+- [Guia de testes manual para ser realizado por um QA]
+
+## Fora de escopo
+
+- [escopo que está contemplado em outras tasks.]
+- [escopo que não faz parte dessa task.]
