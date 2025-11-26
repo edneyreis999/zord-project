@@ -335,4 +335,3 @@ Aceite que Skills são um mecanismo complementar: elas direcionam e potencializa
 10. Use a Skill no Claude Code e itere até o comportamento ficar consistente com o desejado.
 
 Seguindo estes passos, você conseguirá criar Skills reutilizáveis e alinhadas ao seu fluxo de desenvolvimento, estendendo o Claude Code com o conhecimento e os padrões específicos da sua equipe.
-
