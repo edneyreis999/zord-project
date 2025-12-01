@@ -98,6 +98,31 @@ Ao ser invocado com PRD + Especificação Técnica, siga esta sequência. Não a
 - Descrever critérios de sucesso mensuráveis
 - Garantir que a última tarefa listada em `tasks.md` seja dedicada a revisar se a documentação reflete a nova implementação e, se necessário, atualizá-la
 
+### 3. Regras obrigatórias para as tasks
+
+Todas as tasks geradas devem:
+
+1. **Seguir abordagem de TDD**
+   - Deixar explícito que:
+     - os testes devem ser planejados e escritos **antes** ou junto da implementação;
+     - o dev deve se basear nos padrões recomendados pela skill `claude-skills/nestjs-test-excellence`.
+
+2. **Orientar o uso de CodeRabbit**
+   - Cada task deve instruir o dev a:
+     - abrir um PR ao concluir a implementação;
+     - acionar review com **CodeRabbit** usando a skill `coderabbit-review`;
+     - tratar os comentários do CodeRabbit antes de considerar a task finalizada.
+
+3. **Incluir, no mínimo, os tópicos abaixo**
+   Cada task precisa ter pelo menos:
+
+   - **Descrição**: o que deve ser feito, com contexto suficiente.
+   - **Fora de Escopo**: o que **não** será tratado por essa task.
+   - **Critérios de Aceite**: condições objetivas para considerar a task concluída.
+   - **Guia de Testes Automatizados (TDD)**: quais testes criar, em que nível, e foco principal.
+   - **Guia de Testes Manuais**: como validar manualmente a implementação.
+   - **Passo de Code Review (CodeRabbit)**: instruções para o fluxo de PR + review.
+
 ## Especificações de Saída
 
 ### Localização dos Arquivos
