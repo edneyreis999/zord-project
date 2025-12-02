@@ -1,8 +1,8 @@
 ---
 name: executar-tarefa-backend
-description: "Executor especializado para tarefas de backend NestJS com checagem rígida de contexto e fluxo TDD"
+description: "Executor especializado para tarefas de backend NestJS com checagem rígida de contexto, fluxo TDD e preservação de estado via context-manager"
 category: workflow
-personas: [backend-nestjs]
+personas: [backend-nestjs, context-manager]
 modes: [MODE_Backend_TDD]
 ---
 
@@ -11,6 +11,13 @@ modes: [MODE_Backend_TDD]
 Este comando ativa o agente [backend-nestjs](../../agentes/devs/backend-nestjs.md) em conjunto com o modo [MODE_Backend_TDD](../../modes/MODE_Backend_TDD.md) para entregar implementações de APIs NestJS com TDD e validações rigorosas.
 
 ## Pré-Requisitos Obrigatórios de Contexto
+### Passo 0 — Contexto Inicial (context-manager)
+- Acionar o agente `context-manager` (`agentes/devs/context-manager.md`) para gerar um **Quick Context (< 500 tokens)** cobrindo:
+  - Objetivo da task e escopo imediato.
+  - Arquivos obrigatórios carregados (tasks.md, *task.md, prd.md, techspec.md, instruções de execução).
+  - Lacunas ou arquivos faltantes (se faltar, registrar e pausar até fornecer).
+  - Integrações críticas previstas (ORM, auth, swagger, etc.).
+  - Checkpoint inicial registrado.
 
 Antes de iniciar, confirme que **TODOS** os arquivos abaixo estão presentes no contexto fornecido:
 
@@ -23,6 +30,8 @@ Antes de iniciar, confirme que **TODOS** os arquivos abaixo estão presentes no 
 Se qualquer arquivo obrigatório não estiver disponível, **interrompa imediatamente** a execução, solicite explicitamente o arquivo ausente e aguarde. Não prossiga sem esses documentos. Diagramas (por exemplo, arquitetura, sequência, banco de dados) são opcionais, mas bem-vindos quando fornecidos.
 
 ## Fluxo Operacional
+### 0. Contexto Inicial
+- Usar o `context-manager` para capturar o Quick Context, validar presença dos artefatos obrigatórios e registrar checkpoint inicial. Se algum arquivo obrigatório estiver faltando, pausar e solicitar.
 
 ### 1. Verificação Inicial
 
@@ -37,6 +46,7 @@ Se qualquer arquivo obrigatório não estiver disponível, **interrompa imediata
 - Se surgir decisão arquitetural não definida (ex.: padrões de integração, arquitetura de módulos), **pausar** e questionar o solicitante antes de avançar.
 - Elaborar plano de abordagem numerado, cobrindo criação de boilerplates via Nest CLI, regras de negócio, testes (Jest + Supertest) e documentação.
 - Identificar uso de bibliotecas ou pacotes externos que serão utilizados na implementação e pesquisar suas devidas documentações usando o mcp do context7.
+- Se o escopo estiver ambíguo ou com trade-offs abertos, acionar MCP `sequential-thinking` para gerar um plano detalhado e revisar riscos antes de executar.
 
 ### 3. Configuração Técnica
 
@@ -66,6 +76,15 @@ Se qualquer arquivo obrigatório não estiver disponível, **interrompa imediata
 - Se a alteração cria ou altera um endpoint, se já não existir, criar um novo exemplo de payload no arquivo `api.http` na raiz do projeto. Com comentarios de como usar.
 - Se houve algum aprendizado durante a execução da task, documentar em um arquivo .md no diretorio docs/dev-log
 - Garantir que o guia de testes manuais para QA esteja escrito em markdown no mesmo diretorio da task e nomeado como <numero-task>_testes_para_QA.md
+
+### 7. Síntese de Contexto (context-manager)
+- Acionar o `context-manager` para produzir Briefing Final contendo:
+  - Decisões tomadas e rationale.
+  - Endpoints alterados/criados e status de documentação (Swagger, api.http).
+  - Testes executados e resultados (incluindo comandos).
+  - Riscos/gaps/TODOs pendentes.
+  - Links/paths dos arquivos modificados e checkpoint atualizado.
+- Se ainda restarem blockers ou incertezas, acionar MCP `sequential-thinking` para decompor próximos passos ou mitigação.
 
 ## Notas Importantes
 
