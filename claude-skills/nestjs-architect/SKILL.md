@@ -161,6 +161,7 @@ export class Category extends AggregateRoot {
 ### Value Objects
 
 **CARACTERÍSTICAS OBRIGATÓRIAS**:
+
 - Imutabilidade (`readonly`)
 - Validação no construtor
 - Fail-fast para valores inválidos
@@ -246,6 +247,7 @@ export class CategoryInMemoryRepository implements ICategoryRepository {
 ### Use Case Pattern
 
 **Características obrigatórias**:
+
 - Uma responsabilidade por use case
 - Interface explícita `IUseCase<Input, Output>`
 - Validação com Notification Pattern
@@ -678,6 +680,7 @@ export class Email {
 Antes de marcar uma tarefa como completa, verificar:
 
 ### Arquitetura
+
 - [ ] Domínio isolado do framework
 - [ ] Use Cases na camada de aplicação
 - [ ] Repository com interface no domínio
@@ -686,6 +689,7 @@ Antes de marcar uma tarefa como completa, verificar:
 - [ ] Notification Pattern para validação
 
 ### NestJS Integration
+
 - [ ] Providers organizados (REPOSITORIES, USE_CASES, VALIDATIONS)
 - [ ] Controllers finos
 - [ ] Presenters para serialização
@@ -693,6 +697,7 @@ Antes de marcar uma tarefa como completa, verificar:
 - [ ] Módulos com exports explícitos
 
 ### Testes
+
 - [ ] Fake Builders criados
 - [ ] In-Memory repositories
 - [ ] Testes unitários (>80% cobertura)
@@ -700,6 +705,7 @@ Antes de marcar uma tarefa como completa, verificar:
 - [ ] Testes de validação
 
 ### Qualidade
+
 - [ ] TypeScript estrito
 - [ ] ESLint + Prettier
 - [ ] Sem `any` desnecessários
@@ -734,11 +740,13 @@ touch src/nest-modules/{aggregate}-module/{aggregate}.providers.ts
 ## 📚 REFERÊNCIAS
 
 ### Livros
+
 - Domain-Driven Design - Eric Evans
 - Implementing Domain-Driven Design - Vaughn Vernon
 - Clean Architecture - Robert C. Martin
 
 ### Patterns
+
 - Aggregate Root, Repository, Value Object, Specification
 - Use Case Pattern, Notification Pattern
 - Event Sourcing, Dependency Injection

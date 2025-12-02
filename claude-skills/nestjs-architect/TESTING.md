@@ -7,11 +7,13 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 ### Teste 1: Detecção Automática
 
 **Prompt para Claude Code:**
+
 ```
 "Crie um novo agregado Order seguindo os padrões DDD"
 ```
 
 **Comportamento Esperado:**
+
 - Claude Code menciona que está usando a "NestJS Architect Skill"
 - Cria estrutura de diretórios em `core/order/`
 - Implementa `OrderAggregate` sem decorators de framework
@@ -19,6 +21,7 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 - Gera fake builder e testes
 
 **Checklist de Validação:**
+
 - [ ] Domínio em `src/core/order/domain/`
 - [ ] Sem imports de `@nestjs/common` no domínio
 - [ ] Aggregate estende `AggregateRoot`
@@ -31,6 +34,7 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 ### Teste 2: Refatoração de Código Existente
 
 **Prompt para Claude Code:**
+
 ```
 "Refatore este serviço para seguir o padrão Use Case correto"
 
@@ -38,6 +42,7 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 ```
 
 **Comportamento Esperado:**
+
 - Identifica violações arquiteturais
 - Separa domínio de infraestrutura
 - Move lógica de negócio para agregados
@@ -46,6 +51,7 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 - Sugere testes
 
 **Checklist de Validação:**
+
 - [ ] Use case implementa `IUseCase<Input, Output>`
 - [ ] Lógica de negócio movida para agregado
 - [ ] Validação com `entity.notification.hasErrors()`
@@ -57,6 +63,7 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 ### Teste 3: Implementação de Specification Pattern
 
 **Prompt para Claude Code:**
+
 ```
 "Implemente regras de validação de invoice com Specification Pattern:
 - Validar se valor é suspeito (>3x média histórica)
@@ -65,6 +72,7 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 ```
 
 **Comportamento Esperado:**
+
 - Cria interface `IInvoiceSpecification`
 - Implementa 3 specifications concretas
 - Cria `InvoiceAggregateSpecification` (agregador)
@@ -72,6 +80,7 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 - Injeta no use case
 
 **Checklist de Validação:**
+
 - [ ] Interface `IInvoiceSpecification` criada
 - [ ] 3 classes concretas implementando interface
 - [ ] Agregador com Chain of Responsibility
@@ -83,6 +92,7 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 ### Teste 4: Configuração de Módulo NestJS
 
 **Prompt para Claude Code:**
+
 ```
 "Configure o módulo NestJS para o agregado Product com:
 - Repository Sequelize e In-Memory
@@ -93,6 +103,7 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 ```
 
 **Comportamento Esperado:**
+
 - Cria `products.providers.ts` com REPOSITORIES, USE_CASES
 - Configura module com imports e exports corretos
 - Controller fino delegando para use cases
@@ -100,6 +111,7 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 - Presenters para serialização
 
 **Checklist de Validação:**
+
 - [ ] Providers organizados em constantes (REPOSITORIES, USE_CASES)
 - [ ] `useFactory` para injeção de dependências
 - [ ] Controller sem lógica de negócio
@@ -111,6 +123,7 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 ### Teste 5: Anti-Pattern Detection
 
 **Prompt para Claude Code:**
+
 ```
 "Revise este código e identifique anti-patterns"
 
@@ -118,12 +131,14 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 ```
 
 **Comportamento Esperado:**
+
 - Lista todos os anti-patterns encontrados
 - Explica o problema de cada um
 - Sugere correções específicas
 - Fornece código corrigido
 
 **Checklist de Validação:**
+
 - [ ] Identifica `@Injectable` no domínio
 - [ ] Identifica `any[]` em genéricos
 - [ ] Identifica validação comentada
@@ -137,11 +152,13 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 ### Teste 6: Geração de Testes
 
 **Prompt para Claude Code:**
+
 ```
 "Gere testes completos para o CreateProductUseCase"
 ```
 
 **Comportamento Esperado:**
+
 - Testes unitários com In-Memory repository
 - Casos de sucesso e erro
 - Uso de Fake Builder
@@ -149,6 +166,7 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 - Cobertura >80%
 
 **Checklist de Validação:**
+
 - [ ] Setup com `beforeEach`
 - [ ] In-Memory repository
 - [ ] Fake builder usado
@@ -161,11 +179,13 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 ### Teste 7: Value Objects Complexos
 
 **Prompt para Claude Code:**
+
 ```
 "Crie um Value Object Money com validação de moeda e operações aritméticas"
 ```
 
 **Comportamento Esperado:**
+
 - Classe imutável (`readonly`)
 - Validação no construtor
 - Operações retornando novas instâncias
@@ -173,6 +193,7 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 - Método `toJSON()` para serialização
 
 **Checklist de Validação:**
+
 - [ ] Propriedades `readonly`
 - [ ] Validação de valor e moeda
 - [ ] Fail-fast para valores inválidos
@@ -185,11 +206,13 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 ### Teste 8: Repository com Busca Avançada
 
 **Prompt para Claude Code:**
+
 ```
 "Implemente ProductRepository com busca por nome, categoria, faixa de preço e paginação"
 ```
 
 **Comportamento Esperado:**
+
 - Interface `IProductRepository` estende `ISearchableRepository`
 - Métodos de busca customizados
 - Implementação Sequelize com query complexas
@@ -197,6 +220,7 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 - Suporte a `SearchParams` e `SearchResult`
 
 **Checklist de Validação:**
+
 - [ ] Interface no domínio
 - [ ] Implementações na infra
 - [ ] `search()` com `SearchParams`
@@ -211,6 +235,7 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 ### Teste 9: Event Sourcing Local
 
 **Prompt para Claude Code:**
+
 ```
 "Adicione eventos de domínio ao agregado Product:
 - ProductCreated
@@ -219,6 +244,7 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 ```
 
 **Comportamento Esperado:**
+
 - Classes de evento criadas
 - `applyEvent()` chamado em métodos de negócio
 - `getUncommittedEvents()` implementado
@@ -226,6 +252,7 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 - Testes de eventos
 
 **Checklist de Validação:**
+
 - [ ] Classes de evento implementadas
 - [ ] `implements IDomainEvent`
 - [ ] `applyEvent()` nos métodos relevantes
@@ -237,11 +264,13 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 ### Teste 10: Validação Cruzada entre Agregados
 
 **Prompt para Claude Code:**
+
 ```
 "Implemente validação que verifica se categorias existem antes de criar um produto"
 ```
 
 **Comportamento Esperado:**
+
 - Validator na camada de aplicação
 - Verificação no repositório de categorias
 - Uso de `Either<Success, Error>` pattern
@@ -249,6 +278,7 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 - Testes com categorias existentes e inexistentes
 
 **Checklist de Validação:**
+
 - [ ] Validator em `application/validations/`
 - [ ] Depende de `ICategoryRepository`
 - [ ] Retorna `Either<CategoryId[], NotFoundError[]>`
@@ -263,6 +293,7 @@ Este documento descreve como testar se a skill está funcionando corretamente co
 Para considerar a skill funcionando corretamente, Claude Code deve:
 
 ### Arquitetura (10/10)
+
 - [x] Separar domínio de infraestrutura (100%)
 - [x] Criar aggregates sem framework (100%)
 - [x] Implementar repository pattern corretamente (100%)
@@ -275,6 +306,7 @@ Para considerar a skill funcionando corretamente, Claude Code deve:
 - [x] Validação cruzada entre agregados (100%)
 
 ### NestJS Integration (6/6)
+
 - [x] Providers organizados (REPOSITORIES, USE_CASES) (100%)
 - [x] Controllers finos (100%)
 - [x] DTOs com class-validator (100%)
@@ -283,6 +315,7 @@ Para considerar a skill funcionando corretamente, Claude Code deve:
 - [x] Injection tokens corretos (100%)
 
 ### Qualidade (4/4)
+
 - [x] Fake builders criados (100%)
 - [x] Testes unitários e integração (100%)
 - [x] Sem anti-patterns (100%)
@@ -297,6 +330,7 @@ Para considerar a skill funcionando corretamente, Claude Code deve:
 ### Problema: Skill não está sendo ativada
 
 **Soluções:**
+
 1. Verifique se `SKILL.md` está em `.claude/skills/nestjs-architect/`
 2. Reinicie Claude Code
 3. Tente invocar explicitamente: "Use a skill NestJS Architect para..."
@@ -305,6 +339,7 @@ Para considerar a skill funcionando corretamente, Claude Code deve:
 ### Problema: Código gerado não segue padrões
 
 **Soluções:**
+
 1. Seja mais específico no prompt: "seguindo padrões DDD"
 2. Referencie a skill explicitamente
 3. Peça revisão: "Revise este código com base na NestJS Architect Skill"
@@ -313,6 +348,7 @@ Para considerar a skill funcionando corretamente, Claude Code deve:
 ### Problema: Testes não são gerados
 
 **Soluções:**
+
 1. Peça explicitamente: "Gere testes para..."
 2. Especifique tipo: "testes unitários com In-Memory repository"
 3. Referencie fake builders: "usando fake builder"
@@ -320,6 +356,7 @@ Para considerar a skill funcionando corretamente, Claude Code deve:
 ### Problema: Anti-patterns não detectados
 
 **Soluções:**
+
 1. Peça revisão explícita: "Revise e identifique anti-patterns"
 2. Cole código problemático diretamente
 3. Pergunte sobre caso específico: "Por que isso é anti-pattern?"
