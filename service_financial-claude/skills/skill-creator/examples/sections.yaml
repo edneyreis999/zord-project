@@ -1,0 +1,21 @@
+# Exemplo de índice de seções para uma skill modular
+- id: activation
+  title: Ativação
+  file: sections/activation.md
+  description: Gatilhos, anti-gatilhos, persona, formato de saída
+- id: topic-a
+  title: Tópico A (ex.: Arquitetura)
+  file: sections/topic-a.md
+  description: Regras nucleares do domínio
+- id: topic-b
+  title: Tópico B (ex.: Dados/Estado/Cache)
+  file: sections/topic-b.md
+  description: Fluxos e padrões específicos
+- id: anti-patterns
+  title: Anti-Patterns
+  file: sections/anti-patterns.md
+  description: Erros críticos a evitar
+- id: maintenance
+  title: Manutenção
+  file: sections/maintenance.md
+  description: Versão, responsáveis, quando revisar
