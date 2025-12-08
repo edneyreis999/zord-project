@@ -139,7 +139,7 @@ export class PedidosPrismaRepository implements IPedidosRepository {
 
 - **With nestjs-architect:** Apply TDD methodology to [DDD/Clean Architecture patterns](../nestjs-architect/SKILL-LITE.md)
 - **With backend-nestjs agent:** Agent executes this skill when TDD mode activated
-- **With executar-tarefa-backend workflow:** Modifies Sections 2 (modeling), 4 (implementation), 5 (validation)
+- **With executar-tarefa workflow:** Modifies Sections 2 (modeling), 4 (implementation), 5 (validation)
 - **With architecture guidelines:** References [testing](../nestjs-architect/sections/testing.md), [observability](../nestjs-architect/sections/infra-observability.md)
 
 ## References

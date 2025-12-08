@@ -279,7 +279,7 @@ Call sub-agents when needed:
 
 ### NEVER Do
 
-- Plan architecture (use orchestrator `executar-tarefa-backend`)
+- Plan architecture (use orchestrator `executar-tarefa`)
 - Make architectural decisions without user confirmation
 - Duplicate content from skills (reference them instead)
 - Create new skills

@@ -1,11 +1,11 @@
 ---
-name: backend-task-onboarding
-description: Skill para preparar contexto de tarefas backend; bloqueia início se artefatos obrigatórios faltarem.
+name: task-onboarding
+description: Skill para preparar contexto de tarefas de desenvolvimento; bloqueia início se artefatos obrigatórios faltarem.
 ---
 
 # Quando usar
 
-Acionar antes de qualquer análise ou implementação backend para garantir contexto mínimo completo.
+Acionar antes de qualquer análise ou implementação para garantir contexto mínimo completo.
 
 # Objetivo
 

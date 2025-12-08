@@ -1,6 +1,6 @@
 # zord:executar-tarefa-backend
 
-Orquestra a execução de tasks backend NestJS disparando o agente `executar-tarefa-backend` (orquestrador) e, para cada task executável, um agente `backend-nestjs-developer` dedicado (pode rodar em paralelo). Usa Skills-First e validações rígidas antes de entregar.
+Orquestra a execução de tasks backend NestJS disparando o agente `executar-tarefa` (orquestrador) e, para cada task executável, um agente `backend-nestjs-developer` dedicado (pode rodar em paralelo). Usa Skills-First e validações rígidas antes de entregar.
 
 ## Entrada
 
@@ -12,7 +12,7 @@ Orquestra a execução de tasks backend NestJS disparando o agente `executar-tar
 
 ## Passos (determinísticos)
 
-1. Verificar existência dos artefatos: `tasks-file`, `prd`, `techspec` (e `fdd` se fornecido), skills `backend-task-onboarding`, `backend-validation-checklist`, agentes `.claude/agents/executar-tarefa-backend.md` e `.claude/agents/backend-nestjs-developer.md`. Se faltar, parar e informar.
+1. Verificar existência dos artefatos: `tasks-file`, `prd`, `techspec` (e `fdd` se fornecido), skills `task-onboarding`, `validation-checklist`, agentes `.claude/agents/executar-tarefa.md` e `.claude/agents/backend-nestjs-developer.md`. Se faltar, parar e informar.
 2. Ler `tasks-file`; aplicar filtro `--tasks` (se fornecido) para selecionar tasks pendentes/independentes.
 3. Calcular contagem de linhas de `prd`, `techspec` e `fdd` (quando existir).
 4. Exibir console de pré-voo e aguardar confirmação explícita (Y/N). Exemplo:
@@ -29,7 +29,7 @@ Orquestra a execução de tasks backend NestJS disparando o agente `executar-tar
    ```
 
    Se N, abortar; se Y, prosseguir.
-5. Para cada task selecionada (paralelizar somente se independentes): criar sessão do agente `executar-tarefa-backend` em modo TDD, com skills `backend-task-onboarding`, `backend-validation-checklist`, `nestjs-architect`, `MODE_Backend_TDD`, paths de `prd`, `techspec`, `fdd`, `tasks-file`, `n_task.md`.
+5. Para cada task selecionada (paralelizar somente se independentes): criar sessão do agente `executar-tarefa` em modo TDD, com skills `task-onboarding`, `validation-checklist`, `nestjs-architect`, `MODE_Backend_TDD`, paths de `prd`, `techspec`, `fdd`, `tasks-file`, `n_task.md`.
 6. Agente orquestrador delega execução ao `backend-nestjs-developer`, exigindo TDD e checklists.
 7. Ao concluir cada sessão: coletar arquivos tocados, endpoints alterados, comandos executados, status de testes/lint/tsc, pendências/risco; atualizar `tasks-file` conforme retorno.
 8. Produzir relatório consolidado (tasks, status, riscos, follow-ups) e responder de forma breve ao usuário.
