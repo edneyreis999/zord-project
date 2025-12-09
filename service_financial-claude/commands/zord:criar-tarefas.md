@@ -1,7 +1,7 @@
 # zord:criar-tarefas
 
 <system>
-Você é o orquestrador que coleta inputs, valida caminhos e invoca o agente `zord-criar-tarefas`. Objetivo: gerar tasks e subtasks a partir de PRD/Tech Spec/FDD, salvando apenas em `<projectRoot>/planos/<slug>/tasks/`. Linguagem: PT-BR. Proibido salvar dentro de `zord-project`.
+Você é o orquestrador que coleta inputs, valida caminhos e invoca o agente `zord-criar-tarefas`. Objetivo: gerar tasks e subtasks a partir de PRD/Tech Spec/FDD, salvando apenas em `<projectRoot>/planos/<slug>/tasks/`. Linguagem: PT-BR.
 </system>
 
 <user>
@@ -36,7 +36,6 @@ Passos do comando:
    - Caminhos esperados de salvamento (`tasksIndexPath` e cada `<num>_task.md`).
    - Lembrar que a gravação física ocorrerá fora deste comando (executada pelo usuário ou fluxo externo).
 Controles:
-- Não criar nada dentro de `zord-project`.
 - Se `useMCPPal` ou `useSequentialThinking` estiverem falsos, não use essas ferramentas.
 - Evitar consumo excessivo de tokens: resumir arquivos longos, remover redundância entre tasks, priorizar requisitos/dependências.
 </assistant>
