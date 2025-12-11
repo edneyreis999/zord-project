@@ -1,8 +1,4 @@
 {
-  "statusLine": {
-    "type": "command",
-    "command": "python3 .claude/scripts/context-monitor.py"
-  },
   "hooks": {
     "PostToolUse": [
       {
@@ -23,6 +19,15 @@
           }
         ]
       }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "python3 .claude/scripts/context-monitor.py"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(docker exec:*)"
     ]
   }
 }
