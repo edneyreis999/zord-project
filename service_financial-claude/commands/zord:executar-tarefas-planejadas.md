@@ -2,32 +2,34 @@
 
 Orquestra a execução de tasks planejadas detectando automaticamente se são backend (NestJS), frontend (Next.js) ou fullstack. Dispara o agente `executar-tarefa` (orquestrador) e delega para `backend-nestjs-developer` ou `frontend-nextjs-developer` conforme contexto. Usa Skills-First e validações rígidas antes de entregar.
 
-## Entrada
-
-- `--prd=<path>` (default: `prd.md`)
-- `--techspec=<path>` (default: `techspec.md`)
-- `--fdd=<path>` (opcional; Feature Design Doc)
-- `--tasks-file=<path>` (default: `tasks.md`)
-- `--tasks=<lista>` (opcional; ids/descrições separados por vírgula; quando ausente, usar tasks pendentes do `tasks-file`)
-
 ## Detecção de Contexto
 
 ### Backend Indicators
+
 - Menções a: NestJS, Prisma, controllers, services, DTOs, repositories, use cases, domain entities, endpoints REST, Swagger, Clean Architecture
 - Arquivos: `*.service.ts`, `*.controller.ts`, `*.repository.ts`, `*.entity.ts`, `schema.prisma`
 - Paths: `src/core/`, `src/nest-modules/`, `src/shared/`
 
 ### Frontend Indicators
+
 - Menções a: Next.js, React, componentes, páginas, Server Components, Client Components, app router, layouts, UI, shadcn/ui, Tailwind
 - Arquivos: `*.tsx` (componentes), `page.tsx`, `layout.tsx`, `route.ts` (API routes)
 - Paths: `app/`, `components/`, `lib/`, `public/`
 
 ### Fullstack Detection
+
 - Tasks file contém tasks de ambos tipos
 - Menções explícitas a integração frontend-backend
 - Features que tocam ambas as camadas (ex: "implementar CRUD completo com UI")
 
 ## Passos (determinísticos)
+
+### Pré-análise Automática (obrigatória)
+
+Antes de avançar para proxima fase
+
+1. Identifique em qual projeto você está:
+   - Execute uma análise do diretório atual (pwd).
 
 1. **Verificar artefatos obrigatórios**:
    - `tasks-file`, `prd`, `techspec` (e `fdd` se fornecido)
@@ -43,8 +45,15 @@ Orquestra a execução de tasks planejadas detectando automaticamente se são ba
 3. **Calcular métricas de artefatos**:
    - Contagem de linhas de `prd`, `techspec` e `fdd` (quando existir)
 
+2. Verifique o estado dos MCPs:
+   - `pal`
+   - `sequentialThinking`
+
+Informe explicitamente se cada MCP está **ativo ou inativo**.
+
 4. **Exibir console de pré-voo**:
    Exemplo:
+
    ```
    ## Referências de Origem
    - PRD: <path> (<linhas>)
@@ -64,6 +73,7 @@ Orquestra a execução de tasks planejadas detectando automaticamente se são ba
 
    Aguardando confirmação (Y/N):
    ```
+
    Se N, abortar; se Y, prosseguir.
 
 5. **Executar tasks por contexto**:
@@ -116,18 +126,21 @@ Orquestra a execução de tasks planejadas detectando automaticamente se são ba
 ## Delegação de Agentes
 
 ### Backend: `backend-nestjs-developer`
+
 - Arquitetura: Clean Architecture + DDD
 - TDD obrigatório (unit + E2E)
 - Validações: api.http, Swagger, DTOs, lint, tsc
 - Skills: `nestjs-architect`, `MODE_Backend_TDD`
 
 ### Frontend: `frontend-nextjs-developer`
+
 - Arquitetura: Server-first, feature-first
 - TDD (unit + E2E com Playwright/Cypress)
 - Validações: build, bundle size, SSR/SSG, componentes visuais
 - Skills: `nextjs-architect`
 
 ### Ambos (Fullstack)
+
 - Executar backend primeiro
 - Depois frontend
 - Validar integração completa
