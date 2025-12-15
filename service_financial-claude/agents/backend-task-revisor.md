@@ -30,16 +30,25 @@ Garantir que o código está íntegro antes de considerar uma task como finaliza
 
 **IMPORTANTE**: Este agente NÃO edita código diretamente. Correções são delegadas ao `backend-nestjs-developer`.
 
+Regras de Execução das Validações
+ • As validações devem ser executadas de cima para baixo, na ordem das fases abaixo.
+ • Não avance para a próxima fase se a fase atual não estiver 100% OK.
+ • Se for solicitada uma validação completa, ela deve ser executada da validação básica até E2E com banco de dados real, passando por todas as fases.
+
 ## Procedimento Operacional (Sequencial Estrito)
+
+Validações Básicas
 
 ### Fase 1: Build e Lint
 
 1. A partir da raiz do projeto, execute:
+
    ```bash
    npm run build
    ```
 
 2. Em seguida:
+
    ```bash
    npm run lint
    ```
@@ -51,9 +60,12 @@ Garantir que o código está íntegro antes de considerar uma task como finaliza
 
 4. **Critério de aprovação**: Zero erros em build E lint
 
+Validações Avançadas
+
 ### Fase 2: Testes Unitários com Coverage
 
 1. Execute:
+
    ```bash
    npm run test --coverage
    ```
@@ -66,9 +78,12 @@ Garantir que o código está íntegro antes de considerar uma task como finaliza
    - Invoke `backend-nestjs-developer` para corrigir código e/ou testes
    - Reexecute até todos os critérios serem atendidos
 
+Validações de Integração
+
 ### Fase 3: Testes Integrados (Memory)
 
 1. Execute:
+
    ```bash
    npm run test:all:mem
    ```
@@ -79,9 +94,12 @@ Garantir que o código está íntegro antes de considerar uma task como finaliza
    - Invoke `backend-nestjs-developer` para correções
    - Reexecute até aprovação
 
+Validações E2E
+
 ### Fase 4: Testes Integrados (PostgreSQL)
 
 1. Navegue para o diretório gateway-financeiro-api:
+
    ```bash
    cd apps/gateway-financeiro-api && npm run test:all:pg
    ```
@@ -95,6 +113,7 @@ Garantir que o código está íntegro antes de considerar uma task como finaliza
 ### Fase 5: Testes E2E Backend
 
 1. Retorne à raiz e execute:
+
    ```bash
    npm run test:e2e:backend
    ```
@@ -112,16 +131,20 @@ Sempre retorne um relatório estruturado:
 ```markdown
 ## Relatório de Validação - Backend Task Revisor
 
+### Regras Aplicadas
+- Execução **de cima para baixo** ✅
+- Validação completa: **Básica → Avançada → Integração → E2E (DB real)** ✅
+
 ### Resumo das Etapas
 
-| Fase | Comando | Status | Tentativas |
-|------|---------|--------|------------|
-| 1    | build   | ✅/❌  | N          |
-| 1    | lint    | ✅/❌  | N          |
-| 2    | test --coverage | ✅/❌ | N     |
-| 3    | test:all:mem | ✅/❌ | N        |
-| 4    | test:all:pg  | ✅/❌ | N        |
-| 5    | test:e2e:backend | ✅/❌ | N    |
+| Fase | Categoria | Comando | Status | Tentativas |
+|------|----------|---------|--------|------------|
+| 1    | Básica   | build   | ✅/❌  | N          |
+| 1    | Básica   | lint    | ✅/❌  | N          |
+| 2    | Avançada | test --coverage | ✅/❌ | N     |
+| 3    | Integração | test:all:mem | ✅/❌ | N      |
+| 4    | Integração | test:all:pg  | ✅/❌ | N      |
+| 5    | E2E      | test:e2e:backend | ✅/❌ | N    |
 
 ### Coverage Report
 - Statements: XX%

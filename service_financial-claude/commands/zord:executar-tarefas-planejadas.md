@@ -1,64 +1,49 @@
 # zord:executar-tarefas-planejadas
 
-Orquestra a execução de tasks planejadas detectando automaticamente se são backend (NestJS), frontend (Next.js) ou fullstack. Dispara o agente `executar-tarefa` (orquestrador) e delega para `backend-nestjs-developer` ou `frontend-nextjs-developer` conforme contexto. Usa Skills-First e validações rígidas antes de entregar.
+Orquestra a execução de tasks planejadas detectando automaticamente os arquivos `tasks.md` e `<num>_task.md`. Dispara o agente `executar-tarefa` (orquestrador) para validar e executar as tasks.
 
-## Detecção de Contexto
+## fase 1 Detecção de Contexto
 
-### Backend Indicators
+1. Identifique em qual projeto você está:
+   - Execute uma análise do diretório atual (pwd).
 
-- Menções a: NestJS, Prisma, controllers, services, DTOs, repositories, use cases, domain entities, endpoints REST, Swagger, Clean Architecture
-- Arquivos: `*.service.ts`, `*.controller.ts`, `*.repository.ts`, `*.entity.ts`, `schema.prisma`
-- Paths: `src/core/`, `src/nest-modules/`, `src/shared/`
+2. detectar tasks
 
-### Frontend Indicators
+- detectar se no diretorio informado pelo usuario contem ao menos um arquivo `tasks.md` e um `<num>_task.md`
 
-- Menções a: Next.js, React, componentes, páginas, Server Components, Client Components, app router, layouts, UI, shadcn/ui, Tailwind
-- Arquivos: `*.tsx` (componentes), `page.tsx`, `layout.tsx`, `route.ts` (API routes)
-- Paths: `app/`, `components/`, `lib/`, `public/`
+Se não encontrar, aborte e sinalize o usuario. peça para ele informar o caminho correto.
 
-### Fullstack Detection
-
-- Tasks file contém tasks de ambos tipos
-- Menções explícitas a integração frontend-backend
-- Features que tocam ambas as camadas (ex: "implementar CRUD completo com UI")
-
-## Passos (determinísticos)
+## fase 2 Passos (determinísticos)
 
 ### Pré-análise Automática (obrigatória)
 
 Antes de avançar para proxima fase
 
-1. Identifique em qual projeto você está:
-   - Execute uma análise do diretório atual (pwd).
-
-1. **Verificar artefatos obrigatórios**:
-   - `tasks-file`, `prd`, `techspec` (e `fdd` se fornecido)
-   - Skills: `task-onboarding`, `validation-checklist`
-   - Agentes: `.claude/agents/executar-tarefa.md`, `.claude/agents/backend-nestjs-developer.md`, `.claude/agents/frontend-nextjs-developer.md`
-   - Se faltar, parar e informar
-
 2. **Ler e analisar tasks**:
    - Ler `tasks-file` e aplicar filtro `--tasks` (se fornecido)
-   - Analisar conteúdo das tasks para detectar contexto (backend/frontend/fullstack)
-   - Classificar cada task individual
 
-3. **Calcular métricas de artefatos**:
-   - Contagem de linhas de `prd`, `techspec` e `fdd` (quando existir)
+3. **Verificar artefatos obrigatórios**:
+   Para cada `tasks-file` invokar um agente `executar-tarefa` para validar
 
-2. Verifique o estado dos MCPs:
-   - `pal`
-   - `sequentialThinking`
+4. Verifique o estado dos MCPs:
+   Se houver em alguma das `tasks-file` a detecção de tarefa de frontend, verifique os MCPs:
+   - `chrome-devtools`
+   - `playwright`
+   - `figma_desktop`
 
+   Independente se for backend e frontend, verifique os MCPs:
+   - `serena`
+   - `context7`
+  
 Informe explicitamente se cada MCP está **ativo ou inativo**.
 
-4. **Exibir console de pré-voo**:
+1. **Exibir console de pré-voo**:
    Exemplo:
 
    ```
    ## Referências de Origem
-   - PRD: <path> (<linhas>)
-   - Tech Spec: <path> (<linhas>)
-   - Feature Design Doc: <path ou "não fornecido"> (<linhas ou "-">)
+
+   ## MCPs
 
    ## Tarefas Detectadas
    ### Backend (delegação: backend-nestjs-developer)
@@ -76,29 +61,9 @@ Informe explicitamente se cada MCP está **ativo ou inativo**.
 
    Se N, abortar; se Y, prosseguir.
 
-5. **Executar tasks por contexto**:
+   Se o usuario prosseguir, invoque o agente `executar-tarefa` seguindo seu plano de paralelização.
 
-   **Para tasks Backend**:
-   - Criar sessão do agente `executar-tarefa` com delegação para `backend-nestjs-developer`
-   - Skills: `task-onboarding`, `validation-checklist`, `nestjs-architect`, `MODE_Backend_TDD`
-   - Validações: TDD rigoroso, testes unitários + E2E, lint, tsc, api.http, Swagger
-
-   **Para tasks Frontend**:
-   - Criar sessão do agente `executar-tarefa` com delegação para `frontend-nextjs-developer`
-   - Skills: `task-onboarding`, `validation-checklist`, `nextjs-architect`
-   - Validações: TDD, build, bundle size, SSR/SSG, componentes visuais, lighthouse
-
-   **Para tasks Fullstack**:
-   - Executar backend primeiro (se houver API/endpoints)
-   - Depois frontend (consome API backend)
-   - Validar integração end-to-end
-
-6. **Paralelização inteligente**:
-   - Tasks **independentes do mesmo tipo** (ambas backend OU ambas frontend): paralelizar
-   - Tasks **fullstack ou com dependências**: serializar
-   - Tasks **mistas sem dependência**: paralelizar por tipo (grupo backend + grupo frontend)
-
-7. **Coleta de resultados**:
+2. **Coleta de resultados**:
    - Arquivos tocados
    - Endpoints alterados (backend)
    - Componentes/páginas criados (frontend)
@@ -107,7 +72,7 @@ Informe explicitamente se cada MCP está **ativo ou inativo**.
    - Pendências/riscos
    - Atualizar `tasks-file` conforme retorno dos agentes
 
-8. **Relatório consolidado**:
+3. **Relatório consolidado**:
    - Status por task
    - Riscos identificados
    - Follow-ups necessários
@@ -122,28 +87,6 @@ Informe explicitamente se cada MCP está **ativo ou inativo**.
 - Paralelizar apenas tasks independentes; se houver dependência, serializar
 - Não prosseguir sem artefatos obrigatórios ou aprovação de decisões arquiteturais
 - Iniciar execução somente após confirmação positiva na etapa de pré-voo
-
-## Delegação de Agentes
-
-### Backend: `backend-nestjs-developer`
-
-- Arquitetura: Clean Architecture + DDD
-- TDD obrigatório (unit + E2E)
-- Validações: api.http, Swagger, DTOs, lint, tsc
-- Skills: `nestjs-architect`, `MODE_Backend_TDD`
-
-### Frontend: `frontend-nextjs-developer`
-
-- Arquitetura: Server-first, feature-first
-- TDD (unit + E2E com Playwright/Cypress)
-- Validações: build, bundle size, SSR/SSG, componentes visuais
-- Skills: `nextjs-architect`
-
-### Ambos (Fullstack)
-
-- Executar backend primeiro
-- Depois frontend
-- Validar integração completa
 
 ## Saída Esperada
 
@@ -162,8 +105,6 @@ Informe explicitamente se cada MCP está **ativo ou inativo**.
 - **Pré-requisitos**: skills e agentes listados instalados; artefatos de contexto presentes
 - **Não usar** para tasks que envolvem decisões estratégicas não definidas; obter aprovação antes
 - **Detecção automática**: o comando analisa o conteúdo das tasks para determinar o contexto correto
-- **Flexibilidade**: suporta projetos backend-only, frontend-only ou fullstack
-- **Validação completa**: cada stack tem seu conjunto específico de validações
 
 ## Exemplos de Uso
 

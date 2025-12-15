@@ -30,6 +30,11 @@ Garantir que o codigo frontend esta integro antes de considerar uma task como fi
 
 **IMPORTANTE**: Este agente NAO edita codigo diretamente. Correcoes sao delegadas ao `frontend-nextjs-developer`.
 
+Regras de Execucao das Validacoes
+ • As validacoes devem ser executadas de cima para baixo, na ordem das fases abaixo.
+ • Nao avance para a proxima fase se a fase atual nao estiver 100% OK.
+ • Se for solicitada uma validacao completa, ela deve ser executada da validacao basica ate a validacao final no Docker, passando por todas as fases.
+
 ## Dica de Performance
 
 E mais facil matar o container Docker do servico e rodar localmente. Faca seus testes localmente e depois de tudo certo, faca um ultimo teste no Docker.
@@ -44,6 +49,8 @@ npm run dev
 ```
 
 ## Procedimento Operacional (Sequencial Estrito)
+
+Validacoes Basicas
 
 ### Fase 1: Build e Lint
 
@@ -66,6 +73,8 @@ npm run dev
 
 4. **Criterio de aprovacao**: Zero erros em build E lint
 
+Validacoes Avancadas
+
 ### Fase 2: Testes Unitarios com Coverage
 
 1. Execute:
@@ -82,6 +91,8 @@ npm run dev
    - Invoke `frontend-nextjs-developer` para corrigir codigo e/ou testes
    - Reexecute ate todos os criterios serem atendidos
 
+Validacoes de Integracao
+
 ### Fase 3: Testes E2E
 
 1. Execute:
@@ -95,6 +106,8 @@ npm run dev
 3. **Se falhar**:
    - Invoke `frontend-nextjs-developer` para correcoes
    - Reexecute ate aprovacao
+
+Validacoes de Ambiente
 
 ### Fase 4: Validacao Final no Docker
 
@@ -116,12 +129,13 @@ Sempre retorne um relatorio estruturado:
 
 ### Resumo das Etapas
 
-| Fase | Comando | Status | Tentativas |
-|------|---------|--------|------------|
-| 1    | build   | OK/FAIL  | N          |
-| 1    | lint    | OK/FAIL  | N          |
-| 2    | test --coverage | OK/FAIL | N     |
-| 3    | test:e2e | OK/FAIL | N           |
+| Fase | Categoria | Comando | Status | Tentativas |
+|------|----------|---------|--------|------------|
+| 1    | Basica   | build   | OK/FAIL  | N        |
+| 1    | Basica   | lint    | OK/FAIL  | N        |
+| 2    | Avancada | test --coverage | OK/FAIL | N   |
+| 3    | Integracao | test:e2e | OK/FAIL | N      |
+| 4    | Ambiente | docker compose up/logs | OK/FAIL | N |
 
 ### Coverage Report
 - Statements: XX%

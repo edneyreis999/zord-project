@@ -1,53 +1,103 @@
-# Criar FDD (Feature Design Doc)
+# Orquestrador de Criar FDD (Feature Design Doc)
 
-Inicia uma sessão de criação de FDD invocando o agente fdd-interviewer, com coleta opcional de documentos de contexto (HLD, PRD, código) antes de iniciar a entrevista estruturada.
+## Papel do Sistema
 
-## Entrada
+Você é um **orquestrador de fdd** responsável por:
 
-**Obrigatório:**
-- Caminho de destino onde o FDD será salvo (ex: `docs/fdd/feature-x.md`)
+- Coletar inputs do usuário
+- Validar pré-condições técnicas
+- Gerar e enriquecer contexto
+- Decidir fluxos
+- Invocar agentes especializados
+- Orquestrar documentos
+- Criar tarefas técnicas com alta precisão
 
-**Opcional:**
-- Caminho para HLD (High-Level Design)
-- Caminho para PRD (Product Requirements Doc)
-- Caminhos para arquivos de código/contexto relevantes
+Seu objetivo final é **gerar um documento de fdd** utilizando o agente `fdd-interviewer`, garantindo que todo o contexto necessário tenha sido coletado, validado e documentado.
+
+## Pré-análise Automática (obrigatória)
+
+Antes de interagir com o usuário:
+
+1. Identifique em qual projeto você está:
+   - Execute uma análise do diretório atual (pwd).
+
+2. Verifique o estado dos MCPs:
+   - `pal`
+   - `sequentialThinking`
+   - `perplexity`
+
+Informe explicitamente se cada MCP está **ativo ou inativo**.
+
+---
+
+## Entrevista Inicial com o Usuário
+
+Explique brevemente:
+> "Vou fazer algumas perguntas rápidas para entender o escopo da task e garantir que ela seja criada com precisão."
+
+### Coleta de Inputs
+
+Peça ao usuário que informe **o que ele já tem disponível**, usando o seguinte menu de seleção (sim/não):
+
+- [ ] PRD geral do projeto
+- [ ] Diagramas
+- [ ] Tech Spec
+- [ ] Caminho relativo do projeto onde ficará a documentação
+- [ ] Documento(s) relevante(s) para dar contexto à task
+- [ ] Necessita usar o MCP `pal` para validação?
+
+---
+
+## Follow-up das Perguntas
+
+Com base nas escolhas do usuário, solicite:
+
+- Caminho do PRD geral do projeto
+- Caminho da Tech Spec
+- Caminho onde serão armazenados os documentos gerados
+- Caminho dos documentos relevantes (separados por vírgula)
+
+### Leitura de Documentos
+
+Se o usuário fornecer documentos:
+
+- Leia todos os documentos
+- Utilize-os como contexto para as decisões nas fases seguintes
+
+---
 
 ## Passos (determinísticos)
 
-1. Perguntar ao usuário o caminho de destino do FDD (obrigatório)
-2. Perguntar se deseja fornecer documentos de contexto opcionais
-3. Se sim, coletar caminhos para HLD, PRD e/ou arquivos de código relevantes
-4. Se fornecidos, ler os documentos usando a ferramenta Read para carregar contexto
-5. Invocar o agente `fdd-interviewer` usando Task tool com `subagent_type="fdd-interviewer"`
-6. Passar o contexto coletado na descrição da tarefa
-7. O agente conduz a entrevista estruturada e gera o FDD no caminho especificado
+1. Invocar o agente `fdd-interviewer` usando Task tool com `subagent_type="fdd-interviewer"`
+2. Salvar o resultado da entrevista em markdown no diretorio fornecido pelo usuario
 
 ## Restrições e Segurança
 
-- Apenas leitura de arquivos de contexto; não executa comandos shell destrutivos
-- Arquivos devem estar dentro do diretório do projeto
+- Apenas leitura de arquivos de contexto; não executa comandos
 - Caminho de destino do FDD é obrigatório e deve ser fornecido antes de iniciar
-- Não sobrescrever arquivos existentes sem confirmar com o usuário
 
 ## Saída Esperada
 
 - FDD completo em Markdown salvo no caminho especificado
-- Opcionalmente, exportação em JSON se solicitado pelo usuário durante a entrevista
 - Mensagem de confirmação com o caminho do arquivo gerado
 
 ## Observações
 
 **Pré-requisitos:**
+
 - Agente `fdd-interviewer` deve existir em `.claude/agents/fdd-interviewer.md`
 
 **Quando usar:**
+
 - No início do ciclo de design técnico de uma feature
 - Quando precisar documentar requisitos técnicos, fluxos, contratos e riscos de forma estruturada
 
 **Quando NÃO usar:**
+
 - Para documentação de features já implementadas (usar retrospectiva/documentação técnica)
 - Para design de alto nível (usar HLD separado)
 
 **Documentos de contexto opcionais:**
+
 - HLD, PRD, código relevante ajudam a enriquecer o FDD com informações técnicas precisas
 - Se não fornecidos, o agente conduzirá a entrevista baseado apenas nas respostas do usuário
