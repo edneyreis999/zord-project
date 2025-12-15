@@ -38,22 +38,26 @@ N. **[Symptom description]** → [Root cause]. [Solution]. [Discovery method if 
 ## Quality Guidelines
 
 ### ✅ Good Example
+
 ```markdown
 11. **Timeout on element interaction (manual test works, logs show success)** → Selector uses `.filter({ hasText: /pattern/ })` but element text is dynamic (e.g., "Loading...", "Select option"). Use `getByRole('role', { name: 'Label' })` to match accessible name from label, not visible text
 ```
 
 **Why it's good:**
+
 - Concise (under 20 lines)
 - Generic (applies to any dynamic text component)
 - Explains discovery method (manual test works + logs clean = selector issue)
 - Provides clear solution
 
 ### ❌ Bad Example
+
 ```markdown
 11. **SubCliente field timeout** → The SubCliente selector was wrong. Change to getByRole('combobox', { name: 'SubCliente' })
 ```
 
 **Why it's bad:**
+
 - Too specific (only applies to SubCliente)
 - Doesn't explain root cause (WHY was selector wrong?)
 - No discovery method
@@ -64,6 +68,7 @@ N. **[Symptom description]** → [Root cause]. [Solution]. [Discovery method if 
 ### Step 1: Identify the Troubleshooting Pattern
 
 Ask yourself:
+
 - What was the SYMPTOM? (timeout, wrong element, etc.)
 - What was the ROOT CAUSE? (selector issue, timing, data isolation, etc.)
 - What was the SOLUTION? (code change, pattern to use)
@@ -74,11 +79,13 @@ Ask yourself:
 Transform specific details into reusable patterns:
 
 **Specific:**
+
 ```
 SubCliente field times out when using .filter({ hasText: /SubCliente/ })
 ```
 
 **Generic:**
+
 ```
 Element times out when using .filter({ hasText }) on dynamic text
 ```
@@ -92,6 +99,7 @@ N. **[Symptom]** → [Root cause]. [Solution]. [Discovery method]
 ```
 
 **Keep it concise:**
+
 - Maximum 3-4 lines
 - Focus on actionable information
 - Avoid code examples (reference files if needed)
@@ -99,11 +107,13 @@ N. **[Symptom]** → [Root cause]. [Solution]. [Discovery method]
 ### Step 4: Determine Placement
 
 **Quick Troubleshooting Checklist** (items 1-15):
+
 - Common, frequent issues
 - Quick to diagnose and fix
 - Pattern-based solutions
 
 **Detailed Troubleshooting Workflows** (sections below):
+
 - Complex, multi-step issues
 - Require investigation
 - Tool-specific workflows
@@ -120,30 +130,35 @@ N. **[Symptom]** → [Root cause]. [Solution]. [Discovery method]
 Use these categories to classify your troubleshooting item:
 
 ### 1. Selector Issues
+
 - Dynamic text content
 - Stale element references
 - Ambiguous selectors
 - Accessibility name vs visible text
 
 ### 2. Timing Issues
+
 - Race conditions
 - Async data loading
 - Form validation delays
 - Network requests
 
 ### 3. Data Isolation Issues
+
 - Shared test data
 - Database conflicts
 - Duplicate key violations
 - Test cleanup failures
 
 ### 4. State Management Issues
+
 - Component re-renders
 - Cache invalidation
 - Cookie/session problems
 - Global state pollution
 
 ### 5. Integration Issues
+
 - API errors (4xx, 5xx)
 - CORS problems
 - Authentication failures
@@ -156,12 +171,14 @@ Use these categories to classify your troubleshooting item:
 **Situation**: Tests pass individually but fail in suite with 409 Conflict errors. Logs show "Já existe uma conta a receber com este documento".
 
 **Analysis:**
+
 - **Symptom**: 409 Conflict in suite, passes when isolated
 - **Root cause**: Shared `uniqueId` across tests creating duplicate documents
 - **Solution**: Generate unique ID per test, not per describe block
 - **Discovery**: Backend logs showed duplicate key error
 
 **Troubleshooting Item:**
+
 ```markdown
 12. **409 Conflict when creating records (passes isolated, fails in suite)** → Unique identifier generated once at describe level, causing duplicate keys when multiple tests create records. Generate unique ID inside each test function that creates data. Discovery: Backend logs show "already exists" error
 ```
@@ -171,12 +188,14 @@ Use these categories to classify your troubleshooting item:
 **Situation**: Form filled correctly but submit doesn't redirect. Screenshot shows filled form, no errors in console.
 
 **Analysis:**
+
 - **Symptom**: Submit button clicked but no navigation
 - **Root cause**: Submit clicked before form validation completes
 - **Solution**: Wait for form validation + verify button enabled
 - **Discovery**: Adding timeout before submit fixed it
 
 **Troubleshooting Item:**
+
 ```markdown
 13. **Submit button clicked but form not submitted (no navigation)** → Form validation not complete before submit. Add `waitForTimeout(500)` after filling last field, verify button not disabled before clicking. Discovery: Manual testing showed brief validation delay
 ```
@@ -184,11 +203,13 @@ Use these categories to classify your troubleshooting item:
 ## Anti-Patterns to Avoid
 
 ### ❌ Don't: Add Test-Specific Details
+
 ```markdown
 Fix Teste 6 by changing line 373 to use nth(2)
 ```
 
 ### ✅ Do: Extract Generic Pattern
+
 ```markdown
 Use nth() selectors for DOM order-based targeting when filter() is unreliable
 ```
@@ -196,11 +217,13 @@ Use nth() selectors for DOM order-based targeting when filter() is unreliable
 ---
 
 ### ❌ Don't: List Multiple Unrelated Fixes
+
 ```markdown
 Fixed SubCliente, Plano de Contas, and Banco selectors plus timing issue
 ```
 
 ### ✅ Do: One Issue Per Item
+
 ```markdown
 11. Selector issue → Solution
 12. Timing issue → Solution
@@ -209,11 +232,13 @@ Fixed SubCliente, Plano de Contas, and Banco selectors plus timing issue
 ---
 
 ### ❌ Don't: Skip Discovery Method for Complex Issues
+
 ```markdown
 Selector was wrong → Use getByRole instead
 ```
 
 ### ✅ Do: Explain How You Found It
+
 ```markdown
 ... Discovery: Manual test worked + logs clean + MCP Playwright showed element exists = selector mismatch
 ```
@@ -242,6 +267,7 @@ Use the update-e2e-troubleshooting skill to add the following pattern to e2e-pla
 ```
 
 This skill will then:
+
 1. Validate the item format
 2. Determine proper placement
 3. Update the e2e-playwright-diagnosis skill
