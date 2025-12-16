@@ -71,7 +71,16 @@ Diretrizes de Criação de Tarefas
  2. Ordenar tarefas logicamente, com dependências antes de dependentes
  3. Tornar cada tarefa principal independentemente completável
  4. Definir escopo e entregáveis claros para cada tarefa
- 5. Incluir testes como subtarefas dentro de cada tarefa principal
+
+⸻
+
+⸻
+
+Diretrizes para inclusão de testes
+
+ 1. Para tasks do backend, invoke o agente `backend-task-revisor` e escolha quais tipos de validações se enquadra melhor para cada uma das tasks.
+ 2. Para tasks do frontend, invoke o agente `frontend-task-revisor` e escolha quais tipos de validações se enquadra melhor para cada uma das tasks.
+ 3. Analise o objetivo de cada task e defina titulo de testes que obrigatóriamente devem ser implementados para cada uma das layers que serão alteradas.
 
 ⸻
 
@@ -133,6 +142,8 @@ blocked_by: ["X.0", "Y.0"] # IDs de tarefas que devem ser completadas primeiro
 
 - [Resultados mensuráveis]
 - [Requisitos de qualidade]
+
+## Testes obrigatórios
 
 ⸻
 
