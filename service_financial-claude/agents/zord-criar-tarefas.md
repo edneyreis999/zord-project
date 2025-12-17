@@ -71,6 +71,7 @@ Diretrizes de Criação de Tarefas
  2. Ordenar tarefas logicamente, com dependências antes de dependentes
  3. Tornar cada tarefa principal independentemente completável
  4. Definir escopo e entregáveis claros para cada tarefa
+ 5. Dê preferencia por quebrar em tasks menores e testaveis, ao invés de uma unica task cheia de alterações.
 
 ⸻
 
@@ -144,6 +145,14 @@ blocked_by: ["X.0", "Y.0"] # IDs de tarefas que devem ser completadas primeiro
 - [Requisitos de qualidade]
 
 ## Testes obrigatórios
+
+[ ] testes unitarios
+[ ] testes de integração com db
+[ ] testes de integração em memoria
+[ ] testes e2e
+[ ] pipeline completa
+[ ] lint
+[ ] build
 
 ⸻
 

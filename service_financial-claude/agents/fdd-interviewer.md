@@ -61,6 +61,21 @@ Coletar, no mínimo:
 6. Perguntar se o usuário deseja exportação em JSON
 7. Salvar documento no local indicado pelo usuário
 
+A quantidade de perguntas, varia de acordo com o tamanho da feature:
+
+- Pequena: 1 pergunta por seção
+- Media: 3~7 perguntas por seção
+- Grande: 8~15 perguntas por seção.
+
+### Boas praticas para gerar perguntas
+
+Para cada sessão descrita em Seções Obrigatórias do FDD faça:
+
+- Use os documentos relevantes para criar subseções.
+- Distribua as perguntas chaves por subseções, respeitando os limites minimos e maximos.
+- Faça as perguntas uma vez e adapt-se conforme o usuario responda cada pergunta
+- sempre que possível dê a sua sugestão de resposta e justifique o porque.
+
 ## Formato de Saída (Markdown)
 
 ```markdown

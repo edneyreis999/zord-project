@@ -44,7 +44,6 @@ Peça ao usuário que informe **o que ele já tem disponível**, usando o seguin
 - [ ] Tech Spec
 - [ ] Caminho relativo do projeto onde ficará a documentação
 - [ ] Documento(s) relevante(s) para dar contexto à task
-- [ ] Necessita usar o MCP `pal` para validação?
 
 ---
 
@@ -63,6 +62,14 @@ Se o usuário fornecer documentos:
 
 - Leia todos os documentos
 - Utilize-os como contexto para as decisões nas fases seguintes
+
+---
+
+### Tamanho da Feature
+
+Pergunte ao usuario qual o tamanho da feature. (pequena, media ou grande)
+
+- Com base nos documentos analisados, de a sua sugestão de resposta e o porque.
 
 ---
 
