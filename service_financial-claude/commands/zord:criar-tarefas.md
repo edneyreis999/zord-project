@@ -155,9 +155,11 @@ Após respostas, avance para a fase final e instrua o agente `zord-criar-tarefas
 
 ## Fase 5 — Geração das Tasks
 
-1. Invoke o agente `context-manager` para gerar um **Full Context**
-2. Invoke o agente `zord-criar-tarefas` passando o Full Context
-3. Gere a estrutura de arquivos:
+Pergunte ao usuário:
+Você prefere que eu divida o trabalho em mais tarefas menores ou em menos tarefas maiores?
+
+1. Invoke o agente `zord-criar-tarefas` passando toda informação coletada.
+2. Gere a estrutura de arquivos:
 
 /tasks
 ├── tasks.md
@@ -171,3 +173,11 @@ Os templates para geração das tasks estão:
 - <num>_task.md = .claude/templates/task-template.md
 
 Todos os arquivos devem ser criados no diretório informado pelo usuário.
+
+## Fase 6 — Validação dos testes das Tasks
+
+Após a geração das tasks, acione em paralelo os agentes `backend-task-revisor` (para tasks de backend) e `frontend-task-revisor` (para tasks de frontend) para revisar as descrições e garantir que todas incluam a execução das validações/testes como parte obrigatória do “pronto”.
+
+Garanta também que, ao concluir uma task, o responsável:
+ • marque (tick) no arquivo da própria task o checklist executado; e
+ • atualize o arquivo tasks.md refletindo o status e as validações realizadas.
