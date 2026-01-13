@@ -19,13 +19,13 @@ Se não encontrar, aborte e sinalize o usuario. peça para ele informar o caminh
 
 Antes de avançar para proxima fase
 
-2. **Ler e analisar tasks**:
+1. **Ler e analisar tasks**:
    - Ler `tasks-file` e aplicar filtro `--tasks` (se fornecido)
 
-3. **Verificar artefatos obrigatórios**:
+2. **Verificar artefatos obrigatórios**:
    Para cada `tasks-file` invokar um agente `executar-tarefa` para validar
 
-4. Verifique o estado dos MCPs:
+3. Verifique o estado dos MCPs:
    Se houver em alguma das `tasks-file` a detecção de tarefa de frontend, verifique os MCPs:
    - `chrome-devtools`
    - `playwright`
@@ -34,10 +34,11 @@ Antes de avançar para proxima fase
    Independente se for backend e frontend, verifique os MCPs:
    - `serena`
    - `context7`
-  
 Informe explicitamente se cada MCP está **ativo ou inativo**.
 
-1. **Exibir console de pré-voo**:
+4. Executar o comando `npm run test:e2e:pipeline` para garantir que nada está quebrando antes de você iniciar a execução
+
+5. **Exibir console de pré-voo**:
    Exemplo:
 
    ```
@@ -63,7 +64,7 @@ Informe explicitamente se cada MCP está **ativo ou inativo**.
 
    Se o usuario prosseguir, invoque o agente `executar-tarefa` seguindo seu plano de paralelização.
 
-2. **Coleta de resultados**:
+6. **Coleta de resultados**:
    - Arquivos tocados
    - Endpoints alterados (backend)
    - Componentes/páginas criados (frontend)
@@ -72,7 +73,7 @@ Informe explicitamente se cada MCP está **ativo ou inativo**.
    - Pendências/riscos
    - Atualizar `tasks-file` conforme retorno dos agentes
 
-3. **Relatório consolidado**:
+7. **Relatório consolidado**:
    - Status por task
    - Riscos identificados
    - Follow-ups necessários
