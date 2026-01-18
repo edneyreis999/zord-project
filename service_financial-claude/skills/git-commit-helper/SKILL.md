@@ -81,11 +81,34 @@ Read .claude/skills/git-commit-helper/checklists/quality.md
 
 ---
 
+### 🔴 REGRA CRÍTICA: AUTORIA DO COMMIT
+
+**NUNCA adicionar Claude como co-author:**
+
+```bash
+# ❌ PROIBIDO - NUNCA FAZER ISSO:
+Co-Authored-By: Claude <noreply@anthropic.com>
+Co-Authored-By: Claude Sonnet <...>
+
+# ✅ CORRETO - Usar APENAS o autor configurado no Git:
+git config user.name
+git config user.email
+```
+
+**Commits devem ter APENAS o autor humano configurado no Git. Sem exceções.**
+
+---
+
 ### Passo 1: Coletar contexto
 
 Seguir workflow de `sections/workflow.md`:
 
 ```bash
+# Verificar configuração do autor (OBRIGATÓRIO)
+git config user.name
+git config user.email
+
+# Analisar mudanças
 git status
 git diff --staged
 git diff --staged --stat
@@ -196,12 +219,14 @@ Ver `checklists/quality.md` para checklist completo. Criterios minimos:
 - Usar tempo passado ("added" em vez de "add")
 - Focar no WHAT sem explicar WHY
 - Incluir detalhes de implementacao no summary
+- **🔴 CRÍTICO: Adicionar Claude como co-author** (NUNCA fazer isso)
 
 ## Manutencao
 
-- **Versao:** 1.2.0
+- **Versao:** 1.3.0
 - **Criado:** 2025-12-12
-- **Atualizado:** 2025-12-12
+- **Atualizado:** 2026-01-18
   - v1.1.0: Adicionado disclaimer visível e gatilhos explícitos
   - v1.2.0: Forçado carregamento de módulos obrigatórios com caminhos relativos portáveis
+  - v1.3.0: Adicionada regra crítica para NUNCA adicionar Claude como co-author
 - **Revisar quando:** Conventional Commits atualizar especificacao

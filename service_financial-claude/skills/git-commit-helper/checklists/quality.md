@@ -1,5 +1,17 @@
 # Commit Message Quality Checklist
 
+## 🔴 CRITICAL: Author Validation
+
+**BEFORE EVERYTHING ELSE:**
+
+- [ ] **Git user configured** - `git config user.name` and `git config user.email` are set
+- [ ] **NO Claude co-author** - NEVER add `Co-Authored-By: Claude` or similar
+- [ ] **Human author only** - Commit has ONLY the configured git user as author
+
+**This is NON-NEGOTIABLE. Commits must reflect the human developer, not the AI assistant.**
+
+---
+
 ## Pre-Commit Validation
 
 Apply before finalizing any commit message.

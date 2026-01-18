@@ -1,5 +1,19 @@
 # Commit Workflow
 
+## 🔴 CRITICAL: Verify Author Configuration
+
+**ALWAYS check author configuration FIRST:**
+
+```bash
+# Verify git user is configured
+git config user.name
+git config user.email
+```
+
+**NEVER add Claude as co-author. Commits must have ONLY the human author.**
+
+---
+
 ## Step 1: Review Changes
 
 ```bash
