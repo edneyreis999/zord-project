@@ -5,6 +5,7 @@ Generate descriptive commit messages following Conventional Commits format.
 ## Overview
 
 This skill helps developers write clear, consistent commit messages by:
+
 - Analyzing git diffs to understand changes
 - Suggesting appropriate type and scope
 - Generating messages that explain WHY, not just WHAT
@@ -20,6 +21,7 @@ This skill helps developers write clear, consistent commit messages by:
 ## Quick Start
 
 Ask Claude to help with commits:
+
 - "Help me write a commit message for these changes"
 - "Review my staged changes and suggest a commit"
 - "What type should I use for this change?"

@@ -3,6 +3,7 @@
 ## Feature Commits
 
 ### Simple Feature
+
 ```
 feat(auth): add password reset via email
 
@@ -15,6 +16,7 @@ Closes #234
 ```
 
 ### Feature with Breaking Change
+
 ```
 feat(api)!: restructure API response format
 
@@ -36,6 +38,7 @@ Closes #456
 ```
 
 ### Multi-Component Feature
+
 ```
 feat(checkout): implement multi-currency support
 
@@ -54,6 +57,7 @@ Closes #789
 ## Bug Fix Commits
 
 ### Simple Fix
+
 ```
 fix(form): prevent double submission on slow networks
 
@@ -62,6 +66,7 @@ first click until request completes or fails.
 ```
 
 ### Fix with Root Cause
+
 ```
 fix(api): resolve connection pool exhaustion
 
@@ -75,6 +80,7 @@ Fixes #567
 ```
 
 ### Security Fix
+
 ```
 fix(auth): prevent timing attack on password comparison
 
@@ -87,6 +93,7 @@ Security advisory: CVE-2024-1234
 ## Refactor Commits
 
 ### Code Organization
+
 ```
 refactor(auth): extract token validation to middleware
 
@@ -98,6 +105,7 @@ No functional changes.
 ```
 
 ### Performance Refactor
+
 ```
 refactor(search): optimize query with database index
 
@@ -108,6 +116,7 @@ Migration: 20240115_add_search_index.sql
 ```
 
 ### Architecture Refactor
+
 ```
 refactor(core): migrate to hexagonal architecture
 
@@ -158,6 +167,7 @@ Mocks OAuth provider responses.
 ## Chore Commits
 
 ### Dependency Update
+
 ```
 chore(deps): upgrade React to 18.2
 
@@ -174,6 +184,7 @@ Tested: All existing tests pass
 ```
 
 ### CI/CD
+
 ```
 ci(github): add automated security scanning
 

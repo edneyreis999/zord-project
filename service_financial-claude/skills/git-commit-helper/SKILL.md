@@ -12,6 +12,7 @@ Auxiliar na criacao de mensagens de commit claras, descritivas e padronizadas se
 ## Quando ativar / Quando nao ativar
 
 **⚠️ SEMPRE ativar quando usuario usar estas palavras:**
+
 - "fazer commit", "fazer o commit", "faça commit", "faça o commit"
 - "commitar", "commitir", "comitar", "comite"
 - "criar commit", "crie um commit", "crie o commit"
@@ -20,17 +21,20 @@ Auxiliar na criacao de mensagens de commit claras, descritivas e padronizadas se
 - "comitar minhas mudanças", "comitar as mudanças"
 
 **Também ativar quando:**
+
 - Usuario pede ajuda para escrever mensagem de commit
 - Usuario solicita revisao de changes staged
 - Frases como: "commit message", "escrever commit", "preparar commit", "gerar commit"
 - Usuario quer entender o que foi modificado antes de commitar
 
 **Nao ativar quando:**
+
 - Usuario apenas quer ver status do git (usar comandos diretos)
 - Discussoes sobre estrategias de branching ou merge
 - Configuracao de git hooks ou aliases
 
 **Pre-requisitos:**
+
 - Repositorio git inicializado
 - Alteracoes staged ou unstaged para analisar
 
@@ -43,6 +47,7 @@ Auxiliar na criacao de mensagens de commit claras, descritivas e padronizadas se
 ## Escopo e Limites
 
 **Em escopo:**
+
 - Analisar diffs e gerar mensagens de commit
 - Explicar formato Conventional Commits
 - Sugerir type, scope e description apropriados
@@ -50,6 +55,7 @@ Auxiliar na criacao de mensagens de commit claras, descritivas e padronizadas se
 - Identificar breaking changes
 
 **Fora de escopo:**
+
 - Executar `git commit` automaticamente (apenas sugerir mensagem)
 - Resolver conflitos de merge
 - Configurar git ou criar hooks
@@ -87,12 +93,14 @@ git log -5 --oneline  # Ver estilo de commits anteriores
 ```
 
 ### Passo 2: Analisar mudancas
+
 - Identificar arquivos modificados e seus dominios
 - Classificar tipo de mudanca (feat, fix, refactor, etc.)
 - Detectar breaking changes
 - Agrupar mudancas relacionadas
 
 ### Passo 3: Gerar mensagem
+
 - Seguir formato: `<type>(<scope>): <description>`
 - Summary: imperativo, <50 chars, sem ponto final
 - Body: explicar WHY, nao apenas WHAT
@@ -101,6 +109,7 @@ git log -5 --oneline  # Ver estilo de commits anteriores
 ### Passo 4: Validar com Checklist
 
 **OBRIGATÓRIO:** Aplicar todos os itens de `checklists/quality.md`:
+
 - [ ] Type apropriado para a mudanca
 - [ ] Scope especifico e claro
 - [ ] Summary <50 caracteres
@@ -132,14 +141,15 @@ Depois do disclaimer, seguir este formato:
 **Escopo sugerido:** <modulo/componente>
 
 ## 💬 Mensagem de Commit Sugerida
-
 ```
+
 type(scope): description
 
 Body explaining why this change was made.
 What problem does it solve?
 
 [optional footer]
+
 ```
 
 ## 🔀 Alternativas (se aplicavel)
@@ -150,17 +160,20 @@ What problem does it solve?
 
 ## Recursos incluidos e como usar
 
-### 🔴 Módulos OBRIGATÓRIOS (carregar sempre no início):
+### 🔴 Módulos OBRIGATÓRIOS (carregar sempre no início)
+
 - `sections/workflow.md` → **OBRIGATÓRIO** - Workflow passo a passo detalhado
 - `checklists/quality.md` → **OBRIGATÓRIO** - Checklist de validação
 
-### 🟡 Módulos sob demanda (carregar se necessário):
+### 🟡 Módulos sob demanda (carregar se necessário)
+
 - `sections/conventional-commits.md` → Referencia completa do formato
 - `sections/commit-types.md` → Lista de types com exemplos
 - `sections/best-practices.md` → Guidelines e anti-patterns
 - `references/examples.md` → Exemplos reais de bons commits
 
 **Quando carregar módulos sob demanda:**
+
 - Usuario tem dúvidas sobre formato Conventional Commits
 - Usuario pede exemplos de commits para casos específicos
 - Precisa de clarificação sobre qual type usar
@@ -168,6 +181,7 @@ What problem does it solve?
 ## Criterios de qualidade e autoavaliacao
 
 Ver `checklists/quality.md` para checklist completo. Criterios minimos:
+
 - [ ] Type apropriado para a mudanca
 - [ ] Scope especifico e claro
 - [ ] Summary <50 caracteres

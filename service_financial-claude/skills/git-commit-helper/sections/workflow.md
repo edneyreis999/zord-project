@@ -32,6 +32,7 @@ git add -A
 ### Interactive Staging (`git add -p`)
 
 Options at each hunk:
+
 - `y` - stage this hunk
 - `n` - don't stage this hunk
 - `s` - split into smaller hunks
@@ -41,6 +42,7 @@ Options at each hunk:
 ## Step 3: Analyze for Commit Message
 
 Questions to answer:
+
 1. **What type of change?** feat, fix, refactor, etc.
 2. **What part of codebase?** Determine scope
 3. **What problem does it solve?** The WHY
@@ -100,17 +102,20 @@ git commit -m "refactor(auth): restructure authentication module" -m "
 ## Amending Commits
 
 ### Fix Last Commit Message
+
 ```bash
 git commit --amend
 ```
 
 ### Add Forgotten Files
+
 ```bash
 git add forgotten-file.ts
 git commit --amend --no-edit
 ```
 
 ### Warning
+
 - Only amend commits not yet pushed
 - After push, create new commit instead
 
