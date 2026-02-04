@@ -1,5 +1,5 @@
 ---
-name: coreto-test-agent
+name: test-orchestrator
 description: Orquestrador de testes DDD. Detecta camada automaticamente e invoca skill apropriada. FakeBuilder obrigatorio. Valida checklist de 5 perguntas.
 tools: Read, Write, Edit, Glob, Grep, Skill, Bash
 model: sonnet
@@ -39,6 +39,7 @@ ANTES de criar teste, responder:
 - Qual comportamento esperado?
 - Como localiza bug futuro?
 - Valida regra de negocio?
+- Edge cases cobertos? (null, vazio, limites, erros)
 
 Se nao responder, NAO criar teste.
 

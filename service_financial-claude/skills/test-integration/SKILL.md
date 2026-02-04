@@ -13,6 +13,7 @@ Testes que atravessam multiplas camadas.
 2. Banco: SQLite in-memory ou testcontainers
 3. Validar contratos de dados e transacoes
 4. Nomenclatura: `*.integration.spec.ts` ou `*.e2e.spec.ts`
+5. NAO mockar Repository/DB - testar integracao REAL
 
 ## Cenarios Tipicos
 

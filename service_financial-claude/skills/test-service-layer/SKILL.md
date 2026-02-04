@@ -53,6 +53,15 @@ Tem side-effect externo (DB, HTTP, evento)?
 | Domain Entity | NUNCA | Usar FakeBuilder |
 | EventEmitter | SPY | Verificar emissao, nao mockar |
 
+## Auto-Mocking (Preferido)
+
+```typescript
+vi.mock('./repository');
+vi.mocked(repository.save).mockResolvedValue(entity);
+```
+
+Evitar mock manual - usar `vi.mock`/`jest.mock` no nivel de modulo.
+
 ## Estrutura de Arquivos
 
 Testes DEVEM estar em `__tests__/`:
