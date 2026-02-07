@@ -189,3 +189,20 @@ O teste valida comportamento real do usuario?
 | Menos de 50% do teste e setup/mocks? | Mais de 50% e mock | REFATORAR |
 | Testa SEU codigo (nao biblioteca)? | Testa lib | DELETAR |
 | Consegue explicar o teste em 1 frase? | Muito complexo | DIVIDIR |
+
+---
+
+## Export de Analise (Opcional)
+
+No inicio do Passo 3 (Perguntas), adicionar pergunta extra:
+
+#### Q0: Export
+```
+header: "Export"
+question: "Deseja exportar o diagnostico para XML?"
+options:
+  - "Nao" - Continuar normalmente
+  - "Sim" - Exportar ao final
+```
+
+Se Sim: perguntar path de destino (string). Ao final do Passo 5 (Diagnostico), gerar XML conforme `.claude/templates/analysis-export-template.xml` com command="test-diagnose". Salvar no path fornecido.

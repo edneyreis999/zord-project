@@ -178,3 +178,20 @@ Se action_mode = autofix:
 | LOW | -0.25 ponto |
 
 Score = max(0, 10 - penalidades)
+
+---
+
+## Export de Analise (Opcional)
+
+No inicio do Passo 3 (Perguntas), adicionar pergunta extra:
+
+#### Q0: Export
+```
+header: "Export"
+question: "Deseja exportar a analise para XML?"
+options:
+  - "Nao" - Continuar normalmente
+  - "Sim" - Exportar ao final
+```
+
+Se Sim: perguntar path de destino (string). Ao final do Passo 6 (Dashboard), gerar XML conforme `.claude/templates/analysis-export-template.xml` com command="test-health". Salvar no path fornecido.

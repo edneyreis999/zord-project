@@ -223,3 +223,20 @@ Filtre arquivos por camada baseado em Q1:
 | Domain         | **/domain/**/*.ts, **/core/**/*.ts        |
 | Infrastructure | **/infrastructure/**/*.ts, **/ui/**/*.ts  |
 | All            | **/*.ts, **/*.tsx                          |
+
+---
+
+## Export de Analise (Opcional)
+
+No inicio do Passo 2, adicionar pergunta extra:
+
+#### Q0: Export
+```
+header: "Export"
+question: "Deseja exportar a analise para XML?"
+options:
+  - "Nao" - Continuar normalmente
+  - "Sim" - Exportar ao final
+```
+
+Se Sim: perguntar path de destino (string). Ao final do Passo 4, gerar XML conforme `.claude/templates/analysis-export-template.xml` com command="code-health". Salvar no path fornecido.
