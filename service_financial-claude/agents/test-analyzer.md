@@ -203,18 +203,6 @@ Sinais de teste Playwright:
 | `[LCY-02]` | Connection Leak | Falta prisma.$disconnect() |
 | `[SED-01]` | Static Fixture | Seed com dados hardcoded, nao FakeBuilder |
 
-### PLAYWRIGHT-SPECIFIC (DELEGAR para `e2e-playwright-diagnosis`)
-
-**NOTA:** Estes smells sao analisados pela skill especializada. Detectar e delegar.
-
-| ID | Nome | Descricao |
-|----|------|-----------|
-| `[PW-01]` | Fragile Selector | Usa CSS selectors ao inves de getByRole/getByText |
-| `[PW-02]` | Missing Auto-Wait | Usa `waitForTimeout` ao inves de asserts esperados |
-| `[PW-03]` | Page Object Violation | Logica de page misturada com testes |
-| `[PW-04]` | Hardcoded Waits | Usa `waitFor` com timeout fixo |
-| `[PW-05]` | Missing Assertions | Falta asserts em estado final da pagina |
-
 ### LOW
 
 | ID | Nome | Descricao |
