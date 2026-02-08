@@ -23,7 +23,7 @@ Perguntar diretorio das tasks. Validar existencia de tasks.xml e `<num>_task.xml
 ## Passo 2: Perguntas (Interativo)
 
 Q1: Quais tasks analisar? (todas | especificas: "1,3,5" | range: "1-5")
-Q2: Fonte para gaps? (contexto terminal | codebase | ambos)
+Q2: Fonte para gaps? (terminal | codebase | analysis.xml | techspec.md | multiplos - apontar caminhos)
 Q3: Modelo para consensus? (default: gpt-5.2)
 
 ## Passo 3: Task Completeness Report (8 Dimensoes)
@@ -56,9 +56,11 @@ Agrupar gaps: independentes (paralelos) vs dependentes (sequenciais).
 
 ## Passo 4: Preencher Gaps (Discovery sem budget)
 
+**Estrategia por fonte**: codebase (D3 primario, D6, D7 tests, D8 hotspots), techspec.md (D1, D2, D4, D5, D6, D7, D8), analysis.xml (D4 contratos/arquitetura, D8 restricoes NFR, apoio D3), terminal (D6/D7 comandos reais, validacoes, logs). Se apos todas as fontes qualquer gap P0 persistir: marcar NEEDS_INPUT e gerar open_questions com opcoes concretas + recomendacao.
+
 **Gaps independentes**: invocar multiplos `Task(subagent_type="Explore")` em PARALELO por modulo.
 **Gaps dependentes**: analise sequencial.
-Consolidar findings de todos os agentes.
+**Consolidar findings**: apos retorno dos agentes paralelos, merge obrigatorio — dedup evidencias, resolver conflitos entre fontes, alinhar recomendacoes e atualizar open_questions se houver divergencia.
 
 ## Passo 5: Enriquecer Artefatos
 
@@ -66,6 +68,7 @@ Para cada task com gaps:
 
 - Atualizar secoes existentes no XML
 - Adicionar tags conforme vocabulario: `<discovery>`, `<decisions>`, `<validation>`, `<assumptions>`, `<open_questions>` (so NEEDS_INPUT), `<non_functional_requirements>`, `<rollout>`, `<rollback>`
+- **Formato open_questions**: incluir `<options>` (N opcoes + sempre ultima "Outro: descreva"), `<recommendation>` (option_id + reasoning), `<tradeoffs>` (riscos/custos por opcao), `<impact>` (o que muda no plano se escolher cada opcao), `<sources_consulted>` (paths + trechos relevantes)
 - Adicionar `<enriched_by_consensus>` com gap, source, timestamp, model, dimensao
 - **METADADOS DE PARALELIZACAO**: Extrair `<properties>` (idempotent, estimated_cost) e `<resources>` (path, mode, group). Aplicar matriz: read+read=PARALELO; qualquer write no mesmo path/group=SERIAL. Task sem `<resources>` → marcar `serial_only`. Normalizar paths antes de comparar
 - Validar XML apos modificacao
@@ -74,4 +77,26 @@ Atualizar tasks.xml com `<validation_status>` incluindo `<task_statuses>` (id, s
 
 ## Passo 6: Relatorio Final
 
-Apresentar: tasks analisadas, status (READY/NEEDS_INPUT/BLOCKED), gaps por dimensao, score medio antes→depois, agentes paralelos usados. Gerar `enrichment-report.md`.
+Apresentar: resumo (tasks, status, scores), gaps por dimensao. **SE houver NEEDS_INPUT**, exibir:
+
+```
+### ⚠️ Task XX: [titulo] precisa de sua decisao
+
+**Pergunta Q1:** [texto]
+
+Opcoes:
+- [A] [desc A]
+- [B] [desc B]
+- [C] [desc C]
+- [Outro] Descreva sua alternativa
+
+Trade-offs:
+- A: [risco/custo]  - B: [risco/custo]  - C: [risco/custo]
+
+Impacto: se escolher [X], os passos [Y] mudam para [Z]
+
+🤖 Recomendacao: **Opcao X** - [justificativa]
+Fontes consultadas: [somente fontes realmente usadas, com paths]
+```
+
+Gerar `enrichment-report.md`.
