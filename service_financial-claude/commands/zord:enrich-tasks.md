@@ -1,6 +1,6 @@
 ---
 name: zord:enrich-tasks
-description: Enriquece tasks existentes identificando e preenchendo gaps via validacao de 8 dimensoes (PAL MCP consensus, modelo atual ou ambos)
+description: Enriquece tasks existentes identificando e preenchendo gaps via validacao de 9 dimensoes (PAL MCP consensus, modelo atual ou ambos)
 tools: Task, AskUserQuestion, Read, Write, Edit, Glob, Grep
 model: sonnet
 ---
@@ -43,33 +43,13 @@ Q3.1 (apenas se A ou C): Qual modelo usar no PAL consensus? (default: gpt-5.2)
 
 ## Passo 3: Task Completeness Report (8 Dimensoes)
 
-Para cada task (exceto Task 00), avaliar as dimensoes abaixo.
+Para cada task (exceto Task 00), avaliar dimensoes definidas em `.claude/templates/task-completeness-model.xml`.
 
-**Referencia de criterios:** `planos/015-arrumando-agentes/TASK_COMPLETENESS_MODEL.md` (OBRIGATORIO para modo B, opcional para modo A)
+**Rubrica (OBRIGATORIO para modo B):** Ler XML com criterios PASS/WARN/FAIL por dimensao.
 
-| ID | Dimensao | Gate | Criterio PASS |
-|---:|---|---|---|
-| D1 | Objetivo & Mudanca Observavel | P0 | Antes/depois claro |
-| D2 | Referencias & Rastreabilidade | P0 | Techspec com secao/ancora |
-| D3 | Localizacao no Repo | P0 | files_to_modify OU discovery |
-| D4 | Decisoes & Contratos | P0/P1 | Escolhas bloqueantes resolvidas |
-| D5 | Escopo Controlado | P1 | in/out explicito |
-| D6 | Passos Executaveis | P0 | Steps ordenados verificaveis |
-| D7 | Validacao & Testes | P0 | Comandos + GWT |
-| D8 | Riscos Nao-Funcionais | P2 | Security/PII/perf (se aplicavel) |
+**Validacao do execution_plan (tasks.xml):** Verificar que `<execution_plan>` existe e contem stages validos. Tasks no stage N devem depender apenas de tasks nos stages < N.
 
-**Validacao do execution_plan (tasks.xml)**: Verificar que `<execution_plan>` existe e contem stages validos. Validar que dependencies batem com o plano (topological sort). Tasks no stage N devem depender apenas de tasks nos stages < N.
-
-Resultado por dimensao: PASS(2) | WARN(1) | FAIL(0).
-`completeness_score = soma / (2 * N_dimensoes)`
-
-**Status derivado:**
-
-- **READY**: Zero FAIL em P0, sem open_questions
-- **NEEDS_INPUT**: FAIL em P0 por info ausente → gerar `<open_questions>`
-- **BLOCKED**: Impossibilidade pratica (D6 FAIL)
-
-Agrupar gaps: independentes (paralelos) vs dependentes (sequenciais).
+**Status:** READY (zero FAIL em P0), NEEDS_INPUT (FAIL em P0 por info ausente), BLOCKED (D6 FAIL por impedimento pratico). P1 (D5,D9) e P2 (D8) não bloqueiam.
 
 ---
 
@@ -82,14 +62,15 @@ Agrupar gaps: independentes (paralelos) vs dependentes (sequenciais).
 **Processo por task:**
 
 1. Ler o XML da task (`<num>_task.xml`)
-2. Ler `TASK_COMPLETENESS_MODEL.md` para obter criterios normativos (OBRIGATORIO)
-3. Para cada dimensao D1..D8:
+2. Ler `.claude/templates/task-completeness-model.xml` (OBRIGATORIO)
+3. Para cada dimensao D1..D9:
    - Usar `Grep/Glob/Read` para buscar evidencias nos docs e codebase:
-     - D2: verificar se techspec linkado existe e tem secao/ancora
-     - D3: verificar se files_to_modify existe ou discovery tem comandos validos
-     - D4: buscar decisoes/contratos em docs linkados ou patterns no repo
-     - D7: verificar se comandos de teste existem e sao validos
-     - D8: buscar evidencias de NFR em docs ou patterns do repo
+     - D2: techspec linkado existe e tem secao/ancora
+     - D3: files_to_modify existe ou discovery tem comandos validos
+     - D4: decisoes/contratos em docs linkados ou patterns no repo
+     - D7: comandos de teste existem e sao validos
+     - D8: security/PII em docs ou patterns do repo
+     - D9: logging/tracing em techspec (secao observability_requirements)
    - Emitir por dimensao:
      - `status: PASS|WARN|FAIL`
      - `score: 2|1|0`
@@ -100,7 +81,7 @@ Agrupar gaps: independentes (paralelos) vs dependentes (sequenciais).
 **Metadados de validacao:**
 ```xml
 <validated_by mode="local_model" model="{modelo_atual}" timestamp="{ISO8601}">
-  <rubric>planos/015-arrumando-agentes/TASK_COMPLETENESS_MODEL.md</rubric>
+  <rubric>.claude/templates/task-completeness-model.xml</rubric>
   <sources_consulted>
     <source path="..." excerpt="..."/>
   </sources_consulted>
@@ -119,7 +100,7 @@ Agrupar gaps: independentes (paralelos) vs dependentes (sequenciais).
 
 1. Ler o XML da task
 2. Invocar `mcp__pal__consensus` com:
-   - Proposal: avaliacao das 8 dimensoes conforme TASK_COMPLETENESS_MODEL.md
+   - Proposal: avaliacao das 9 dimensoes conforme task-completeness-model.xml
    - Models: conforme escolhido em Q3.1 (default: gpt-5.2)
    - Stances: configurar modelos com posturas diferentes (for/against/neutral) se aplicavel
 3. Consolidar resultado do consensus:
@@ -131,7 +112,7 @@ Agrupar gaps: independentes (paralelos) vs dependentes (sequenciais).
 **Metadados de validacao:**
 ```xml
 <validated_by mode="pal_consensus" model="{modelo_escolhido}" timestamp="{ISO8601}">
-  <rubric>planos/015-arrumando-agentes/TASK_COMPLETENESS_MODEL.md</rubric>
+  <rubric>.claude/templates/task-completeness-model.xml</rubric>
   <models_used>
     <model name="..." stance="..."/>
   </models_used>
@@ -164,7 +145,7 @@ Agrupar gaps: independentes (paralelos) vs dependentes (sequenciais).
 3. Metadados finais:
 ```xml
 <validated_by mode="hybrid" local_model="{modelo_atual}" consensus_model="{modelo_pal}" timestamp="{ISO8601}">
-  <rubric>planos/015-arrumando-agentes/TASK_COMPLETENESS_MODEL.md</rubric>
+  <rubric>.claude/templates/task-completeness-model.xml</rubric>
   <consolidation_rule>pior_status_vence</consolidation_rule>
   <divergences count="{N}">
     <divergence dimension="D..." local="PASS" consensus="FAIL" final="FAIL" reason="..."/>
@@ -174,7 +155,7 @@ Agrupar gaps: independentes (paralelos) vs dependentes (sequenciais).
 
 ## Passo 4: Preencher Gaps (Discovery sem budget)
 
-**Estrategia por fonte**: codebase (D3 primario, D6, D7 tests, D8 hotspots), techspec.md (D1, D2, D4, D5, D6, D7, D8), analysis.xml (D4 contratos/arquitetura, D8 restricoes NFR, apoio D3), terminal (D6/D7 comandos reais, validacoes, logs). Se apos todas as fontes qualquer gap P0 persistir: marcar NEEDS_INPUT e gerar open_questions com opcoes concretas + recomendacao.
+**Estrategia por fonte**: codebase (D3 primario, D6, D7 tests, D9 logging), techspec.md (D1, D2, D4, D5, D6, D7, D8, D9), analysis.xml (D4 contratos, D8 restricoes, D9 observabilidade), terminal (D6/D7 comandos, logs). Se apos todas as fontes qualquer gap P0 persistir: marcar NEEDS_INPUT e gerar open_questions com opcoes concretas + recomendacao.
 
 **Gaps independentes**: invocar multiplos `Task(subagent_type="Explore")` em PARALELO por modulo.
 **Gaps dependentes**: analise sequencial.

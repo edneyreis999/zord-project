@@ -67,13 +67,47 @@ Task sem `<resources>` declarados → stage exclusivo (serial). Normalizar paths
 
 Usar templates de `.claude/templates/tasks-xml-template.xml` e `task-xml-template.xml`.
 
+## Passo 3.5: TechSpec Generator (se Q3=Sim)
+
+Invocar agente `techspec-generator` via Task tool:
+
+```
+Task({
+  subagent_type: "techspec-generator",
+  prompt: `Gerar TechSpec para este plano.
+
+  Contexto:
+  - plan_dir: {{Q2_DIRECTORY}}
+  - tasks_xml: tasks.xml draft gerado no Passo 3
+  - analysis: {{ANALYSIS_XML_DO_PASSO_2_SE_DISPONIVEL}}
+
+  REPO_CONTEXT (para contexto adicional):
+  {{REPO_CONTEXT_DO_PASSO_1}}
+  `
+})
+```
+
+**Inputs esperados pelo agente:**
+
+- `plan_dir` - Diretório do plano ({{Q2_DIRECTORY}})
+- `tasks_xml` - Tasks XML draft do Passo 3 (opcional)
+- `analysis` - Analysis disponível (do Passo 2)
+
+**Outputs gerados pelo agente em `planos/<id>/tasks/`:**
+
+- techspec.xml
+- techspec.md
+- contracts_facts.json
+- observability_checklist.json
+
 ## Passo 4: Write Artifacts
 
 ```bash
 mkdir -p {{Q2_DIRECTORY}}
 ```
 
-Escrever: tasks.xml + 00_task.xml + 01_task.xml... + techspec.md (se Q3=Sim).
+Escrever: tasks.xml + 00_task.xml + 01_task.xml...
+Nota: techspec.md/techspec.xml são gerados no Passo 3.5 (se Q3=Sim).
 Validar XMLs: `xmllint --noout` ou fallback Node.js (`fast-xml-parser`).
 
 ## Passo 5: Consensus e Delegacao (se Q4 != "Nao validar")

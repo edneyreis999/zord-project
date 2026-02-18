@@ -43,9 +43,28 @@ Defaults: fail_fast=true, max_parallel=sem limite (salvo override no XML).
 
 Exibir plano resumido (stages, tasks por stage, conflitos detectados, defaults aplicados). **Pedir confirmacao Y/N** antes de executar. Se N, abortar.
 
-## Passo 3: Executar Stages
+## Passo 2.5: Task Execution Lifecycle (Self-Healing)
 
-Para cada stage (level crescente):
+Cada task executa em loop isolado com auto-correção:
+
+**Config:** MAX_RETRIES=3, REVIEW_TIMEOUT=60s
+
+**Flow:**
+1. GENERATION: Agente gera código, captura artifacts
+2. VALIDATION: Review via PAL MCP (Diff + LayerRules + InterfaceContext)
+3. DECISION:
+   - PASS → git commit + mark COMPLETED
+   - FAIL_RETRYABLE → Increment attempt, volta para GENERATION
+   - MISSING_DEPENDENCY → Requeue (WAITING_QUEUE), acorda quando task terminar
+   - API_ERROR → mark COMPLETED_WITHOUT_REVIEW, continua
+   - MAX_RETRIES → mark COMPLETED_WITH_ERRORS, DEIXA arquivos no disco
+
+**Cross-Layer Rules:**
+- domain/: imports de @infrastructure/*, @application/* = BLOCKER
+- application/: imports de @infrastructure/* = BLOCKER
+- infrastructure/: pode importar domain/ports/*
+
+**Deadlock Detection:** RUNNING=0 + WAITING>0 → Jailbreak (todas voltam com ALLOW_MISSING_DEPS=true)
 
 ### 3.1 Gate Check
 
@@ -53,33 +72,47 @@ Para cada stage (level crescente):
 
 ### 3.2 Dispatch Paralelo
 
-Enviar N chamadas `Task()` em UMA UNICA mensagem (1 por task do batch):
+Para cada task do batch, instanciar **TaskRunner isolado** que executa loop do Passo 2.5.
 
+TaskRunner invoca subagente via Task():
 ```
-Task(subagent_type="general-purpose", prompt="Executar task 01: {{TITLE}}. Steps: {{STEPS}}. Files: {{FILES_TO_MODIFY}}. Criteria: {{CRITERIA}}.")
-Task(subagent_type="general-purpose", prompt="Executar task 02: {{TITLE}}. Steps: {{STEPS}}. Files: {{FILES_TO_MODIFY}}. Criteria: {{CRITERIA}}.")
+Task(subagent_type="{{HINT ou general-purpose}}",
+     prompt="{{TITLE}}. Steps: {{STEPS}}. Files: {{FILES}}. Criteria: {{CRITERIA}}.")
 ```
 
-Se task XML contiver `<agent_hint>`, usar como subagent_type em vez de "general-purpose". Batches com conflito de resource executam sequencialmente dentro do stage.
+Tasks em WAITING_QUEUE têm prioridade sobre PENDING_TASKS (previnir starvation).
 
 ### 3.3 Coletar Resultados
 
-Para cada task concluida, coletar do subagente: arquivos tocados, comandos executados, erro (se falhou).
-- Atualizar `<status>` no XML individual: pending → done | failed
-- Se failed: registrar erro, avaliar fail_fast
+TaskRunner reporta status final da execução:
+- **COMPLETED**: Review passou, git commit realizado
+- **COMPLETED_WITH_ERRORS**: Max retries atingido, arquivos deixados no disco (dirty state)
+- **COMPLETED_WITHOUT_REVIEW**: API PAL falhou, sem validação
+- **FAILED**: Erro de infraestrutura (crash tool, API fora, etc)
+
+Para cada task, atualizar XML com:
+- attempt_count, duration_total_s, files_touched
+- validation_history (reviews com violations, scores)
+- commit_hash (se COMPLETED)
+
+**IMPORTANTE:** Pipeline NUNCA para por falha de review. Continua execução.
 
 ### 3.4 Checkpoint
 
-Atualizar tasks.xml com `<execution_status>`:
+Atualizar tasks.xml com execution_status expandido:
 
 ```xml
 <execution_status>
   <last_stage_completed>{{N}}</last_stage_completed>
   <task_results>
-    <result id="{{ID}}" status="done|failed" duration_s="{{S}}">
+    <result id="{{ID}}" status="completed|completed_with_errors|completed_without_review|failed">
+      <attempt_count>{{N}}</attempt_count>
+      <duration_total_s>{{S}}</duration_total_s>
       <files_touched>{{FILE_LIST}}</files_touched>
-      <commands_run>{{CMD_LIST}}</commands_run>
-      <error_excerpt>{{IF_FAILED}}</error_excerpt>
+      <commit_hash>{{HASH ou EMPTY}}</commit_hash>
+      <validation_history>
+        <review attempt="1" status="passed|rejected" score="{{0-100}}"/>
+      </validation_history>
     </result>
   </task_results>
 </execution_status>
@@ -91,27 +124,38 @@ Se mode=stage-by-stage: pausar e perguntar "Continuar para stage {{N+1}}?".
 
 ```
 +==============================================================+
-|                    EXECUTION REPORT                           |
+|                   QUALITY GATE SUMMARY                        |
 +==============================================================+
-| Stage | Tasks | Passed | Failed | Skipped | Duration         |
-|-------|-------|--------|--------|---------|------------------|
-|   0   |   1   |   1    |   0    |    0    | 12s              |
-|   1   |   3   |   2    |   1    |    0    | 45s              |
-+-------|-------|--------|--------|---------|------------------+
-| TOTAL |   4   |   3    |   1    |    0    | 57s              |
+| Total Tasks | Verified | Dirty/Failed | No Review | WaitTime |
+|-------------|----------|--------------|-----------|----------|
+|     10      |    8     |      1       |     1     |   5m20s  |
 +==============================================================+
 
-Failed Tasks:
-  [FAIL] Task 02: {{TITLE}} - {{ERROR_SUMMARY}}
+| ID | Status     | Attempts | Quality Check | Commit        |
+|----|------------|----------|---------------|---------------|
+| T1 | COMPLETED  | 1/3      | ✅ Clean      | abc1234       |
+| T2 | COMPLETED  | 3/3      | ⚠️ Auto-Fixed | def5678       |
+| T3 | DIRTY      | 3/3      | ❌ Rejected   | (uncommitted) |
 
-Files Touched: {{TOTAL}} | Commands Run: {{TOTAL}}
+[⚠️ DIRTY] Task 3: Create Controller
+   STATUS: Failed Review (Max Retries)
+   REASON: YAGNI - unused methods
+   FILES: src/adapters/UserController.ts (left on disk)
 
-Next Steps:
-  - Fix task 02 and re-run: /run-plan --from-stage 1 --tasks 02
+ACTION REQUIRED:
+  Run 'git status' to review dirty files.
+  Fix and 'git commit' manually, or 'git checkout <file>' to discard.
 ```
 
 ## Restricoes de Seguranca
 
+**Git Allow-List (NON-DESTRUCTIVE):**
+- PERMITIDOS: git status, git diff, git ls-files, git log, git add <files>, git commit
+- PROIBIDOS: git checkout, git reset, git clean, git rm, git revert, git stash
+
+**Regra de Ouro:** NUNCA usar comandos git destrutivos. Se review falha, arquivos ficam no disco (dirty state OK). Usuario decide manualmente (git commit ou git checkout).
+
+Outras restricoes:
 - Nao executar comandos destrutivos (`rm -rf`, `sudo`, `chmod 777`)
 - Limitar escopo ao workspace do projeto
 - Nao prosseguir sem confirmacao na etapa de pre-voo
